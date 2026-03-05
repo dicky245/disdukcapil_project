@@ -3,125 +3,113 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Permission;
-use App\Models\Role;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Hash;
 
 class RolePermissionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Start a transaction
         DB::transaction(function () {
-            // Clear existing data
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
             DB::table('model_has_permissions')->delete();
             DB::table('model_has_roles')->delete();
+            DB::table('role_has_permissions')->delete();
             Permission::query()->delete();
             Role::query()->delete();
+            User::query()->delete();
 
-            // Define permissions
+            DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
             $permissions = [
-                // Admin
-                'create Operator',
-                'view Operator',
-                'edit Operator',
-                'delete Operator',
-                'create Bisnis',
-                'view Bisnis',
-                'delete Bisnis',
-
-                // Operator
-                'create Siswa',
-                'view Siswa',
-                'edit Siswa',
-                'delete Siswa',
-                'create Guru',
-                'view Guru',
-                'edit Guru',
-                'delete Guru',
-                'create Kelas',
-                'view Kelas',
-                'edit Kelas',
-                'create Kurikulum',
-                'view Kurikulum',
-                'edit Kurikulum',
-                'create Mapel',
-                'view Mapel',
-                'edit Mapel',
-                'delete Mapel',
-
-                // Guru
-                'view Course',
-                'create Course',
-                'edit Course',
-                'delete Course',
-                'create latihanSoal',
-                'view latihanSoal',
-                'edit latihanSoal',
-                'delete latihanSoal',
-                'create Nilai',
-                'view Nilai',
-                'edit Nilai',
-
-                // Keagamaan
-                'view Antrian',
-                'create Antrian',
-                'edit Antrian',
-                'delete Antrian',
-                'view Pernikahan',
-                'create Pernikahan',
-                'edit Pernikahan',
-                'delete Pernikahan',
-                'view Sinkronisasi',
-                'create Sinkronisasi',
+                'view berita',
+                'create berita',
+                'edit berita',
+                'delete berita',
+                'view organisasi',
+                'create organisasi',
+                'edit organisasi',
+                'delete organisasi',
+                'view penghargaan',
+                'create penghargaan',
+                'edit penghargaan',
+                'delete penghargaan',
+                'view dasar hukum',
+                'create dasar hukum',
+                'edit dasar hukum',
+                'delete dasar hukum',
+                'view statistik',
+                'view antrian',
+                'create antrian',
+                'edit antrian',
+                'delete antrian',
+                'view konfirmasi status',
+                'view pernikahan',
+                'create pernikahan',
+                'edit pernikahan',
+                'delete pernikahan',
+                'view sinkronisasi',
+                'create sinkronisasi',
+                'view dokumen',
+                'create dokumen',
+                'edit dokumen',
+                'delete dokumen',
             ];
 
-            // Create permissions in bulk
-            Permission::insert(array_map(function ($permission) {
-                return [
+            foreach ($permissions as $permission) {
+                Permission::create([
                     'name' => $permission,
                     'guard_name' => 'web',
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }, $permissions));
+                ]);
+            }
 
-            // Create roles and assign permissions
-            $AdminRole = Role::create(['name' => 'Admin', 'guard_name' => 'web']);
-            $AdminRole->givePermissionTo(['create Operator', 'view Operator', 'edit Operator', 'delete Operator', 'create Bisnis', 'view Bisnis', 'delete Bisnis']);
+            $adminRole = Role::create(['name' => 'Admin', 'guard_name' => 'web']);
+            $adminRole->givePermissionTo(Permission::all());
 
-            $OperatorRole = Role::create(['name' => 'Operator', 'guard_name' => 'web']);
-            $OperatorRole->givePermissionTo(['create Siswa', 'view Siswa', 'edit Siswa', 'delete Siswa', 'create Guru', 'view Guru', 'edit Guru', 'delete Guru', 'create Kelas', 'view Kelas', 'edit Kelas', 'create Kurikulum', 'view Kurikulum', 'edit Kurikulum', 'create Mapel', 'view Mapel', 'edit Mapel', 'delete Mapel']);
+            $keagamaanRole = Role::create(['name' => 'Keagamaan', 'guard_name' => 'web']);
+            $keagamaanRole->givePermissionTo([
+                'view antrian',
+                'create antrian',
+                'edit antrian',
+                'delete antrian',
+                'view pernikahan',
+                'create pernikahan',
+                'edit pernikahan',
+                'delete pernikahan',
+                'view sinkronisasi',
+                'create sinkronisasi',
+                'view dokumen',
+                'create dokumen',
+                'edit dokumen',
+                'delete dokumen',
+            ]);
 
-            $GuruRole = Role::create(['name' => 'Guru', 'guard_name' => 'web']);
-            $GuruRole->givePermissionTo(['view Siswa', 'view Guru', 'view Kelas', 'view Kurikulum', 'view Mapel', 'view Course', 'create Course', 'edit Course', 'delete Course', 'create latihanSoal', 'view latihanSoal', 'edit latihanSoal', 'delete latihanSoal', 'create Nilai', 'view Nilai', 'edit Nilai']);
-
-            $SiswaRole = Role::create(['name' => 'Siswa', 'guard_name' => 'web']);
-            $SiswaRole->givePermissionTo(['view Course', 'view latihanSoal', 'view Nilai', 'view Kelas', 'view Kurikulum', 'view Mapel']);
-
-            $KeagamaanRole = Role::create(['name' => 'Keagamaan', 'guard_name' => 'web']);
-            $KeagamaanRole->givePermissionTo(['view Antrian', 'create Antrian', 'edit Antrian', 'delete Antrian', 'view Pernikahan', 'create Pernikahan', 'edit Pernikahan', 'delete Pernikahan', 'view Sinkronisasi', 'create Sinkronisasi']);
-
-            // Create Admin user
             $admin = User::create([
-                'name' => 'Admin',
-                'email' => 'admin@admin.com',
-                'password' => bcrypt('12345678'),
+                'name' => 'Administrator',
+                'username' => 'admin',
+                'password' => Hash::make('admin123'),
             ]);
-            $admin->assignRole($AdminRole);
+            $admin->assignRole($adminRole);
 
-            // Create Keagamaan user
-            $keagamaan = User::create([
-                'name' => 'Admin Keagamaan',
-                'email' => 'keagamaan@keagamaan.com',
-                'password' => bcrypt('12345678'),
-            ]);
-            $keagamaan->assignRole($KeagamaanRole);
+            $this->command->info('');
+            $this->command->info('========================================');
+            $this->command->info('✓ Role & Permission Berhasil Dibuat!');
+            $this->command->info('========================================');
+            $this->command->info('');
+            $this->command->info('ROLE YANG DIBUAT:');
+            $this->command->info('  - Admin (Semua permissions)');
+            $this->command->info('  - Keagamaan (Antrian, Pernikahan, Sinkronisasi, Dokumen)');
+            $this->command->info('');
+            $this->command->info('AKUN ADMIN:');
+            $this->command->info('  Username: admin');
+            $this->command->info('  Password: admin123');
+            $this->command->info('');
+            $this->command->info('CATATAN: Akun Keagamaan dapat dibuat oleh Admin');
+            $this->command->info('========================================');
         });
     }
 }

@@ -279,7 +279,7 @@
                     <a href="#" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">
                         <i class="fas fa-chart-line mr-2"></i>Statistik
                     </a>
-                    <a href="{{ route('login') }}" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">
+                    <a href="{{ url('login') }}" class="px-4 py-2 rounded-lg text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 transition">
                         <i class="fas fa-sign-in-alt mr-2"></i>Login
                     </a>
                 </nav>
@@ -306,7 +306,7 @@
                 <a href="#" class="block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">
                     <i class="fas fa-chart-line mr-2"></i>Statistik
                 </a>
-                <a href="{{ route('login') }}" class="block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">
+                <a href="{{ url('login') }}" class="block px-4 py-2 rounded-lg text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100">
                     <i class="fas fa-sign-in-alt mr-2"></i>Login
                 </a>
             </nav>
@@ -841,6 +841,17 @@
             }
 
             lastScroll = currentScroll;
+        });
+
+        // Ensure login links work properly
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginLinks = document.querySelectorAll('a[href*="login"]');
+            loginLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Let the default link behavior work
+                    console.log('Login link clicked:', this.href);
+                });
+            });
         });
     </script>
 </body>

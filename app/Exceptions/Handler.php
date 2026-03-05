@@ -52,6 +52,10 @@ class Handler extends ExceptionHandler
             }
 
             // Jika request web biasa, redirect ke login dengan pesan
+            // Invalidate session untuk memastikan token baru
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
             return redirect()->route('login')
                 ->with('info', 'Sesi Anda telah berakhir. Silakan login kembali.');
         });

@@ -22,9 +22,61 @@ Route::get('/layanan', [Home_Controller::class, 'layanan'])->name('layanan');
 Route::get('/kontak', [Home_Controller::class, 'kontak'])->name('kontak');
 
 // Login routes
-Route::get('login', [Login_Controller::class, 'show_login_form'])->name('login');
-Route::post('login', [Login_Controller::class, 'login'])->name('login.post');
-Route::post('logout', [Login_Controller::class, 'logout'])->name('logout');
+Route::get('login', [Login_Controller::class, 'tampilkan_form_login'])->name('login');
+Route::post('login', [Login_Controller::class, 'proses_login'])->name('login.post');
+Route::post('logout', [Login_Controller::class, 'proses_logout'])->name('logout');
+
+// Test login langsung (untuk debugging)
+Route::get('/test-login-admin', function() {
+    $user = \App\Models\User::where('username', 'admin')->first();
+    if ($user) {
+        \Illuminate\Support\Facades\Auth::login($user);
+        return redirect()->route('admin.dashboard');
+    }
+    return 'User admin tidak ditemukan!';
+});
+
+Route::get('/test-login-keagamaan', function() {
+    $user = \App\Models\User::where('username', 'keagamaan')->first();
+    if ($user) {
+        \Illuminate\Support\Facades\Auth::login($user);
+        return redirect()->route('keagamaan.dashboard');
+    }
+    return 'User keagamaan tidak ditemukan!';
+});
+
+// DEBUG ROUTE - Untuk debugging login
+Route::get('/debug-login', function() {
+    $output = "<h2>Debug Login Info</h2><pre>";
+
+    // Cek semua user di database
+    $users = \App\Models\User::with('roles')->get();
+    $output .= "Total users: " . count($users) . "\n\n";
+
+    foreach($users as $u) {
+        $output .= "User ID: " . $u->id . "\n";
+        $output .= "  Username: " . $u->username . "\n";
+        $output .= "  Name: " . $u->name . "\n";
+        $output .= "  Roles: " . $u->roles->pluck('name')->implode(', ') . "\n\n";
+    }
+
+    $output .= "\n<h3>Test Password Verification:</h3>\n";
+    foreach($users as $u) {
+        $adminPassValid = \Illuminate\Support\Facades\Hash::check('admin123', $u->password);
+
+        $output .= "\nUser: " . $u->username . "\n";
+        $output .= "  Password 'admin123': " . ($adminPassValid ? 'VALID' : 'INVALID') . "\n";
+    }
+
+    // Test controller method
+    $output .= "\n<h3>Controller Check:</h3>\n";
+    $controller = new \App\Http\Controllers\Auth\Login_Controller();
+    $output .= "Controller class: " . get_class($controller) . "\n";
+    $output .= "Controller methods: " . implode(', ', get_class_methods($controller)) . "\n";
+
+    $output .= "</pre>";
+    return $output;
+});
 
 // Admin Dashboard
 Route::prefix('admin')->middleware(['auth'])->group(function () {

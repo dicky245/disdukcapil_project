@@ -3,74 +3,88 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class Login_Controller extends Controller
 {
     /**
      * Tampilkan form login
      */
-    public function show_login_form()
+    public function tampilkan_form_login()
     {
-        return view('auth.login');
+        if (Auth::check()) {
+            return redirect()->route('home');
+        }
+
+        return response()
+            ->view('auth.login')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 
     /**
      * Proses login
      */
-    public function login(Request $request)
+    public function proses_login(Request $request)
     {
+        // Validation
         $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        $credentials = [
-            'email' => $request->username,
-            'password' => $request->password,
-        ];
+        // Log untuk debugging
+        Log::info('Login attempt for username: ' . $request->username);
 
-        if (Auth::attempt($credentials, $request->filled('remember'))) {
-            $request->session()->regenerate();
-            $user = Auth::user();
+        // Cari user berdasarkan username
+        $user = User::where('username', $request->username)->first();
 
-            // Redirect berdasarkan role user
-            if ($user->hasRole('Admin')) {
-                return redirect()->intended(route('admin.dashboard'));
-            } elseif ($user->hasRole('Keagamaan')) {
-                return redirect()->intended(route('keagamaan.dashboard'));
-            } elseif ($user->hasRole('Operator')) {
-                return redirect()->intended(route('operator.dashboard'));
-            } elseif ($user->hasRole('Guru')) {
-                return redirect()->intended(route('guru.dashboard'));
-            } elseif ($user->hasRole('Siswa')) {
-                return redirect()->intended(route('siswa.dashboard'));
-            }
-
-            // Default redirect
-            return redirect()->intended(route('home'));
+        // Cek apakah user ada
+        if (!$user) {
+            Log::warning('Login failed - user not found: ' . $request->username);
+            return back()->withErrors([
+                'username' => 'Username atau password salah.',
+            ])->onlyInput('username');
         }
 
-        return back()->withErrors([
-            'username' => 'Username atau password salah.',
-        ])->withInput($request->only('username', 'remember'));
+        // Verifikasi password
+        if (!Hash::check($request->password, $user->password)) {
+            Log::warning('Login failed - invalid password for: ' . $request->username);
+            return back()->withErrors([
+                'username' => 'Username atau password salah.',
+            ])->onlyInput('username');
+        }
+
+        // Login user
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        Log::info('Login successful for: ' . $user->username . ' (ID: ' . $user->id . ')');
+
+        // Redirect berdasarkan role
+        if ($user->hasRole('Admin')) {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->hasRole('Keagamaan')) {
+            return redirect()->route('keagamaan.dashboard');
+        }
+
+        return redirect()->route('home');
     }
 
     /**
      * Proses logout
      */
-    public function logout(Request $request)
+    public function proses_logout(Request $request)
     {
-        // Simpan nama user sebelum logout untuk pesan
-        $userName = Auth::user()->name ?? 'Pengguna';
-
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')
-            ->with('success', "Terima kasih, $userName! Anda telah berhasil logout.");
+        return redirect()->route('login')->with('success', 'Anda telah logout.');
     }
 }
