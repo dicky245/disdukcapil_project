@@ -63,10 +63,14 @@ class Login_Controller extends Controller
      */
     public function logout(Request $request)
     {
+        // Simpan nama user sebelum logout untuk pesan
+        $userName = Auth::user()->name ?? 'Pengguna';
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('login')
+            ->with('success', "Terima kasih, $userName! Anda telah berhasil logout.");
     }
 }

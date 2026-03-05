@@ -143,6 +143,34 @@
                 <p class="text-gray-600">Masuk ke dashboard admin</p>
             </div>
 
+            <!-- Info Messages -->
+            @if (session('info'))
+                <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-xl mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-info-circle"></i>
+                        <span>{{ session('info') }}</span>
+                    </div>
+                </div>
+            @endif
+
+            @if (session('success'))
+                <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                </div>
+            @endif
+
+            @if (session('warning'))
+                <div class="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-xl mb-4">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>{{ session('warning') }}</span>
+                    </div>
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('login.post') }}" class="space-y-5">
                 @csrf
                 <!-- Validation Errors -->
@@ -234,6 +262,20 @@
                 eyeIcon.classList.add('fa-eye');
             }
         }
+
+        // Auto-hide flash messages after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessages = document.querySelectorAll('.bg-blue-50, .bg-green-50, .bg-yellow-50, .bg-red-50');
+            flashMessages.forEach(function(message) {
+                setTimeout(function() {
+                    message.style.opacity = '0';
+                    message.style.transition = 'opacity 0.5s ease';
+                    setTimeout(function() {
+                        message.remove();
+                    }, 500);
+                }, 5000);
+            });
+        });
     </script>
 </body>
 </html>

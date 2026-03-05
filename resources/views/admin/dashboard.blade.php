@@ -292,6 +292,33 @@
 
         <!-- Content -->
         <div class="p-6">
+            <!-- Flash Messages -->
+            @if (session('success'))
+                <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-6">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                </div>
+            @endif
+
+            @if (session('info'))
+                <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-xl mb-6">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-info-circle"></i>
+                        <span>{{ session('info') }}</span>
+                    </div>
+                </div>
+            @endif
+
+            @if (session('warning'))
+                <div class="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-xl mb-6">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>{{ session('warning') }}</span>
+                    </div>
+                </div>
+            @endif
             <!-- Welcome Banner -->
             <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 md:p-8 text-white mb-6 reveal">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">

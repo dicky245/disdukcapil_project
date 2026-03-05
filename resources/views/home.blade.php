@@ -314,6 +314,40 @@
     </header>
 
     <main class="pt-16">
+        <!-- Flash Messages -->
+        @if (session('success'))
+            <div class="fixed top-20 right-4 z-50 max-w-md">
+                <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl shadow-lg">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        @if (session('info'))
+            <div class="fixed top-20 right-4 z-50 max-w-md">
+                <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-xl shadow-lg">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-info-circle"></i>
+                        <span>{{ session('info') }}</span>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        @if (session('warning'))
+            <div class="fixed top-20 right-4 z-50 max-w-md">
+                <div class="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-xl shadow-lg">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>{{ session('warning') }}</span>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <!-- Hero Section -->
         <section class="relative min-h-[600px] bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white overflow-hidden">
             <!-- Background Figures -->
