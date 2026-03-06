@@ -35,7 +35,7 @@ class Home_Controller extends Controller
      */
     public function layanan()
     {
-        return view('layanan');
+        return view('Layanan_Mandiri');
     }
 
     /**

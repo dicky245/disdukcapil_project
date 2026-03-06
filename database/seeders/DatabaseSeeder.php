@@ -19,5 +19,8 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             Layanan_Seeder::class,
         ]);
+        $this->call([
+            LayananSeeder::class,
+        ]);
     }
 }
