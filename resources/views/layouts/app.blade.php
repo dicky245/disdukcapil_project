@@ -3,13 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Dashboard' }} - Disdukcapil Kabupaten Toba</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <title>{{ $page_title ?? 'Disdukcapil Kabupaten Toba' }}</title>
+    <meta name="description" content="{{ $page_description ?? 'Layanan Kependudukan dan Pencatatan Sipil Kabupaten Toba' }}">
 
-    @stack('styles')
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -34,6 +44,11 @@
                         teal: {
                             500: '#00B8D9',
                             600: '#0097b8',
+                        },
+                        green: {
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
                         }
                     }
                 }
@@ -44,8 +59,10 @@
     <style>
         * {
             font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
         }
 
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -61,53 +78,27 @@
             background: #003d99;
         }
 
-        .sidebar {
-            transition: all 0.3s ease;
+        /* Skeleton Loading */
+        .skeleton {
+            background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
         }
 
-        .sidebar.collapsed {
-            width: 80px;
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
         }
 
-        .sidebar.collapsed .sidebar-text,
-        .sidebar.collapsed .logo-text {
-            display: none;
-        }
-
-        .sidebar-link {
-            transition: all 0.2s ease;
-        }
-
-        .sidebar-link:hover,
-        .sidebar-link.active {
-            background: rgba(59, 130, 246, 0.1);
-            color: #0052CC;
-        }
-
-        .sidebar-link.active {
-            border-left: 3px solid #0052CC;
-        }
-
-        .main-content {
-            transition: all 0.3s ease;
-        }
-
-        .main-content.expanded {
-            margin-left: 80px;
-        }
-
-        .stat-card {
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 82, 204, 0.15);
-        }
-
+        /* Reveal Animation */
         .reveal {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
             transition: all 0.6s ease-out;
         }
 
@@ -116,54 +107,62 @@
             transform: translateY(0);
         }
 
-        @stack('custom-styles')
+        /* Page Loading */
+        .page-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #f9fafb;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-loading.hidden {
+            display: none;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
     </style>
+
+    @stack('styles')
 </head>
 <body class="bg-gray-50">
-
-    <x-sidebar :role="$role ?? 'admin'" :activeRoute="$activeRoute ?? null" />
-
-    <main class="main-content ml-64 min-h-screen">
-        <x-topbar :title="$title ?? 'Dashboard'" :subtitle="$subtitle ?? null" />
-
-        <div class="p-6">
-            <x-pesan-flash />
-
-            {{ $slot }}
-        </div>
-    </main>
+    @yield('content')
 
     @stack('scripts')
 
     <script>
-        const sidebar = document.querySelector('.sidebar');
-        const mainContent = document.querySelector('.main-content');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('collapsed');
-                mainContent.classList.toggle('expanded');
-            });
-        }
-
-        function reveal() {
-            const reveals = document.querySelectorAll('.reveal');
-            reveals.forEach(element => {
-                const windowHeight = window.innerHeight;
-                const elementTop = element.getBoundingClientRect().top;
-                const elementVisible = 150;
-
-                if (elementTop < windowHeight - elementVisible) {
-                    element.classList.add('active');
+        // Reveal elements on scroll
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
                 }
             });
-        }
+        });
 
-        window.addEventListener('scroll', reveal);
-        reveal();
-
-        @stack('custom-scripts')
+        reveals.forEach(element => {
+            observer.observe(element);
+        });
     </script>
 </body>
 </html>

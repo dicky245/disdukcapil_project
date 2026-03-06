@@ -3,9 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>Login Admin - Disdukcapil Kabupaten Toba</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -174,9 +171,9 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('login.post') }}" class="space-y-5">
+            <form method="POST" action="{{ $isAdmin ?? false ? route('admin.login.submit') : route('login.submit') }}" class="space-y-5">
                 @csrf
-
+                <!-- Validation Errors -->
                 @if ($errors->any())
                     <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
                         <ul class="list-disc list-inside">
@@ -187,15 +184,14 @@
                     </div>
                 @endif
 
+                <!-- Username Input -->
                 <div class="input-group">
                     <input type="text" id="username" name="username" required placeholder=" "
                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition peer"
-                           value="{{ old('username') }}"
-                           autocomplete="username">
+                           value="{{ old('username') }}">
                     <label for="username" class="absolute left-4 top-3 text-gray-400 pointer-events-none">
                         <i class="fas fa-user mr-2"></i>Username
                     </label>
-                    <small class="text-gray-500 text-xs mt-1 block">Gunakan: <strong>admin</strong> atau <strong>keagamaan</strong></small>
                 </div>
 
                 <!-- Password Input -->
@@ -210,6 +206,15 @@
                             <i class="fas fa-eye" id="eyeIcon"></i>
                         </button>
                     </div>
+                </div>
+
+                <!-- Remember & Forgot -->
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" name="remember" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500" {{ old('remember') ? 'checked' : '' }}>
+                        <span class="text-sm text-gray-600">Ingat saya</span>
+                    </label>
+                    <a href="#" class="text-sm text-blue-600 hover:text-blue-700 font-medium">Lupa password?</a>
                 </div>
 
                 <!-- Login Button -->

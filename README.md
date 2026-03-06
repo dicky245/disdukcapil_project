@@ -1,59 +1,330 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Antrian Online
+## Disdukcapil Kabupaten Toba
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem antrian online berbasis web untuk Disdukcapil Kabupaten Toba dengan fitur lengkap untuk pengambilan nomor antrian, pelacakan berkas, dan manajemen antrian.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📋 Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Untuk Pengguna (Public)
+- ✅ Pengambilan nomor antrian online
+- ✅ Generate nomor antrian unik (format: ABC-123-456)
+- ✅ Pencarian antrian berdasarkan nama dan layanan
+- ✅ Tiket antrian dengan detail lengkap
+- ✅ Estimasi waktu tunggu
+- ✅ Statistik antrian real-time
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Untuk Admin
+- ✅ Dashboard statistik antrian
+- ✅ Kelola antrian (Mulai, Selesai, Hapus)
+- ✅ Filter berdasarkan status dan layanan
+- ✅ Update status lacak berkas
+- ✅ Riwayat lengkap setiap antrian
+- ✅ Real-time update (setiap 30 detik)
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🚀 Quick Start
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. Install Dependencies
+```bash
+composer install
+npm install
+```
 
-## Laravel Sponsors
+### 2. Setup Database
+```bash
+# Copy .env.example ke .env
+cp .env.example .env
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+# Generate application key
+php artisan key:generate
 
-### Premium Partners
+# Setup database di .env file
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 3. Run Migrations
+```bash
+php artisan migrate
+```
 
-## Contributing
+### 4. Run Seeders
+```bash
+php artisan db:seed --class=Layanan_Seeder
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 5. Link Storage (jika perlu)
+```bash
+php artisan storage:link
+```
 
-## Code of Conduct
+### 6. Start Development Server
+```bash
+php artisan serve
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 7. Akses Aplikasi
+- **Public**: `http://localhost:8000`
+- **Antrian Online**: `http://localhost:8000/antrian-online`
+- **Admin Login**: `http://localhost:8000/login`
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 📁 Struktur Project
 
-## License
+```
+app/
+├── Models/                           # Eloquent Models
+│   ├── Layanan_Model.php            # Model Layanan
+│   ├── Jenis_Keagamaan_Model.php    # Model Jenis Keagamaan
+│   ├── Keagamaan_Model.php          # Model Keagamaan
+│   ├── Antrian_Online_Model.php     # Model Antrian Online
+│   └── Lacak_Berkas_Model.php       # Model Lacak Berkas
+│
+├── Http/Controllers/                # Controllers
+│   ├── Pengguna_Controller.php      # Controller untuk pengguna (public)
+│   ├── Admin_Controller.php         # Controller untuk admin (folder Admin/)
+│   └── Keagamaan/
+│       └── Keagamaan_Controller.php # Controller untuk keagamaan
+│
+└── Http/Controllers/Auth/
+    └── Login_Controller.php         # Controller untuk autentikasi
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+database/
+├── migrations/                      # Database Migrations
+│   ├── 2026_03_06_000001_create_layanan_table.php
+│   ├── 2026_03_06_000002_create_jenis_keagamaan_table.php
+│   ├── 2026_03_06_000003_create_keagamaan_table.php
+│   ├── 2026_03_06_000004_create_antrian_online_table.php
+│   └── 2026_03_06_000005_create_lacak_berkas_table.php
+│
+└── seeders/                         # Database Seeders
+    ├── Layanan_Seeder.php
+    └── Status_Lacak_Berkas_Seeder.php
+
+resources/views/                     # Blade Templates
+├── antrian_online.blade.php        # Halaman antrian (public)
+└── admin/
+    └── antrian_online.blade.php    # Halaman kelola antrian (admin)
+
+routes/
+└── web.php                          # Route definitions
+```
+
+---
+
+## 🎯 Aturan Penamaan
+
+Sistem ini menggunakan **Snake_Pascal_Case** untuk konsistensi:
+
+### Nama File
+```php
+Layanan_Model.php
+Antrian_Online_Model.php
+Pengguna_Controller.php
+```
+
+### Nama Class
+```php
+class Layanan_Model extends Model
+class Antrian_Online_Model extends Model
+class Pengguna_Controller extends Controller
+```
+
+### Nama Function
+```php
+public function tambah_antrian_online()
+public function cari_antrian()
+public function get_detail_antrian()
+```
+
+### Variabel dalam Function
+```php
+$nama_lengkap = 'John Doe';
+$no_hp = '08123456789';
+$nomor_antrian = 'ABC-123-456';
+```
+
+---
+
+## 📊 Database Schema
+
+### Tabel `layanan`
+| Kolom | Tipe | Keterangan |
+|-------|------|------------|
+| layanan_id | BIGINT | Primary Key |
+| nama_layanan | VARCHAR(100) | Unique |
+| keterangan | TEXT | Nullable |
+| estimasi_waktu | INT | Dalam menit |
+
+### Tabel `antrian_online`
+| Kolom | Tipe | Keterangan |
+|-------|------|------------|
+| antrian_online_id | BIGINT | Primary Key |
+| nomor_antrian | VARCHAR(20) | Unique, format: ABC-123-456 |
+| nama_lengkap | VARCHAR(100) | - |
+| no_hp | VARCHAR(20) | - |
+| tanggal | DATE | - |
+| jam | VARCHAR(20) | - |
+| layanan_id | BIGINT | Foreign Key |
+| status_antrian | ENUM | Menunggu, Sedang Diproses, Selesai, Dibatalkan |
+
+### Tabel `lacak_berkas`
+| Kolom | Tipe | Keterangan |
+|-------|------|------------|
+| lacak_berkas_id | BIGINT | Primary Key |
+| antrian_online_id | BIGINT | Foreign Key |
+| status | VARCHAR(100) | - |
+| tanggal | DATE | - |
+| keterangan | TEXT | Nullable |
+
+---
+
+## 🛣️ Routes Utama
+
+### Public Routes
+| Route | Method | Controller | Method |
+|-------|--------|------------|--------|
+| / | GET | Pengguna_Controller | index |
+| antrian-online | GET | Pengguna_Controller | antrian_online |
+| antrian-online/tambah | POST | Pengguna_Controller | tambah_antrian_online |
+| antrian-online/cari | GET | Pengguna_Controller | cari_antrian |
+
+### Admin Routes (Auth Required)
+| Route | Method | Controller | Method |
+|-------|--------|------------|--------|
+| admin/dashboard | GET | Admin_Controller | dashboard |
+| admin/antrian-online | GET | Admin_Controller | antrian_online |
+| admin/antrian-online/data | GET | Admin_Controller | get_data_antrian |
+| admin/antrian-online/mulai/{id} | POST | Admin_Controller | mulai_antrian |
+| admin/antrian-online/selesai/{id} | POST | Admin_Controller | selesaikan_antrian |
+
+---
+
+## 🎮 Cara Penggunaan
+
+### Pengguna - Ambil Antrian
+1. Buka halaman `/antrian-online`
+2. Pilih layanan yang diinginkan
+3. Pilih tanggal dan jam kedatangan
+4. Masukkan nama lengkap dan nomor WhatsApp
+5. Klik tombol "Ambil Nomor Antrian"
+6. Tiket akan muncul dengan nomor unik
+
+### Pengguna - Cari Antrian
+1. Scroll ke bagian "Lupa Nomor Antrian?"
+2. Masukkan nama lengkap
+3. (Opsional) Pilih jenis layanan
+4. Klik "Cari Antrian"
+5. Hasil pencarian akan ditampilkan
+
+### Admin - Kelola Antrian
+1. Login sebagai admin
+2. Akses `/admin/antrian-online`
+3. Lihat statistik antrian hari ini
+4. Gunakan filter untuk mencari antrian spesifik
+5. Lakukan aksi:
+   - **Mulai**: Mulai proses antrian
+   - **Selesai**: Selesaikan antrian
+   - **Detail**: Lihat detail dan riwayat
+   - **Berkas**: Update status berkas
+   - **Hapus**: Hapus antrian (hanya Menunggu)
+
+---
+
+## 🔐 Akun Default
+
+Setelah menjalankan seeder, berikut adalah akun default:
+
+| Role | Username | Password |
+|------|----------|----------|
+| Admin | admin | admin123 |
+| Keagamaan | keagamaan | keagamaan123 |
+
+**⚠️ Penting**: Ganti password default di production!
+
+---
+
+## 🐛 Troubleshooting
+
+### Migration Error
+```bash
+# Reset database dan jalankan ulang
+php artisan migrate:fresh --seed
+```
+
+### Route Not Found
+```bash
+# Clear route cache
+php artisan route:clear
+php artisan config:clear
+```
+
+### Permission Issues
+```bash
+# Linux/Mac
+chmod -R 775 storage bootstrap/cache
+
+# Windows (XAMPP/WAMP)
+# Pastikan folder storage dan bootstrap/cache writable
+```
+
+### Composer Issues
+```bash
+# Clear composer cache
+composer clear-cache
+
+# Reinstall dependencies
+composer install --no-dev
+```
+
+---
+
+## 📝 Catatan Pengembangan
+
+### Fitur yang Sudah Implementasi
+- [x] Generate nomor antrian unik (ABC-123-456)
+- [x] Booking antrian online
+- [x] Pencarian antrian
+- [x] Statistik real-time
+- [x] Lacak berkas
+- [x] Manajemen antrian admin
+- [x] Format penamaan Snake_Pascal_Case
+- [x] Responsive design
+
+### Fitur yang Bisa Dikembangkan
+- [ ] Notifikasi WhatsApp/SMS
+- [ ] Export tiket ke PDF
+- [ ] Integrasi dengan payment gateway
+- [ ] Sistem rating
+- [ ] Mobile app
+- [ ] Analitik dan reporting
+
+---
+
+## 📞 Kontak & Support
+
+Untuk pertanyaan atau masalah:
+- **Email**: support@dukcapiltoba.go.id
+- **Telepon**: (0632) 123456
+- **Alamat**: Balige, Kabupaten Toba
+
+---
+
+## 📄 Lisensi
+
+Copyright © 2025 Disdukcapil Kabupaten Toba. All rights reserved.
+
+---
+
+## 👨‍💻 Tim Pengembang
+
+- **Developer**: Disdukcapil Kabupaten Toba
+- **Version**: 1.0.0
+- **Framework**: Laravel 11
+- **PHP Version**: 8.2+
+
+---
+
+**Terakhir Diupdate**: 6 Maret 2026
