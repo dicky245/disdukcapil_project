@@ -162,7 +162,7 @@
             <div class="bg-gray-50 rounded-2xl shadow-lg p-8">
                 <div class="grid md:grid-cols-3 gap-4 mb-6">
                     <div class="md:col-span-2">
-                        <input type="text" id="searchInput" placeholder="Masukkan nama atau nomor antrian"
+                        <input type="text" id="searchInput" placeholder="Masukkan nama pada nomor antrian"
                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
                     </div>
                     <div>
