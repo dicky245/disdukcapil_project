@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Antrian_Online_Model;
 use App\Models\Lacak_Berkas_Model;
+use App\Models\Jenis_Keagamaan_Model; // TAMBAHKAN INI
+use App\Models\User;
 use App\Models\Layanan_Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -139,15 +141,56 @@ class Admin_Controller extends Controller
     /**
      * Tampilkan halaman manajemen akun
      */
+    // Pastikan Anda sudah mengimpor Model di bagian atas file
+
+    // Pastikan nama fungsinya 'manajemen_akun' sesuai dengan Route Anda
     public function manajemen_akun()
     {
         if (!Auth::user()->hasRole('Admin')) {
-            abort(403, 'Anda tidak memiliki akses.');
+            abort(403);
         }
 
-        return view('admin.manajemen_akun');
-    }
+        $users = User::all();
 
+        // Pastikan variabel ini diambil agar tidak error di @foreach
+        $list_agama = Jenis_Keagamaan_Model::all();
+
+        return view('admin.manajemen_akun', compact('users', 'list_agama'));
+    }
+    // --- TARUH FUNGSI STORE DI SINI ---
+    public function store_akun(Request $request)
+    {
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'username' => 'required|unique:users,username,' . $request->accountId,
+            'agama'    => 'required',
+            'status'   => 'required',
+            // Password wajib diisi jika akun baru (accountId null)
+            'password' => $request->accountId ? 'nullable|min:8' : 'required|min:8',
+        ]);
+
+        // Menyiapkan data untuk disimpan
+        $data = [
+            'name'     => $request->name,
+            'username' => $request->username,
+            'agama'    => $request->agama,
+            'phone'    => $request->phone,
+            'status'   => $request->status,
+            'role'     => 'Petugas',
+        ];
+
+        // Cek apakah password diisi (untuk akun baru atau jika admin ingin ganti password)
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        $user = User::updateOrCreate(
+            ['id' => $request->accountId],
+            $data // Gunakan variabel $data yang sudah kita susun di atas
+        );
+
+        return redirect()->back()->with('success', 'Akun berhasil disimpan!');
+    }
     /**
      * Tampilkan halaman akun keagamaan
      */
