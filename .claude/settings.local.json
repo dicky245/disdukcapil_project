@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd d:\\\\Project\\\\disdukcapil_project:*)",
+      "Bash(curl:*)",
+      "Bash(ls:*)",
+      "Bash(pip install:*)",
+      "Bash(python:*)"
+    ]
+  }
+}
