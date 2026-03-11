@@ -16,8 +16,6 @@ class Layanan_Model extends Model
 
     protected $fillable = [
         'nama_layanan',
-        'keterangan',
-        'estimasi_waktu',
     ];
 
     /**

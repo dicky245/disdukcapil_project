@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Pengguna_Controller;
+use App\Http\Controllers\KartKeluargaController;
 use App\Http\Controllers\Antrian_Online_Controller;
 use App\Http\Controllers\Auth\Login_Controller;
 use App\Http\Controllers\Admin\Admin_Controller;
@@ -42,6 +43,8 @@ Route::prefix('layanan-mandiri')->group(function () {
     Route::get('/{jenis_layanan}', [PageController::class, 'formLayanan'])->name('layanan-mandiri.form');
     Route::post('/{jenis_layanan}', [PageController::class, 'submitLayanan'])->name('layanan-mandiri.submit');
 });
+
+Route::post('/kk/store', [KartKeluargaController::class, 'store'])->name('kk.store');
 
 // Statistik/Data Publik
 Route::get('/statistik', [PageController::class, 'statistik'])->name('statistik');
@@ -113,7 +116,12 @@ Route::prefix('admin')->group(function () {
         Route::get('/konfirmasi-status', [Admin_Controller::class, 'konfirmasi_status'])->name('admin.konfirmasi-status');
 
         // Penerbitan Dokumen
-        Route::get('/penerbitan-kk', [Admin_Controller::class, 'penerbitan_kk'])->name('admin.penerbitan-kk');
+        // Kartu Keluarga
+        Route::prefix('penerbitan-kk')->group(function () {
+            Route::get('/', [KartKeluargaController::class, 'daftar_kk'])->name('admin.penerbitan-kk');
+            Route::get('/detail/{id}',[KartKeluargaController::class, 'detail'])->name('admin.detail');
+            Route::post('/{id}/status',[KartKeluargaController::class, 'updateStatus'])->name('admin.status');
+        });   
         Route::get('/penerbitan-akte-lahir', [Admin_Controller::class, 'penerbitan_akte_lahir'])->name('admin.penerbitan-akte-lahir');
         Route::get('/penerbitan-akte-kematian', [Admin_Controller::class, 'penerbitan_akte_kematian'])->name('admin.penerbitan-akte-kematian');
         Route::get('/penerbitan-lahir-mati', [Admin_Controller::class, 'penerbitan_lahir_mati'])->name('admin.penerbitan-lahir-mati');

@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('surat_keterangan_pengganti');
             $table->string('salinan_kepres');
             $table->string('izin_tinggal_asing')->nullable();
-            $table->enum('status',['menunggu','disetujui','ditolak'])->default('menunggu');
+            $table->enum('status',['Dokumen Diterima', 'Verifikasi Data','Proses Cetak', 'Siap Pengambilan','Tolak'])->default('Dokumen Diterima');
             $table->softDeletes();
             $table->timestamps();
         });
