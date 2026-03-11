@@ -4,32 +4,30 @@
 @php
     // Mapping layanan ke icon, warna, dan field form yang dibutuhkan
     $serviceConfig = [
-
-    1 => [ // KK
-        'icon' => 'fa-address-card',
-        'color' => 'blue',
-        'id' => 'kk',
-        'fields' => [
-            ['name' => 'layanan_id', 'value' => '1', 'type' => 'hidden'],
-            ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi', 'placeholder' => 'Masukkan Nomor Reqistrasi', 'type' => 'text'],
-            ['name' => 'nama', 'label' => 'Nama Kepala Keluarga', 'placeholder' => 'Masukkan Nama Kepala Keluarga','type' => 'text'],
-            ['name' => 'alamat', 'label' => 'Alamat', 'placeholder' => 'Masukkan Alamat','type' => 'textarea'],
-            ['name' => 'kutipan_perkawinan', 'label' => 'Kutipan Perkawinan', 'placeholder' => 'Masukkan Kutipan Perkawinan','type' => 'text'],
-            ['name' => 'keterangan_pindah', 'label' => 'Keterangan Pindah', 'placeholder' => 'Masukkan Keterangan Pindah','type' => 'text'],
-            ['name' => 'kk_lama', 'label' => 'Kartu Keluarga Sebelumnya', 'placeholder' => 'Masukkan Kartu Keluarga Sebelumnya', 'type' => 'file'],
-            ['name' => 'surat_keterangan_pengganti', 'label' => 'Surat Keterangan Pengganti', 'type' => 'file'],
-            ['name' => 'salinan_kepres', 'label' => 'Salinan Kepres', 'type' => 'file'],
-            ['name' => 'izin_tinggal_asing', 'label' => 'Surat Izin Tinggal Bagi Asing', 'type' => 'file'],
-        ]
-    ],
-    2 => [
-        'icon' => 'fa-baby',
-        'color'=> 'blue',
-        'id'=>'akte_kelahiran', 
-        'fields'=>[
-        ['name'=>'tes', 'label'=>'tes','type'=>'text']
-        ]
-    ],
+        'Penerbitan Kartu Keluarga Baru' => [
+            'icon' => 'fa-address-card',
+            'color' => 'purple',
+            'id' => 'kk',
+            'fields' => [
+                ['name' => 'nik_kepala_keluarga', 'label' => 'NIK Kepala Keluarga', 'type' => 'text', 'placeholder' => '16 digit NIK'],
+                ['name' => 'nama_kepala_keluarga', 'label' => 'Nama Lengkap', 'type' => 'text', 'placeholder' => 'Sesuai KTP'],
+                ['name' => 'no_kk_lama', 'label' => 'No. KK Lama (Jika Ada)', 'type' => 'text', 'placeholder' => 'Opsional', 'required' => false],
+                ['name' => 'alasan_pengajuan', 'label' => 'Alasan Pengajuan', 'type' => 'textarea', 'placeholder' => 'Jelaskan alasan Anda'],
+            ]
+        ],
+        'Penerbitan Akte Kelahiran' => [
+            'icon' => 'fa-baby',
+            'color' => 'blue',
+            'id' => 'akta-lahir',
+            'fields' => [
+                ['name' => 'nama_bayi', 'label' => 'Nama Bayi', 'type' => 'text', 'placeholder' => 'Nama lengkap bayi'],
+                ['name' => 'tgl_lahir', 'label' => 'Tanggal Larhir', 'type' => 'date'],
+                ['name' => 'nama_ayah', 'label' => 'Nama Ayah', 'type' => 'text', 'placeholder' => 'Nama lengkap ayah'],
+                ['name' => 'nama_ibu', 'label' => 'Nama Ibu', 'type' => 'text', 'placeholder' => 'Nama lengkap ibu'],
+                ['name' => 'nik_ayah', 'label' => 'NIK Ayah', 'type' => 'text', 'placeholder' => '16 digit NIK ayah'],
+                ['name' => 'nik_ibu', 'label' => 'NIK Ibu', 'type' => 'text', 'placeholder' => '16 digit NIK ibu'],
+            ]
+        ],
         'Penerbitan Akte Kematian' => [
             'icon' => 'fa-user-times',
             'color' => 'orange',
@@ -122,7 +120,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6">
                 @foreach($layananList as $layanan)
                     @php
-                        $config = $serviceConfig[$layanan->layanan_id] ?? [
+                        $config = $serviceConfig[$layanan->nama_layanan] ?? [
                             'icon' => 'fa-file-alt',
                             'color' => 'blue',
                             'id' => 'layanan-' . $layanan->layanan_id,
@@ -219,19 +217,12 @@
                     </button>
                 </div>
             </div>
-            @if ($errors->any())
-                <div class="bg-red-100 border border-red-300 text-red-700 p-4 rounded mb-4">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
+
             <div class="p-6" id="modalBody">
-                <form id="serviceForm" method="POST" enctype="multipart/form-data" class="space-y-5">
+                <form id="serviceForm" class="space-y-5">
                     @csrf
                     <div id="formFields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
                     <div class="mt-6 pt-6 border-t border-gray-100">
                         <button type="submit" class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg">
                             <i class="fas fa-paper-plane mr-2"></i>
@@ -284,40 +275,27 @@
         const modalTitle = document.getElementById('modalTitle');
         const modalSubtitle = document.getElementById('modalSubtitle');
         const modalIcon = document.getElementById('modalIcon');
-        const form = document.getElementById('serviceForm');
 
         modalTitle.textContent = serviceName;
         modalSubtitle.textContent = 'Formulir pengajuan online';
         modalIcon.className = `w-12 h-12 rounded-xl flex items-center justify-center bg-${serviceColor}-100`;
         modalIcon.innerHTML = `<i class="fas ${getIconById(serviceId)} text-2xl text-${serviceColor}-600"></i>`;
 
-        if(serviceId === 'kk'){
-        form.action = "{{ route('kk.store') }}";
-        }
+        // Clear and Generate Fields
+        formFields.innerHTML = fields.length > 0 ? fields.map(field => `
+            <div class="${field.type === 'textarea' ? 'md:col-span-2' : ''} mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-1">${field.label} ${field.required !== false ? '<span class="text-red-500">*</span>' : ''}</label>
+                ${renderInput(field)}
+            </div>
+        `).join('') : '<p class="text-center col-span-2 py-4 text-gray-400">Form belum tersedia</p>';
 
-        formFields.innerHTML = fields.length > 0 ? fields.map(field => {
-            if(field.type === 'hidden'){
-                return `<input type="hidden" name="${field.name}" value="${field.value}">`;
-            }
-            return `
-                <div class="${field.type === 'textarea' ? 'md:col-span-2' : ''} mb-4">
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">
-                        ${field.label} ${field.required !== false ? '<span class="text-red-500">*</span>' : ''}
-                    </label>
-                    ${renderInput(field)}
-                </div>
-            `;
-        }).join('') : '<p class="text-center col-span-2 py-4 text-gray-400">Form belum tersedia</p>';
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
 
-        document.getElementById('serviceForm').onsubmit = function() {
-        Swal.fire({
-        title: 'Memproses...',
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
-    });
-};
+        document.getElementById('serviceForm').onsubmit = function(e) {
+            e.preventDefault();
+            handleSubmission(serviceName);
+        };
     }
 
     function renderInput(field) {

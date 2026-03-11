@@ -38,6 +38,20 @@ class Antrian_Online_Controller extends Controller
             ], 422);
         }
 
+        // Validasi: 1 nama dengan 1 layanan hanya bisa 1 kali request dalam 1 hari
+        $hari_ini = date('Y-m-d');
+        $antrian_exists = Antrian_Online_Model::where('nama_lengkap', $request->nama_lengkap)
+            ->where('layanan_id', $request->layanan_id)
+            ->whereDate('created_at', $hari_ini)
+            ->exists();
+
+        if ($antrian_exists) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda sudah memiliki antrian untuk layanan ini hari ini',
+            ], 422);
+        }
+
         // Generate nomor antrian dengan format ABC-123-456
         $nomor_antrian = $this->Generate_Nomor_Antrian();
 
@@ -54,12 +68,12 @@ class Antrian_Online_Controller extends Controller
             'status_antrian' => 'Menunggu',
         ]);
 
-        // Buat status awal lacak berkas
+        // Buat status awal lacak berkas - SAMA dengan status antrian
         Lacak_Berkas_Model::create([
             'antrian_online_id' => $antrian->antrian_online_id,
-            'status' => 'Dokumen Diterima',
+            'status' => 'Menunggu',
             'tanggal' => date('Y-m-d'),
-            'keterangan' => 'Antrian berhasil dibuat',
+            'keterangan' => 'Antrian berhasil dibuat. Menunggu dokumen diterima oleh admin.',
         ]);
 
         // Load relasi layanan untuk response
@@ -135,14 +149,21 @@ class Antrian_Online_Controller extends Controller
         $hari_ini = date('Y-m-d');
 
         $total_antrian = Antrian_Online_Model::whereDate('created_at', $hari_ini)->count();
+
+        // Antrian menunggu
         $antrian_menunggu = Antrian_Online_Model::whereDate('created_at', $hari_ini)
             ->where('status_antrian', 'Menunggu')
             ->count();
+
+        // Antrian diproses (semua status kecuali Menunggu, Ditolak, Dibatalkan, Siap Pengambilan)
+        $status_diproses = ['Dokumen Diterima', 'Verifikasi Data', 'Proses Cetak'];
         $antrian_diproses = Antrian_Online_Model::whereDate('created_at', $hari_ini)
-            ->where('status_antrian', 'Sedang Diproses')
+            ->whereIn('status_antrian', $status_diproses)
             ->count();
+
+        // Antrian selesai (Siap Pengambilan)
         $antrian_selesai = Antrian_Online_Model::whereDate('created_at', $hari_ini)
-            ->where('status_antrian', 'Selesai')
+            ->where('status_antrian', 'Siap Pengambilan')
             ->count();
 
         return response()->json([
@@ -166,6 +187,49 @@ class Antrian_Online_Controller extends Controller
         return response()->json([
             'success' => true,
             'data' => $data_layanan,
+        ]);
+    }
+
+    /**
+     * Lacak berkas berdasarkan nomor antrian atau nama
+     */
+    public function Lacak_Berkas(Request $request)
+    {
+        $query = Antrian_Online_Model::query();
+
+        if ($request->has('nomor_antrian') && !empty($request->nomor_antrian)) {
+            $query->where('nomor_antrian', $request->nomor_antrian);
+        } elseif ($request->has('nama_lengkap') && !empty($request->nama_lengkap)) {
+            $query->where('nama_lengkap', 'like', '%' . $request->nama_lengkap . '%');
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Masukkan nomor antrian atau nama lengkap',
+            ], 400);
+        }
+
+        $antrian = $query->with(['layanan', 'lacak_berkas' => function($q) {
+            $q->orderBy('created_at', 'asc');
+        }])->first();
+
+        if (!$antrian) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data antrian tidak ditemukan',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'antrian_online_id' => $antrian->antrian_online_id,
+                'nomor_antrian' => $antrian->nomor_antrian,
+                'nama_lengkap' => $antrian->nama_lengkap,
+                'status_antrian' => $antrian->status_antrian,
+                'layanan' => $antrian->layanan ? $antrian->layanan->nama_layanan : '-',
+                'created_at' => $antrian->created_at,
+                'riwayat' => $antrian->lacak_berkas,
+            ],
         ]);
     }
 

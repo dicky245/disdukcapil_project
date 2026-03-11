@@ -162,7 +162,7 @@
             <div class="bg-gray-50 rounded-2xl shadow-lg p-8">
                 <div class="grid md:grid-cols-3 gap-4 mb-6">
                     <div class="md:col-span-2">
-                        <input type="text" id="searchInput" placeholder="Masukkan nama pada nomor antrian"
+                        <input type="text" id="searchInput" placeholder="Masukkan nama atau nomor antrian"
                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
                     </div>
                     <div>
@@ -179,6 +179,69 @@
                 </button>
             </div>
             <div id="searchResults" class="mt-8 space-y-4"></div>
+        </div>
+    </section>
+
+    {{-- Lacak Berkas Section --}}
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-100 text-teal-700 text-sm font-semibold mb-4">
+                    <i class="fas fa-search-location"></i>
+                    Lacak Berkas
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Pantau Status Berkas Anda</h2>
+                <p class="text-gray-600 mt-3">Masukkan nomor antrian atau nama lengkap untuk melacak status berkas</p>
+            </div>
+
+            <div class="bg-gradient-to-r from-teal-600 to-cyan-700 rounded-2xl p-8 text-white shadow-2xl">
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <div class="flex-1 w-full">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="lacakInput" placeholder="Masukkan nomor antrian (contoh: ABC-123-456) atau nama lengkap"
+                                   class="w-full pl-12 pr-4 py-4 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-500 text-base">
+                        </div>
+                    </div>
+                    <button onclick="lacakBerkas()" class="w-full md:w-auto px-8 py-4 bg-white text-teal-700 rounded-xl hover:bg-gray-100 transition font-bold text-base whitespace-nowrap shadow-lg">
+                        <i class="fas fa-search mr-2"></i>Lacak Sekarang
+                    </button>
+                </div>
+            </div>
+
+            {{-- Hasil Lacak --}}
+            <div id="lacakResult" class="hidden mt-8">
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <!-- Header -->
+                    <div class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm opacity-90 mb-1">Nomor Antrian</p>
+                                <h3 class="text-3xl font-bold" id="lacakNomor">ABC-123-456</h3>
+                            </div>
+                            <span class="px-4 py-2 bg-white/20 rounded-full text-sm font-bold uppercase" id="lacakStatus">Menunggu</span>
+                        </div>
+                        <div class="mt-4 grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm opacity-90">Nama Lengkap</p>
+                                <p class="font-semibold" id="lacakNama">-</p>
+                            </div>
+                            <div>
+                                <p class="text-sm opacity-90">Jenis Layanan</p>
+                                <p class="font-semibold" id="lacakLayanan">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Timeline Riwayat -->
+                    <div class="p-6">
+                        <h4 class="text-lg font-bold text-gray-800 mb-6">Riwayat Status</h4>
+                        <div id="lacakTimeline" class="space-y-4">
+                            <!-- Timeline items will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </main>
@@ -311,5 +374,125 @@
             default: return 'bg-yellow-100 text-yellow-700';
         }
     }
+
+    // Lacak Berkas Functions
+    function lacakBerkas() {
+        const input = document.getElementById('lacakInput').value.trim();
+
+        if (!input) {
+            alert('Masukkan nomor antrian atau nama lengkap');
+            return;
+        }
+
+        const btn = event.target;
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Mencari...';
+
+        // Tentukan apakah input adalah nomor antrian atau nama
+        const isNomorAntrian = /^[A-Z]{3}-\d{3}-\d{3}$/.test(input.toUpperCase());
+        const params = new URLSearchParams();
+        if (isNomorAntrian) {
+            params.append('nomor_antrian', input.toUpperCase());
+        } else {
+            params.append('nama_lengkap', input);
+        }
+
+        fetch(`{{ route('antrian.lacak') }}?${params}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    displayLacakResult(data.data);
+                    document.getElementById('lacakResult').classList.remove('hidden');
+                    document.getElementById('lacakResult').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert(data.message || 'Data tidak ditemukan');
+                    document.getElementById('lacakResult').classList.add('hidden');
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                alert('Gagal mencari data. Pastikan koneksi tersedia.');
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            });
+    }
+
+    function displayLacakResult(data) {
+        document.getElementById('lacakNomor').textContent = data.nomor_antrian;
+        document.getElementById('lacakNama').textContent = data.nama_lengkap;
+        document.getElementById('lacakLayanan').textContent = data.layanan;
+
+        const statusBadge = document.getElementById('lacakStatus');
+        statusBadge.textContent = data.status_antrian;
+        statusBadge.className = 'px-4 py-2 rounded-full text-sm font-bold uppercase ' + getStatusBadgeClass(data.status_antrian);
+
+        const timeline = document.getElementById('lacakTimeline');
+        if (data.riwayat && data.riwayat.length > 0) {
+            let timelineHTML = '<div class="relative">';
+            timelineHTML += '<div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>';
+
+            data.riwayat.forEach((item, index) => {
+                const isLast = index === data.riwayat.length - 1;
+                const dotColor = getTimelineDotColor(item.status);
+                const date = new Date(item.tanggal);
+                const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                timelineHTML += `
+                    <div class="relative pl-10 ${!isLast ? 'pb-6' : ''}">
+                        <div class="absolute left-2.5 w-3 h-3 ${dotColor} rounded-full border-2 border-white shadow"></div>
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <p class="font-semibold text-gray-800">${item.status}</p>
+                                <p class="text-sm text-gray-600">${item.keterangan || '-'}</p>
+                                ${item.alasan_penolakan ? `<p class="text-sm text-red-600 mt-1 font-semibold"><i class="fas fa-exclamation-circle mr-1"></i>${item.alasan_penolakan}</p>` : ''}
+                            </div>
+                            <span class="text-sm text-gray-500 ml-4">${formattedDate}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            timelineHTML += '</div>';
+            timeline.innerHTML = timelineHTML;
+        } else {
+            timeline.innerHTML = '<p class="text-gray-500 text-center py-4">Belum ada riwayat status</p>';
+        }
+    }
+
+    function getStatusBadgeClass(status) {
+        switch(status) {
+            case 'Menunggu': return 'bg-amber-500 text-white';
+            case 'Dokumen Diterima': return 'bg-blue-500 text-white';
+            case 'Verifikasi Data': return 'bg-indigo-500 text-white';
+            case 'Proses Cetak': return 'bg-purple-500 text-white';
+            case 'Siap Pengambilan': return 'bg-emerald-500 text-white';
+            case 'Ditolak': return 'bg-red-500 text-white';
+            case 'Dibatalkan': return 'bg-rose-500 text-white';
+            default: return 'bg-gray-500 text-white';
+        }
+    }
+
+    function getTimelineDotColor(status) {
+        switch(status) {
+            case 'Menunggu': return 'bg-amber-500';
+            case 'Dokumen Diterima': return 'bg-blue-500';
+            case 'Verifikasi Data': return 'bg-indigo-500';
+            case 'Proses Cetak': return 'bg-purple-500';
+            case 'Siap Pengambilan': return 'bg-emerald-500';
+            case 'Ditolak': return 'bg-red-500';
+            case 'Dibatalkan': return 'bg-rose-500';
+            default: return 'bg-gray-500';
+        }
+    }
+
+    // Enter key support for lacak input
+    document.getElementById('lacakInput')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            lacakBerkas();
+        }
+    });
 </script>
 @endpush

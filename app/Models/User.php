@@ -33,9 +33,4 @@ class User extends Authenticatable
     {
         return 'username';
     }
-    public function detail_keagamaan()
-    {
-        // User memiliki satu record di tabel keagamaan
-        return $this->hasOne(Keagamaan_Model::class, 'user_id', 'id');
-    }
 }

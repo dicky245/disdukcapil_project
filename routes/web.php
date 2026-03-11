@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Pengguna_Controller;
-use App\Http\Controllers\KartKeluargaController;
 use App\Http\Controllers\Antrian_Online_Controller;
 use App\Http\Controllers\Auth\Login_Controller;
 use App\Http\Controllers\Admin\Admin_Controller;
@@ -35,6 +34,7 @@ Route::prefix('antrian-online')->group(function () {
     Route::get('/cari', [Antrian_Online_Controller::class, 'Cari_Antrian'])->name('antrian.search');
     Route::get('/detail/{nomor_antrian}', [Antrian_Online_Controller::class, 'Get_Detail_Antrian'])->name('antrian.detail');
     Route::get('/statistik', [Antrian_Online_Controller::class, 'Get_Statistik_Antrian'])->name('antrian.statistik');
+    Route::get('/lacak', [Antrian_Online_Controller::class, 'Lacak_Berkas'])->name('antrian.lacak');
 });
 
 // Layanan Mandiri (Public)
@@ -43,8 +43,6 @@ Route::prefix('layanan-mandiri')->group(function () {
     Route::get('/{jenis_layanan}', [PageController::class, 'formLayanan'])->name('layanan-mandiri.form');
     Route::post('/{jenis_layanan}', [PageController::class, 'submitLayanan'])->name('layanan-mandiri.submit');
 });
-
-Route::post('/kk/store', [KartKeluargaController::class, 'store'])->name('kk.store');
 
 // Statistik/Data Publik
 Route::get('/statistik', [PageController::class, 'statistik'])->name('statistik');
@@ -104,8 +102,10 @@ Route::prefix('admin')->group(function () {
         Route::prefix('antrian-online')->group(function () {
             Route::get('/', [Admin_Controller::class, 'antrian_online'])->name('admin.antrian-online');
             Route::get('/data', [Admin_Controller::class, 'Get_Data_Antrian'])->name('admin.antrian-online.data');
-            Route::post('/mulai/{id}', [Admin_Controller::class, 'Mulai_Antrian'])->name('admin.antrian-online.mulai');
-            Route::post('/selesai/{id}', [Admin_Controller::class, 'Selesaikan_Antrian'])->name('admin.antrian-online.selesai');
+            Route::post('/terima/{id}', [Admin_Controller::class, 'Terima_Dokumen'])->name('admin.antrian-online.terima');
+            Route::post('/verifikasi/{id}', [Admin_Controller::class, 'Verifikasi_Data'])->name('admin.antrian-online.verifikasi');
+            Route::post('/cetak/{id}', [Admin_Controller::class, 'Proses_Cetak'])->name('admin.antrian-online.cetak');
+            Route::post('/selesai/{id}', [Admin_Controller::class, 'Siap_Pengambilan'])->name('admin.antrian-online.selesai');
             Route::post('/update-berkas/{id}', [Admin_Controller::class, 'Update_Berkas'])->name('admin.antrian-online.update-berkas');
             Route::get('/riwayat/{id}', [Admin_Controller::class, 'Get_Riwayat_Berkas'])->name('admin.antrian-online.riwayat');
             Route::delete('/{id}', [Admin_Controller::class, 'Hapus_Antrian'])->name('admin.antrian-online.hapus');
@@ -116,23 +116,14 @@ Route::prefix('admin')->group(function () {
         Route::get('/konfirmasi-status', [Admin_Controller::class, 'konfirmasi_status'])->name('admin.konfirmasi-status');
 
         // Penerbitan Dokumen
-        // Kartu Keluarga
-        Route::prefix('penerbitan-kk')->group(function () {
-            Route::get('/', [KartKeluargaController::class, 'daftar_kk'])->name('admin.penerbitan-kk');
-            Route::get('/detail/{id}',[KartKeluargaController::class, 'detail'])->name('admin.detail');
-            Route::post('/{id}/status',[KartKeluargaController::class, 'updateStatus'])->name('admin.status');
-        });   
+        Route::get('/penerbitan-kk', [Admin_Controller::class, 'penerbitan_kk'])->name('admin.penerbitan-kk');
         Route::get('/penerbitan-akte-lahir', [Admin_Controller::class, 'penerbitan_akte_lahir'])->name('admin.penerbitan-akte-lahir');
         Route::get('/penerbitan-akte-kematian', [Admin_Controller::class, 'penerbitan_akte_kematian'])->name('admin.penerbitan-akte-kematian');
         Route::get('/penerbitan-lahir-mati', [Admin_Controller::class, 'penerbitan_lahir_mati'])->name('admin.penerbitan-lahir-mati');
         Route::get('/penerbitan-pernikahan', [Admin_Controller::class, 'penerbitan_pernikahan'])->name('admin.penerbitan-pernikahan');
 
         // Manajemen Akun
-       // Ganti admin.manajemen_akun menjadi admin.manajemen-akun
         Route::get('/manajemen-akun', [Admin_Controller::class, 'manajemen_akun'])->name('admin.manajemen-akun');
-
-        // Route untuk memproses simpan (Pastikan NAME ini sama dengan yang ada di ACTION FORM HTML)
-        Route::post('/manajemen-akun/store', [Admin_Controller::class, 'store_akun'])->name('admin.manajemen-akun.store');
         Route::get('/akun-keagamaan', [Admin_Controller::class, 'akun_keagamaan'])->name('admin.akun-keagamaan');
     });
 });

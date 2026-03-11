@@ -19,6 +19,7 @@ class Lacak_Berkas_Model extends Model
         'status',
         'tanggal',
         'keterangan',
+        'alasan_penolakan',
     ];
 
     /**

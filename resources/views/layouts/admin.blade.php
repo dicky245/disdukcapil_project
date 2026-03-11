@@ -124,12 +124,12 @@
     @include('components.admin.sidebar')
 
     {{-- Main Content --}}
-    <main class="main-content ml-64 min-h-screen flex flex-col">
+    <main class="main-content ml-64 min-h-screen">
         {{-- Header --}}
         @include('components.admin.navbar')
 
         {{-- Content --}}
-        <div class="p-6 flex-1">
+        <div class="p-6">
             {{-- Flash Messages --}}
             @if (session('success'))
                 <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-6">

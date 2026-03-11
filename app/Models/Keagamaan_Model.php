@@ -12,19 +12,17 @@ class Keagamaan_Model extends Model
 
     protected $table = 'keagamaan';
     protected $primaryKey = 'keagamaan_id';
+    public $timestamps = true;
+
     protected $fillable = [
-        'user_id',            // Penting!
         'jenis_keagamaan_id',
         'alamat',
-        'phone',
-        'status',
+        'keterangan',
     ];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id', 'id');
-    }
-
+    /**
+     * Relasi ke jenis keagamaan
+     */
     public function jenis_keagamaan(): BelongsTo
     {
         return $this->belongsTo(Jenis_Keagamaan_Model::class, 'jenis_keagamaan_id', 'jenis_keagamaan_id');

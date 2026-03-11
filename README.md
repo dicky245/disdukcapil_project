@@ -5,27 +5,27 @@ Sistem antrian online berbasis web untuk Disdukcapil Kabupaten Toba dengan fitur
 
 ---
 
-## 📋 Fitur Utama
+## Fitur Utama
 
 ### Untuk Pengguna (Public)
-- ✅ Pengambilan nomor antrian online
-- ✅ Generate nomor antrian unik (format: ABC-123-456)
-- ✅ Pencarian antrian berdasarkan nama dan layanan
-- ✅ Tiket antrian dengan detail lengkap
-- ✅ Estimasi waktu tunggu
-- ✅ Statistik antrian real-time
+- Ambil nomor antrian online
+- Generate nomor antrian unik (format: ABC-123-456)
+- Pencarian antrian berdasarkan nama dan layanan
+- Tiket antrian dengan detail lengkap
+- Estimasi waktu tunggu
+- Statistik antrian real-time
 
 ### Untuk Admin
-- ✅ Dashboard statistik antrian
-- ✅ Kelola antrian (Mulai, Selesai, Hapus)
-- ✅ Filter berdasarkan status dan layanan
-- ✅ Update status lacak berkas
-- ✅ Riwayat lengkap setiap antrian
-- ✅ Real-time update (setiap 30 detik)
+- Dashboard statistik antrian
+- Kelola antrian (Mulai, Selesai, Hapus)
+- Filter berdasarkan status dan layanan
+- Update status lacak berkas
+- Riwayat lengkap setiap antrian
+- Real-time update (setiap 30 detik)
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Install Dependencies
 ```bash
@@ -71,7 +71,7 @@ php artisan serve
 
 ---
 
-## 📁 Struktur Project
+## Struktur Project
 
 ```
 app/
@@ -114,7 +114,7 @@ routes/
 
 ---
 
-## 🎯 Aturan Penamaan
+## Aturan Penamaan
 
 Sistem ini menggunakan **Snake_Pascal_Case** untuk konsistensi:
 
@@ -148,7 +148,7 @@ $nomor_antrian = 'ABC-123-456';
 
 ---
 
-## 📊 Database Schema
+## Database Schema
 
 ### Tabel `layanan`
 | Kolom | Tipe | Keterangan |
@@ -181,7 +181,7 @@ $nomor_antrian = 'ABC-123-456';
 
 ---
 
-## 🛣️ Routes Utama
+## Routes Utama
 
 ### Public Routes
 | Route | Method | Controller | Method |
@@ -202,7 +202,7 @@ $nomor_antrian = 'ABC-123-456';
 
 ---
 
-## 🎮 Cara Penggunaan
+## Cara Penggunaan
 
 ### Pengguna - Ambil Antrian
 1. Buka halaman `/antrian-online`
@@ -233,7 +233,7 @@ $nomor_antrian = 'ABC-123-456';
 
 ---
 
-## 🔐 Akun Default
+## Akun Default
 
 Setelah menjalankan seeder, berikut adalah akun default:
 
@@ -242,11 +242,11 @@ Setelah menjalankan seeder, berikut adalah akun default:
 | Admin | admin | admin123 |
 | Keagamaan | keagamaan | keagamaan123 |
 
-**⚠️ Penting**: Ganti password default di production!
+**PENTING**: Ganti password default di production!
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Migration Error
 ```bash
@@ -281,7 +281,7 @@ composer install --no-dev
 
 ---
 
-## 📝 Catatan Pengembangan
+## Catatan Pengembangan
 
 ### Fitur yang Sudah Implementasi
 - [x] Generate nomor antrian unik (ABC-123-456)
@@ -303,7 +303,7 @@ composer install --no-dev
 
 ---
 
-## 📞 Kontak & Support
+## Kontak & Support
 
 Untuk pertanyaan atau masalah:
 - **Email**: support@dukcapiltoba.go.id
@@ -312,13 +312,13 @@ Untuk pertanyaan atau masalah:
 
 ---
 
-## 📄 Lisensi
+## Lisensi
 
 Copyright © 2025 Disdukcapil Kabupaten Toba. All rights reserved.
 
 ---
 
-## 👨‍💻 Tim Pengembang
+## Tim Pengembang
 
 - **Developer**: Disdukcapil Kabupaten Toba
 - **Version**: 1.0.0

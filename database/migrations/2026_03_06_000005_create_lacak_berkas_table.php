@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('status', 100);
             $table->date('tanggal');
             $table->text('keterangan')->nullable();
+            $table->text('alasan_penolakan')->nullable();
             $table->timestamps();
 
             $table->index('antrian_online_id');
