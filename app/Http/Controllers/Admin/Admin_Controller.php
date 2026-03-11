@@ -9,7 +9,10 @@ use App\Models\Jenis_Keagamaan_Model; // TAMBAHKAN INI
 use App\Models\User;
 use App\Models\Layanan_Model;
 use Illuminate\Http\Request;
+use App\Models\Keagamaan_Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class Admin_Controller extends Controller
 {
@@ -144,52 +147,71 @@ class Admin_Controller extends Controller
     // Pastikan Anda sudah mengimpor Model di bagian atas file
 
     // Pastikan nama fungsinya 'manajemen_akun' sesuai dengan Route Anda
+
     public function manajemen_akun()
     {
+        // Proteksi Role Admin
         if (!Auth::user()->hasRole('Admin')) {
-            abort(403);
+            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
-        $users = User::all();
+        // PERBAIKAN: Hanya ambil user yang memiliki role 'Keagamaan' melalui tabel Spatie
+        // Admin tidak akan muncul karena Admin tidak memiliki role 'Keagamaan'
+        $users = User::role('Keagamaan')->with('detail_keagamaan.jenis_keagamaan')->get();
 
-        // Pastikan variabel ini diambil agar tidak error di @foreach
         $list_agama = Jenis_Keagamaan_Model::all();
 
         return view('admin.manajemen_akun', compact('users', 'list_agama'));
     }
-    // --- TARUH FUNGSI STORE DI SINI ---
+
     public function store_akun(Request $request)
     {
         $request->validate([
-            'name'     => 'required|string|max:255',
+            'name'     => 'required|string',
             'username' => 'required|unique:users,username,' . $request->accountId,
             'agama'    => 'required',
+            'alamat'   => 'required',
             'status'   => 'required',
-            // Password wajib diisi jika akun baru (accountId null)
-            'password' => $request->accountId ? 'nullable|min:8' : 'required|min:8',
         ]);
 
-        // Menyiapkan data untuk disimpan
-        $data = [
-            'name'     => $request->name,
-            'username' => $request->username,
-            'agama'    => $request->agama,
-            'phone'    => $request->phone,
-            'status'   => $request->status,
-            'role'     => 'Petugas',
-        ];
+        DB::beginTransaction();
+        try {
+            // 1. Simpan/Update ke tabel 'users'
+            $userData = [
+                'name'     => $request->name,
+                'username' => $request->username,
+            ];
 
-        // Cek apakah password diisi (untuk akun baru atau jika admin ingin ganti password)
-        if ($request->filled('password')) {
-            $data['password'] = bcrypt($request->password);
+            // Hanya update password jika diisi
+            if ($request->filled('password')) {
+                $userData['password'] = Hash::make($request->password);
+            }
+
+            $user = User::updateOrCreate(['id' => $request->accountId], $userData);
+
+            // PENTING: Hubungkan user dengan role 'Keagamaan' di tabel model_has_roles (Spatie)
+            // Ini yang membuat user muncul di tabel daftar akun saat di-filter
+            $user->syncRoles(['Keagamaan']);
+
+            // 2. Simpan/Update ke tabel 'keagamaan' (Detail Profil)
+            $user->detail_keagamaan()->updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'jenis_keagamaan_id' => $request->agama,
+                    'alamat'             => $request->alamat,
+                    'status'             => $request->status,
+                    // Kolom role tidak ditambahkan di sini sesuai instruksi Anda
+                ]
+            );
+
+            DB::commit();
+            // Mengirim session success untuk memicu pop-up SweetAlert2 di View
+            return redirect()->back()->with('success', 'Akun Keagamaan Berhasil Disimpan!');
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Mengirim session error untuk memicu pop-up SweetAlert2 di View
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-
-        $user = User::updateOrCreate(
-            ['id' => $request->accountId],
-            $data // Gunakan variabel $data yang sudah kita susun di atas
-        );
-
-        return redirect()->back()->with('success', 'Akun berhasil disimpan!');
     }
     /**
      * Tampilkan halaman akun keagamaan

@@ -158,41 +158,19 @@
             <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl"><i
                     class="fas fa-pray w-6 text-center text-lg"></i><span class="sidebar-text">Akun Keagamaan</span></a>
 
-        <div class="pt-10 pb-8">
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
-            </form>
-            <a href="#" onclick="handleLogout()"
-                class="flex items-center gap-3 px-8 py-3 text-[#E53E3E] font-bold hover:bg-red-50 rounded-xl transition-all">
-                <i class="fas fa-sign-out-alt text-lg"></i>
-                <span class="sidebar-text">Logout</span>
-            </a>
-        </div>
+            <div class="pt-10 pb-8">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+                <a href="#" onclick="handleLogout()"
+                    class="flex items-center gap-3 px-8 py-3 text-[#E53E3E] font-bold hover:bg-red-50 rounded-xl transition-all">
+                    <i class="fas fa-sign-out-alt text-lg"></i>
+                    <span class="sidebar-text">Logout</span>
+                </a>
+            </div>
         </nav>
     </aside>
-    @if(session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: "{{ session('success') }}",
-                showConfirmButton: false,
-                timer: 3000
-            });
-        </script>
-    @endif
-    
-    @if($errors->any())
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Terjadi Kesalahan',
-                text: "{{ $errors->first() }}",
-            });
-        </script>
-    @endif
-    </div>
-    </main>
+
     <main id="mainContent" class="main-content min-h-screen">
         <header
             class="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-40 px-8 py-4 flex justify-between items-center">
@@ -222,8 +200,7 @@
                     </div>
                     <div>
                         <p class="text-gray-400 text-[11px] font-bold uppercase tracking-wider">Total Akun</p>
-                        <h3 class="text-2xl font-black" id="statTotal">{{ $users->where('role', 'Petugas')->count() }}
-                        </h3>
+                        <h3 class="text-2xl font-black">{{ $users->count() }}</h3>
                     </div>
                 </div>
                 <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
@@ -233,8 +210,8 @@
                     </div>
                     <div>
                         <p class="text-gray-400 text-[11px] font-bold uppercase tracking-wider">Akun Aktif</p>
-                        <h3 class="text-2xl font-black text-green-600" id="statActive">
-                            {{ $users->where('role', 'Petugas')->where('status', 'active')->count() }}
+                        <h3 class="text-2xl font-black text-green-600">
+                            {{ $users->where('detail_keagamaan.status', 'aktif')->count() }}
                         </h3>
                     </div>
                 </div>
@@ -243,8 +220,8 @@
                             class="fas fa-user-slash"></i></div>
                     <div>
                         <p class="text-gray-400 text-[11px] font-bold uppercase tracking-wider">Non-Aktif</p>
-                        <h3 class="text-2xl font-black text-red-600" id="statInactive">
-                            {{ $users->where('role', 'Petugas')->where('status', 'inactive')->count() }}
+                        <h3 class="text-2xl font-black text-red-600">
+                            {{ $users->where('detail_keagamaan.status', 'non-aktif')->count() }}
                         </h3>
                     </div>
                 </div>
@@ -269,31 +246,33 @@
                         <thead class="bg-gray-50 text-[11px] uppercase font-bold text-gray-400 tracking-widest">
                             <tr>
                                 <th class="px-8 py-5">Nama Lengkap</th>
-                                <th class="px-8 py-5 text-center">Username</th>
-                                <th class="px-8 py-5 text-center">Jenis Keagamaan</th>
-                                <th class="px-8 py-5 text-center">No. Telepon</th>
+                                <th class="px-8 py-5">Username</th>
+                                <th class="px-8 py-5">Agama</th>
+                                <th class="px-8 py-5">Alamat</th>
                                 <th class="px-8 py-5 text-center">Status</th>
                                 <th class="px-8 py-5 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="accountTableBody" class="divide-y divide-gray-50">
-                            @foreach($users->where('role', 'Petugas') as $user)
+                            @foreach($users as $user)
                                 <tr class="hover:bg-gray-50/50">
                                     <td class="px-8 py-5 font-bold text-gray-700">{{ $user->name }}</td>
-                                    <td class="px-8 py-5 text-center text-gray-500 italic">@ {{ $user->username }}</td>
-                                    <td class="px-8 py-5 text-center">
+                                    <td class="px-8 py-5 text-gray-500 italic">@ {{ $user->username }}</td>
+                                    <td class="px-8 py-5">
                                         <span
-                                            class="px-3 py-1 bg-brand-50 text-brand-600 rounded-lg text-[10px] font-bold uppercase tracking-widest">{{ $user->agama }}</span>
+                                            class="px-3 py-1 bg-brand-50 text-brand-600 rounded-lg text-[10px] font-bold uppercase tracking-widest">
+                                            {{ $user->detail_keagamaan->jenis_keagamaan->nama_jenis_keagamaan ?? 'Umum' }}
+                                        </span>
                                     </td>
-                                    <td class="px-8 py-5 text-center text-gray-600">{{ $user->phone ?? '-' }}</td>
+                                    <td class="px-8 py-5 text-gray-600">{{ $user->detail_keagamaan->alamat ?? '-' }}</td>
                                     <td class="px-8 py-5 text-center">
                                         <span
-                                            class="px-3 py-1 rounded-full text-[10px] font-bold {{ $user->status === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }} uppercase">
-                                            {{ $user->status === 'active' ? 'Aktif' : 'Non-Aktif' }}
+                                            class="px-3 py-1 rounded-full text-[10px] font-bold {{ ($user->detail_keagamaan->status ?? 'aktif') === 'aktif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }} uppercase">
+                                            {{ ($user->detail_keagamaan->status ?? 'aktif') === 'aktif' ? 'Aktif' : 'Non-Aktif' }}
                                         </span>
                                     </td>
                                     <td class="px-8 py-5 text-center">
-                                        <button onclick="editAccount({{ json_encode($user) }})"
+                                        <button onclick="editAccount({{ json_encode($user->load('detail_keagamaan')) }})"
                                             class="px-4 py-2 bg-gray-100 text-brand-600 rounded-xl text-xs font-bold hover:bg-brand-600 hover:text-white transition-all">
                                             <i class="fas fa-edit mr-1"></i> Edit Akun
                                         </button>
@@ -306,14 +285,16 @@
             </div>
 
             <div id="religionStats" class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
-                @php $religions = ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha']; @endphp
+                @php $religions = ['Islam', 'Kristen Protestan', 'Katolik', 'Hindu', 'Buddha']; @endphp
                 @foreach($religions as $rel)
-                    <div class="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm text-center">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">{{ $rel }}</p>
-                        <p class="text-xl font-black text-brand-600">
-                            {{ $users->where('role', 'Petugas')->where('agama', $rel)->count() }}
-                        </p>
-                    </div>
+                                <div class="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm text-center">
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">{{ $rel }}</p>
+                                    <p class="text-xl font-black text-brand-600">
+                                        {{ $users->filter(function ($u) use ($rel) {
+                        return ($u->detail_keagamaan->jenis_keagamaan->nama_jenis_keagamaan ?? '') === $rel;
+                    })->count() }}
+                                    </p>
+                                </div>
                 @endforeach
             </div>
         </div>
@@ -340,48 +321,50 @@
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Username *</label>
-                        <input type="text" name="username" id="username" required
+                        <input type="text" name="username" id="username_field" required
                             class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-600">
                     </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Agama *</label>
-                    <select name="agama" id="agama" required
-                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-600">
-                        <option value="">Pilih Agama</option>
-                        @foreach($list_agama as $agama)
-                            <option value="{{ $agama->nama_jenis_keagamaan }}">{{ $agama->nama_jenis_keagamaan }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
-                    <input type="password" name="password" id="password" placeholder="Isi jika ingin ganti password"
-                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-600">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">No. Telepon</label>
-                        <input type="text" name="phone" id="phone"
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Agama *</label>
+                        <select name="agama" id="agama_select" required
                             class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-600">
+                            <option value="">Pilih Agama</option>
+                            @foreach($list_agama as $agama)
+                                <option value="{{ $agama->jenis_keagamaan_id }}">{{ $agama->nama_jenis_keagamaan }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Status *</label>
-                        <select name="status" id="status"
+                        <select name="status" id="status_select"
                             class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-600">
-                            <option value="active">Aktif</option>
-                            <option value="inactive">Non-Aktif</option>
+                            <option value="aktif">Aktif</option>
+                            <option value="non-aktif">Non-Aktif</option>
                         </select>
                     </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Alamat Lengkap *</label>
+                    <textarea name="alamat" id="alamat_field" required rows="3"
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-600"
+                        placeholder="Contoh: Jl. Sudirman No. 123..."></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                    <input type="password" name="password" id="password_field"
+                        placeholder="Isi jika ingin ganti password"
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-600">
                 </div>
 
                 <div class="flex items-center gap-3 pt-4 border-t">
                     <button type="submit"
                         class="flex-1 py-3 bg-brand-600 text-white rounded-xl font-bold hover:bg-brand-700 transition shadow-lg shadow-blue-100">
-                        <i class="fas fa-save mr-2"></i> Simpan Akun
+                        <i class="fas fa-save mr-2"></i> Simpan
                     </button>
                     <button type="button" onclick="closeModal()"
                         class="px-6 py-3 border border-gray-200 text-gray-600 rounded-xl font-bold hover:bg-gray-50">Batal</button>
@@ -401,7 +384,7 @@
             e.currentTarget.querySelector('.fa-chevron-down').classList.toggle('rotate-180');
         }
 
-       function handleLogout() {
+        function handleLogout() {
             Swal.fire({
                 title: 'Konfirmasi Logout',
                 text: "Apakah Anda yakin ingin keluar?",
@@ -409,11 +392,9 @@
                 showCancelButton: true,
                 confirmButtonColor: '#0052CC',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Keluar',
-                cancelButtonText: 'Batal'
+                confirmButtonText: 'Ya, Keluar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Mengirimkan form POST secara otomatis
                     document.getElementById('logout-form').submit();
                 }
             });
@@ -423,20 +404,24 @@
             document.getElementById('accountForm').reset();
             document.getElementById('accountId').value = '';
             document.getElementById('modalTitle').innerText = 'Tambah Akun Baru';
-            document.getElementById('password').required = true;
+            document.getElementById('password_field').required = true;
             document.getElementById('accountModal').classList.add('active');
         }
 
         function editAccount(user) {
             document.getElementById('accountId').value = user.id;
             document.getElementById('fullName').value = user.name;
-            document.getElementById('username').value = user.username;
-            document.getElementById('agama').value = user.agama;
-            document.getElementById('phone').value = user.phone;
-            document.getElementById('status').value = user.status;
+            document.getElementById('username_field').value = user.username;
 
-            document.getElementById('modalTitle').innerText = 'Edit Akun & Status';
-            document.getElementById('password').required = false;
+            if (user.detail_keagamaan) {
+                document.getElementById('agama_select').value = user.detail_keagamaan.jenis_keagamaan_id;
+                document.getElementById('alamat_field').value = user.detail_keagamaan.alamat || '';
+                // Menyesuaikan value ke Bahasa Indonesia 'aktif'
+                document.getElementById('status_select').value = user.detail_keagamaan.status || 'aktif';
+            }
+
+            document.getElementById('modalTitle').innerText = 'Edit Akun';
+            document.getElementById('password_field').required = false;
             document.getElementById('accountModal').classList.add('active');
         }
 
@@ -445,17 +430,44 @@
         function filterAccounts() {
             const q = document.getElementById('searchBox').value.toLowerCase();
             const rows = document.querySelectorAll('#accountTableBody tr');
-
             rows.forEach(row => {
                 const name = row.children[0].innerText.toLowerCase();
                 const user = row.children[1].innerText.toLowerCase();
-                if (name.includes(q) || user.includes(q)) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
+                row.style.display = (name.includes(q) || user.includes(q)) ? "" : "none";
             });
         }
+    </script>
+
+    <script>
+        // SweetAlert2 Pop-up Handlers
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: "{{ session('success') }}",
+                confirmButtonColor: '#0052CC',
+                timer: 3000,
+                timerProgressBar: true
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: "{{ session('error') }}",
+                confirmButtonColor: '#0052CC'
+            });
+        @endif
+
+        @if ($errors->any())
+            Swal.fire({
+                icon: 'warning',
+                title: 'Perhatian!',
+                text: "{{ $errors->first() }}",
+                confirmButtonColor: '#0052CC'
+            });
+        @endif
     </script>
 </body>
 
