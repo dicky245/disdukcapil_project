@@ -1,5 +1,4 @@
 @extends('layouts.admin')
-
 @section('content')
 <div class="container-fluid p-6">
     <div class="flex justify-between items-center mb-6">
@@ -8,7 +7,7 @@
         </h1>
         <a href="{{ route('admin.penerbitan-kk') }}"
         class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm">
-        Kembali
+            Kembali
         </a>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -47,49 +46,70 @@
             <h2 class="text-lg font-semibold mb-6 text-gray-700">
                 Dokumen Persyaratan
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="border rounded-lg p-4 flex flex-col items-center text-center">
+            <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
+                <div class="border rounded-lg p-4 text-center">
                     <p class="text-sm font-semibold mb-3">
-                        Kartu Keluarga Lama
+                        KK Lama
                     </p>
-                    <a href="{{ asset('storage/'.$berkas->kk_lama) }}" target="_blank"
-                    target="_blank"
+                    <button onclick="openPreview('{{ asset('storage/'.$berkas->kk_lama) }}')"
                     class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">
                         Lihat Berkas
-                    </a>
+                    </button>
                 </div>
-                <div class="border rounded-lg p-4 flex flex-col items-center text-center">
+                <div class="border rounded-lg p-4 text-center">
                     <p class="text-sm font-semibold mb-3">
                         Surat Keterangan Pengganti
                     </p>
-                    <a href="{{ asset('storage/'.$berkas->surat_keterangan_pengganti) }}"
-                    target="_blank"
+                    <button onclick="openPreview('{{ asset('storage/'.$berkas->surat_keterangan_pengganti) }}')"
                     class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">
                         Lihat Berkas
-                    </a>
+                    </button>
                 </div>
-                <div class="border rounded-lg p-4 flex flex-col items-center text-center">
+                <div class="border rounded-lg p-4 text-center">
                     <p class="text-sm font-semibold mb-3">
-                        Salinan Keterangan Presiden
+                        Salinan Kepres
                     </p>
-                    <a href="{{ asset('storage/'.$berkas->salinan_kepres) }}"
-                    target="_blank"
+                    <button onclick="openPreview('{{ asset('storage/'.$berkas->salinan_kepres) }}')"
                     class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">
                         Lihat Berkas
-                    </a>
+                    </button>
                 </div>
-                <div class="border rounded-lg p-4 flex flex-col items-center text-center">
+                <div class="border rounded-lg p-4 text-center">
                     <p class="text-sm font-semibold mb-3">
-                        Izin Tinggal Bagi Asing
+                        Izin Tinggal Asing
                     </p>
-                    <a href="{{ asset('storage/'.$berkas->izin_tinggal_asing) }}"
-                    target="_blank"
+                    <button onclick="openPreview('{{ asset('storage/'.$berkas->izin_tinggal_asing) }}')"
                     class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">
                         Lihat Berkas
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<div id="previewModal"
+class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50">
+    <div class="bg-white w-11/12 md:w-3/4 h-5/6 rounded-xl relative p-4">
+        <button onclick="closePreview()"
+        class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+            Tutup
+        </button>
+        <iframe id="previewFrame"
+        class="w-full h-full rounded-lg"></iframe>
+    </div>
+</div>
+<script>
+function openPreview(fileUrl){
+    document.getElementById("previewFrame").src = fileUrl;
+    const modal = document.getElementById("previewModal");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+}
+function closePreview(){
+    const modal = document.getElementById("previewModal");
+    modal.classList.remove("flex");
+    modal.classList.add("hidden");
+    document.getElementById("previewFrame").src = "";
+}
+</script>
 @endsection

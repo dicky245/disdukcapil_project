@@ -56,17 +56,18 @@
                 ['name' => 'keterangan', 'label' => 'Keterangan', 'type' => 'textarea', 'placeholder' => 'Keterangan tambahan'],
             ]
         ],
-        'Penerbitan Akte Perkawinan' => [
+        5 => [
             'icon' => 'fa-ring',
-            'color' => 'pink',
-            'id' => 'akta-perkawinan',
+            'color' => 'blue',
+            'id' => 'layanan-pernikahan',
             'fields' => [
-                ['name' => 'nama_suami', 'label' => 'Nama Lengkap Suami', 'type' => 'text', 'placeholder' => 'Sesuai KTP'],
-                ['name' => 'nik_suami', 'label' => 'NIK Suami', 'type' => 'text', 'placeholder' => '16 digit NIK'],
-                ['name' => 'nama_istri', 'label' => 'Nama Lengkap Istri', 'type' => 'text', 'placeholder' => 'Sesuai KTP'],
-                ['name' => 'nik_istri', 'label' => 'NIK Istri', 'type' => 'text', 'placeholder' => '16 digit NIK'],
-                ['name' => 'tgl_perkawinan', 'label' => 'Tanggal Perkawinan', 'type' => 'date'],
-                ['name' => 'no_akta_nikah', 'label' => 'No. Akta Nikah (Jika Ada)', 'type' => 'text', 'placeholder' => 'Opsional', 'required' => false],
+                ['name' => 'nomor_antrian', 'label' => 'Kode Antrian', 'type' => 'text', 'placeholder' => 'Masukkan kode antrian Anda', 'required' => true],
+                ['name' => 'tanggal_perkawinan', 'label' => 'Tanggal Perkawinan', 'type' => 'date', 'required' => true],
+                ['name' => 'nama_lengkap_suami', 'label' => 'Nama Suami Lengkap', 'type' => 'text', 'placeholder' => 'Nama sesuai KTP', 'required' => true],
+                ['name' => 'nik_suami', 'label' => 'NIK Suami', 'type' => 'number', 'placeholder' => '16 digit NIK', 'required' => true],
+                ['name' => 'nama_lengkap_istri', 'label' => 'Nama Istri Lengkap', 'type' => 'text', 'placeholder' => 'Nama sesuai KTP', 'required' => true],
+                ['name' => 'nik_istri', 'label' => 'NIK Istri', 'type' => 'number', 'placeholder' => '16 digit NIK', 'required' => true],
+                ['name' => 'akta_pernikahan', 'label' => 'Upload Akta Pernikahan (Opsional)', 'type' => 'file', 'required' => false],
             ]
         ],
     ];
@@ -292,8 +293,8 @@
         modalIcon.innerHTML = `<i class="fas ${getIconById(serviceId)} text-2xl text-${serviceColor}-600"></i>`;
 
         if(serviceId === 'kk'){
-        form.action = "{{ route('kk.store') }}";
-        }
+            form.action = "{{ route('kk.store') }}";
+        } 
 
         formFields.innerHTML = fields.length > 0 ? fields.map(field => {
             if(field.type === 'hidden'){

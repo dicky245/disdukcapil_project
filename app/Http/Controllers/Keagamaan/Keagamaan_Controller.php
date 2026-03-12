@@ -5,8 +5,15 @@ namespace App\Http\Controllers\Keagamaan;
 use App\Http\Controllers\Controller;
 use App\Models\Keagamaan_Model;
 use App\Models\Jenis_Keagamaan_Model;
+
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+// Import Model
+use App\Models\Layanan_Model;
+use App\Models\Lacak_Berkas_Model;
+use App\Models\Antrian_Online_Model;
 
 class Keagamaan_Controller extends Controller
 {
@@ -36,7 +43,20 @@ class Keagamaan_Controller extends Controller
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        return view('keagamaan.antrian_kalender');
+        $antrian = Antrian_Online_Model::with(['lacak_berkas', 'layanan'])
+            ->latest()
+            ->get();
+
+        $stats = [
+            'hari_ini' => $antrian->where('created_at', '>=', now()->startOfDay())->count(),
+            'menunggu' => $antrian->where('status_antrian', 'Menunggu')->count(),
+            'diterima' => $antrian->where('status_antrian', 'Sedang Diproses')->count(),
+            'ditolak'  => $antrian->where('status_antrian', 'Dibatalkan')->count(),
+            'total'    => $antrian->count()
+        ];
+
+        // Kirim variabel $antrian ke view
+        return view('keagamaan.antrian_kalender', compact('antrian', 'stats'));
     }
 
     /**
@@ -72,7 +92,22 @@ class Keagamaan_Controller extends Controller
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        return view('keagamaan.lacak_berkas');
+        // 1. Ambil ID terakhir dari setiap antrian agar tidak duplikat
+        $latestLacakIds = Lacak_Berkas_Model::selectRaw('MAX(lacak_berkas_id) as id')
+            ->groupBy('antrian_online_id')
+            ->pluck('id');
+
+        // 2. Filter hanya untuk layanan yang mengandung kata "Pernikahan"
+        $berkas = Lacak_Berkas_Model::with(['antrian_online.layanan', 'antrian_online.user'])
+            ->whereIn('lacak_berkas_id', $latestLacakIds)
+            ->whereNotNull('detail_form')
+            ->whereHas('antrian_online.layanan', function ($query) {
+                $query->where('nama_layanan', 'like', '%Pernikahan%');
+            })
+            ->latest()
+            ->get();
+
+        return view('keagamaan.lacak_berkas', compact('berkas'));
     }
 
     // ==================== API METHODS ====================
@@ -170,6 +205,53 @@ class Keagamaan_Controller extends Controller
             'message' => 'Data keagamaan berhasil diperbarui',
             'data' => $keagamaan,
         ]);
+
+        if ($lacak) {
+            $lacak->update([
+                'status' => $request->status,
+                'keterangan' => 'Diperbarui oleh petugas Keagamaan: ' . $request->keterangan
+            ]);
+        }
+    }
+
+    public function updateStatus(Request $request)
+    {
+        try {
+            $request->validate([
+                'id' => 'required',
+                'status' => 'required'
+            ]);
+
+            $antrian = Antrian_Online_Model::where('antrian_online_id', $request->id)->firstOrFail();
+            $antrian->status_antrian = $request->status;
+            $antrian->save();
+
+            $berkas = \App\Models\Lacak_Berkas_Model::where('antrian_online_id', $request->id)->first();
+
+            if ($berkas) {
+                if ($request->status == 'Ditolak') {
+                    $berkas->keterangan = "Ditolak: " . ($request->alasan ?? 'Tanpa alasan spesifik');
+                } else if ($request->status == 'Diterima') {
+                    $berkas->keterangan = "Permohonan telah disetujui oleh petugas keagamaan.";
+                }
+                $berkas->save();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status berhasil diperbarui menjadi ' . $request->status
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data antrian dengan ID ' . $request->id . ' tidak ditemukan.'
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -301,5 +383,42 @@ class Keagamaan_Controller extends Controller
                 'jenis_dokumen' => $validated_data['jenis_dokumen'],
             ],
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'layanan_id' => 'required',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // 1. Simpan ke tabel Antrian_Online_Model
+            $antrian = new Antrian_Online_Model();
+            $antrian->user_id = Auth::id();
+            $antrian->layanan_id = $request->layanan_id;
+            $antrian->status = 'Pending';
+            $antrian->save();
+
+            $formData = $request->except(['_token', 'layanan_id']);
+
+            $lacak = new Lacak_Berkas_Model();
+            $lacak->antrian_online_id = $antrian->antrian_online_id;
+            $lacak->status = 'Pending';
+            $lacak->tanggal = now();
+            $lacak->keterangan = 'Berkas pengajuan ' . ($request->nama_layanan ?? '') . ' telah diterima.';
+
+            $lacak->detail_form = json_encode($formData);
+            $lacak->save();
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Pengajuan Anda berhasil dikirim dan sedang diproses.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }
