@@ -7,6 +7,21 @@
 @endphp
 
 <main class="pt-0">
+    {{-- Page Loading --}}
+    <div id="pageLoading" class="page-loading">
+        <div class="loading-logo bg-white rounded-2xl shadow-2xl overflow-hidden flex items-center justify-center">
+            <img src="{{ asset('images/logo_toba.jpeg') }}" alt="Logo Kabupaten Toba" class="w-full h-full object-contain p-3">
+        </div>
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Disdukcapil Kabupaten Toba</div>
+        <div class="loading-subtext">Memuat antrian...</div>
+        <div class="loading-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
     {{-- Hero Section --}}
     <section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-800 text-white py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

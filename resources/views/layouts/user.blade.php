@@ -114,13 +114,16 @@
             }
         }
 
+        /* Page Loading with Animation */
         .page-loading {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: #f9fafb;
+            background: linear-gradient(135deg, #0052CC 0%, #0066FF 50%, #0052CC 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 8s ease infinite;
             z-index: 9999;
             display: flex;
             flex-direction: column;
@@ -130,6 +133,138 @@
 
         .page-loading.hidden {
             display: none;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Logo Animation */
+        .loading-logo {
+            width: 120px;
+            height: 120px;
+            position: relative;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        .loading-logo::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: pulseRing 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        .loading-logo::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            animation: pulseRing 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
+            }
+            50% {
+                transform: translateY(-20px) scale(1.05);
+            }
+        }
+
+        @keyframes pulseRing {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-top: 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Loading Text */
+        .loading-text {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 24px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .loading-subtext {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.875rem;
+            margin-top: 8px;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        /* Loading Dots */
+        .loading-dots {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .loading-dots span {
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            animation: bounceDots 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .loading-dots span:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes bounceDots {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         /* Tabs */
@@ -251,6 +386,194 @@
                 lastScroll = currentScroll;
             });
         }
+
+        // Page Loading Animation
+        const pageLoading = document.getElementById('pageLoading');
+        if (pageLoading) {
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    pageLoading.style.opacity = '0';
+                    pageLoading.style.transition = 'opacity 0.5s ease';
+                    setTimeout(function() {
+                        pageLoading.classList.add('hidden');
+                    }, 500);
+                }, 800);
+            });
+        }
+
+        // Show loading on page navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('a:not([target="_blank"])');
+            links.forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href && !href.startsWith('#') && !href.startsWith('javascript:') && !href.startsWith('mailto:') && !href.startsWith('tel:')) {
+                        if (pageLoading) {
+                            e.preventDefault();
+                            pageLoading.classList.remove('hidden');
+                            pageLoading.style.opacity = '1';
+                            setTimeout(function() {
+                                window.location.href = href;
+                            }, 300);
+                        }
+                    }
+                });
+            });
+        });
+
+        // SweetAlert Helper Functions
+        window.SwalHelper = {
+            // Success Toast
+            success: function(message) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer);
+                        toast.addEventListener('mouseleave', Swal.resumeTimer);
+                    }
+                });
+                Toast.fire({
+                    icon: 'success',
+                    title: message
+                });
+            },
+
+            // Error Toast
+            error: function(message) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer);
+                        toast.addEventListener('mouseleave', Swal.resumeTimer);
+                    }
+                });
+                Toast.fire({
+                    icon: 'error',
+                    title: message
+                });
+            },
+
+            // Info Toast
+            info: function(message) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer);
+                        toast.addEventListener('mouseleave', Swal.resumeTimer);
+                    }
+                });
+                Toast.fire({
+                    icon: 'info',
+                    title: message
+                });
+            },
+
+            // Warning Toast
+            warning: function(message) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer);
+                        toast.addEventListener('mouseleave', Swal.resumeTimer);
+                    }
+                });
+                Toast.fire({
+                    icon: 'warning',
+                    title: message
+                });
+            },
+
+            // Confirm Dialog
+            confirm: function(title, text, callback) {
+                Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#0052CC',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, lanjutkan',
+                    cancelButtonText: 'Batal',
+                    showClass: {
+                        popup: 'swal2-show',
+                        backdrop: 'swal2-backdrop-show',
+                        icon: 'swal2-icon-show'
+                    },
+                    hideClass: {
+                        popup: 'swal2-hide',
+                        backdrop: 'swal2-backdrop-hide',
+                        icon: 'swal2-icon-hide'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed && callback) {
+                        callback();
+                    }
+                });
+            },
+
+            // Delete Confirm
+            deleteConfirm: function(title, text, callback) {
+                Swal.fire({
+                    title: title,
+                    text: text,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, hapus',
+                    cancelButtonText: 'Batal',
+                    showClass: {
+                        popup: 'swal2-show',
+                        backdrop: 'swal2-backdrop-show',
+                        icon: 'swal2-icon-show'
+                    },
+                    hideClass: {
+                        popup: 'swal2-hide',
+                        backdrop: 'swal2-backdrop-hide',
+                        icon: 'swal2-icon-hide'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed && callback) {
+                        callback();
+                    }
+                });
+            },
+
+            // Loading
+            loading: function(message = 'Memuat...') {
+                Swal.fire({
+                    title: message,
+                    html: '<div class="swal2-loader"></div>',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
+
+            // Close Loading
+            close: function() {
+                Swal.close();
+            }
+        };
     </script>
 </body>
 </html>

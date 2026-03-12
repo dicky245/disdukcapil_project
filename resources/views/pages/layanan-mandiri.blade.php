@@ -76,6 +76,21 @@
 @endphp
 
 <main class="pt-0">
+    {{-- Page Loading --}}
+    <div id="pageLoading" class="page-loading">
+        <div class="loading-logo bg-white rounded-2xl shadow-2xl overflow-hidden flex items-center justify-center">
+            <img src="{{ asset('images/logo_toba.jpeg') }}" alt="Logo Kabupaten Toba" class="w-full h-full object-contain p-3">
+        </div>
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Disdukcapil Kabupaten Toba</div>
+        <div class="loading-subtext">Memuat layanan mandiri...</div>
+        <div class="loading-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
     {{-- Hero Section --}}
     <section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-800 text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -312,12 +327,58 @@
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
 
-        document.getElementById('serviceForm').onsubmit = function() {
-        Swal.fire({
-        title: 'Memproses...',
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
-    });
+        document.getElementById('serviceForm').onsubmit = function(e) {
+        e.preventDefault();
+
+        // Validasi form
+        const formData = new FormData(this);
+        const requiredFields = this.querySelectorAll('[required]');
+        let isValid = true;
+
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.classList.add('border-red-500');
+            } else {
+                field.classList.remove('border-red-500');
+            }
+        });
+
+        if (!isValid) {
+            SwalHelper.warning('Harap isi semua field yang wajib diisi!');
+            return false;
+        }
+
+        // Show loading
+        SwalHelper.loading('Memproses pengajuan...');
+
+        // Submit form
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            SwalHelper.close();
+            if (data.success) {
+                SwalHelper.success('Pengajuan berhasil dikirim! Nomor registrasi: ' + data.nomor_registrasi);
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+                this.reset();
+            } else {
+                SwalHelper.error(data.message || 'Terjadi kesalahan. Silakan coba lagi.');
+            }
+        })
+        .catch(error => {
+            SwalHelper.close();
+            SwalHelper.error('Terjadi kesalahan. Silakan coba lagi.');
+            console.error('Error:', error);
+        });
+
+        return false;
 };
     }
 

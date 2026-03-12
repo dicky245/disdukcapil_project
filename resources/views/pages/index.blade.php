@@ -6,13 +6,19 @@
 @endphp
 
 <main class="pt-0">
-    {{-- Page Loading Skeleton --}}
+    {{-- Page Loading with Animated Logo --}}
     <div id="pageLoading" class="page-loading">
-        <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-4 skeleton">
-            <span class="text-3xl">🏛️</span>
+        <div class="loading-logo bg-white rounded-2xl shadow-2xl overflow-hidden flex items-center justify-center">
+            <img src="{{ asset('images/logo_toba.jpeg') }}" alt="Logo Kabupaten Toba" class="w-full h-full object-contain p-3">
         </div>
-        <div class="skeleton w-48 h-6 mb-4"></div>
-        <div class="skeleton w-32 h-4"></div>
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Disdukcapil Kabupaten Toba</div>
+        <div class="loading-subtext">Memuat layanan...</div>
+        <div class="loading-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
     </div>
 
     {{-- Hero Section --}}
@@ -20,17 +26,25 @@
         {{-- Background Figures --}}
         <div class="hero-bg-left">
             <div class="hero-figure">
-                <div class="hero-figure-emoji">👨‍💼</div>
-                <div class="hero-figure-name">[Nama Bupati Toba]</div>
-                <div class="hero-figure-title">Bupati Kabupaten Toba</div>
+                <div class="hero-figure-image">
+                    <img src="{{ asset('images/Bupati_Toba_Effendi_Sintong_Panangian_Napitupulu.png') }}"
+                         alt="Bupati Toba"
+                         class="w-full h-full object-cover">
+                </div>
+                <div class="hero-figure-name">Bupati Toba</div>
+                <div class="hero-figure-title">Effendi Sintong Panangian Napitupulu</div>
             </div>
         </div>
 
         <div class="hero-bg-right">
             <div class="hero-figure">
-                <div class="hero-figure-emoji">👩‍💼</div>
-                <div class="hero-figure-name">[Nama Wakil Bupati Toba]</div>
-                <div class="hero-figure-title">Wakil Bupati Kabupaten Toba</div>
+                <div class="hero-figure-image">
+                    <img src="{{ asset('images/Wakil_Bupati_Toba_Audi_Murphy_O._Sitorus.png') }}"
+                         alt="Wakil Bupati Toba"
+                         class="w-full h-full object-cover">
+                </div>
+                <div class="hero-figure-name">Wakil Bupati Toba</div>
+                <div class="hero-figure-title">Audi Murphy O. Sitorus</div>
             </div>
         </div>
 
@@ -397,11 +411,11 @@
     }
 
     .hero-bg-left {
-        left: -100px;
+        left: -50px;
     }
 
     .hero-bg-right {
-        right: -100px;
+        right: -50px;
     }
 
     .hero-figure {
@@ -409,24 +423,37 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
+        padding: 0 20px;
     }
 
-    .hero-figure-emoji {
-        font-size: 380px;
-        filter: blur(1px);
+    .hero-figure-image {
+        width: 280px;
+        height: 380px;
+        border-radius: 16px;
+        overflow: hidden;
+        filter: blur(0.3px);
         animation: figureFloat 6s ease-in-out infinite;
+        box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
+        border: 4px solid rgba(255, 255, 255, 0.2);
     }
 
     .hero-figure-name {
         font-size: 1.1rem;
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.9);
-        margin-top: -30px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.95);
+        margin-top: 16px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        max-width: 100%;
+        word-wrap: break-word;
     }
 
     .hero-figure-title {
         font-size: 0.85rem;
-        color: rgba(255, 255, 255, 0.7);
+        color: rgba(255, 255, 255, 0.8);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        max-width: 100%;
+        word-wrap: break-word;
+        line-height: 1.3;
     }
 
     .hero-bg-right .hero-figure-emoji {

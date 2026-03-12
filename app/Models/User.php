@@ -15,11 +15,17 @@ class User extends Authenticatable
         'name',
         'username',
         'password',
+<<<<<<< Updated upstream
+=======
+        'security_question_id',
+        'security_question_answer',
+>>>>>>> Stashed changes
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'security_question_answer',
     ];
 
     protected function casts(): array
@@ -38,4 +44,15 @@ class User extends Authenticatable
         // User memiliki satu record di tabel keagamaan
         return $this->hasOne(Keagamaan_Model::class, 'user_id', 'id');
     }
+<<<<<<< Updated upstream
+=======
+
+    /**
+     * Relasi dengan SecurityQuestion
+     */
+    public function securityQuestion()
+    {
+        return $this->belongsTo(SecurityQuestion::class);
+    }
+>>>>>>> Stashed changes
 }

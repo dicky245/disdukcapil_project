@@ -90,6 +90,26 @@
             <p class="sidebar-text px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Akun</p>
         </div>
 
+        {{-- User Info --}}
+        <div class="px-4 pb-4">
+            <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
+                    <div class="sidebar-text">
+                        <p class="font-semibold text-gray-800 text-sm">{{ auth()->user()->name }}</p>
+                        <p class="text-xs text-gray-600">@{{ auth()->user()->username }}</p>
+                    </div>
+                </div>
+                <div class="sidebar-text">
+                    <p class="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full inline-block">
+                        <i class="fas fa-shield-alt mr-1"></i>Administrator
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <a href="{{ route('admin.manajemen-akun') }}" class="sidebar-link {{ request()->routeIs('admin.manajemen-akun') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700">
             <i class="fas fa-users-cog w-5"></i>
             <span class="sidebar-text font-medium">Manajemen Akun</span>
@@ -98,7 +118,7 @@
             <i class="fas fa-pray w-5"></i>
             <span class="sidebar-text font-medium">Akun Keagamaan</span>
         </a>
-        <form method="POST" action="{{ route('logout') }}" class="inline">
+        <form method="POST" action="{{ route('logout') }}" class="inline" onsubmit="handleLogout(event)">
             @csrf
             <button type="submit" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50">
                 <i class="fas fa-sign-out-alt w-5"></i>
@@ -130,5 +150,19 @@
 
         menu.classList.toggle('active');
         toggle.classList.toggle('active');
+    }
+
+    // Logout Handler with SweetAlert
+    function handleLogout(event) {
+        event.preventDefault();
+        const form = event.target.closest('form');
+
+        SwalHelper.confirm(
+            'Keluar dari Akun',
+            'Apakah Anda yakin ingin keluar dari sistem?',
+            function() {
+                form.submit();
+            }
+        );
     }
 </script>

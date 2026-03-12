@@ -3,6 +3,7 @@
 use App\Http\Controllers\Pengguna_Controller;
 use App\Http\Controllers\Antrian_Online_Controller;
 use App\Http\Controllers\Auth\Login_Controller;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\Admin_Controller;
 use App\Http\Controllers\Keagamaan\Keagamaan_Controller;
 use App\Http\Controllers\KartKeluargaController;
@@ -85,6 +86,14 @@ Route::prefix('admin')->group(function () {
     // Admin Login (tanpa middleware auth)
     Route::get('/login', [Login_Controller::class, 'adminLoginForm'])->name('admin.login');
     Route::post('/login', [Login_Controller::class, 'adminLogin'])->name('admin.login.submit');
+
+    // Admin Registrasi (hanya jika belum ada admin)
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('admin.register');
+    Route::post('/register', [RegisterController::class, 'register'])->name('admin.register.submit');
+
+    // Verifikasi Pertanyaan Keamanan
+    Route::get('/verify/{user}', [Login_Controller::class, 'showVerifyQuestion'])->name('admin.verify.question');
+    Route::post('/verify', [RegisterController::class, 'verifySecurityQuestion'])->name('admin.verify.submit');
 
     // Admin Dashboard & Pages (membutuhkan auth)
     Route::middleware(['auth'])->group(function () {

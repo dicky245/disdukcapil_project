@@ -16,8 +16,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('username')->unique();
             $table->string('password');
+            $table->unsignedBigInteger('security_question_id')->nullable();
+            $table->text('security_question_answer')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
+            $table->foreign('security_question_id')->references('id')->on('security_questions')->onDelete('set null');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -36,9 +40,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('users');

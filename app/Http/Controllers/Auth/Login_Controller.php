@@ -20,8 +20,16 @@ class Login_Controller extends Controller
             return redirect()->route('home');
         }
 
+        // Cek apakah belum ada admin - jika belum, tampilkan pesan untuk registrasi
+        $adminExists = User::whereHas('roles', function($query) {
+            $query->where('name', 'Admin');
+        })->exists();
+
         return response()
-            ->view('auth.login', ['isAdmin' => false])
+            ->view('auth.login', [
+                'isAdmin' => false,
+                'adminExists' => $adminExists
+            ])
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
             ->header('Pragma', 'no-cache')
             ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
@@ -60,7 +68,7 @@ class Login_Controller extends Controller
             ])->onlyInput('username');
         }
 
-        // Login user
+        // Login user untuk non-admin
         Auth::login($user);
         $request->session()->regenerate();
 
@@ -85,11 +93,25 @@ class Login_Controller extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        return view('auth.login', ['isAdmin' => true]);
+        // Cek apakah belum ada admin
+        $adminExists = User::whereHas('roles', function($query) {
+            $query->where('name', 'Admin');
+        })->exists();
+
+        // Jika belum ada admin, redirect ke registrasi
+        if (!$adminExists) {
+            return redirect()->route('admin.register')
+                ->with('info', 'Silakan lakukan registrasi admin pertama kali.');
+        }
+
+        return view('auth.login', [
+            'isAdmin' => true,
+            'adminExists' => $adminExists
+        ]);
     }
 
     /**
-     * Proses login admin
+     * Proses login admin dengan verifikasi pertanyaan keamanan
      */
     public function adminLogin(Request $request)
     {
@@ -123,12 +145,32 @@ class Login_Controller extends Controller
             ])->onlyInput('username');
         }
 
-        // Login user
-        Auth::login($user);
-        $request->session()->regenerate();
+        // Username dan password benar - redirect ke verifikasi pertanyaan keamanan
+        return redirect()->route('admin.verify.question', ['user' => $user->id])
+            ->with('info', 'Username dan password benar. Silakan verifikasi dengan pertanyaan keamanan.');
+    }
 
-        // Redirect ke dashboard admin
-        return redirect()->route('admin.dashboard')->with('success', 'Selamat datang, ' . $user->name);
+    /**
+     * Tampilkan halaman verifikasi pertanyaan keamanan
+     */
+    public function showVerifyQuestion($userId)
+    {
+        $user = User::find($userId);
+
+        if (!$user) {
+            return redirect()->route('admin.login')
+                ->withErrors(['login_error' => 'User tidak ditemukan.']);
+        }
+
+        // Load pertanyaan keamanan
+        $user->load('securityQuestion');
+
+        if (!$user->securityQuestion) {
+            return redirect()->route('admin.login')
+                ->withErrors(['login_error' => 'Pertanyaan keamanan tidak ditemukan.']);
+        }
+
+        return view('auth.verify-question', compact('user'));
     }
 
     /**

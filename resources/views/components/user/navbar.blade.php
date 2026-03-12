@@ -4,8 +4,8 @@
         <div class="flex justify-between items-center h-16">
             {{-- Logo --}}
             <a href="{{ route('home') }}" class="flex items-center gap-3 hover:scale-105 transition-transform">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-                    <span class="text-xl">🏛️</span>
+                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-md overflow-hidden border-2 border-blue-200">
+                    <img src="{{ asset('images/logo_toba.jpeg') }}" alt="Logo Kabupaten Toba" class="w-full h-full object-contain">
                 </div>
                 <div>
                     <span class="text-lg font-bold text-gray-800">Disdukcapil Toba</span>
@@ -27,9 +27,15 @@
                 <a href="{{ route('statistik') }}" class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('statistik') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50' }} transition">
                     <i class="fas fa-chart-line mr-2"></i>Statistik
                 </a>
-                <a href="{{ route('login') }}" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">
+                <a href="{{ route('admin.login') }}" class="px-4 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.login*') ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50' }} transition">
                     <i class="fas fa-sign-in-alt mr-2"></i>Login
                 </a>
+                @if(!$adminExists)
+                    {{-- Tombol Daftar Admin - Berbeda dan di akhir navbar --}}
+                    <a href="{{ route('admin.register') }}" class="ml-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg hover:shadow-xl hover:from-emerald-600 hover:to-green-700 transition-all transform hover:scale-105 border-2 border-emerald-300">
+                        <i class="fas fa-user-plus mr-2"></i>Daftar Admin
+                    </a>
+                @endif
             </nav>
 
             {{-- Mobile Menu Button --}}
@@ -54,9 +60,15 @@
             <a href="{{ route('statistik') }}" class="block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">
                 <i class="fas fa-chart-line mr-2"></i>Statistik
             </a>
-            <a href="{{ route('login') }}" class="block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">
+            <a href="{{ route('admin.login') }}" class="block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">
                 <i class="fas fa-sign-in-alt mr-2"></i>Login
             </a>
+            @if(!$adminExists)
+                {{-- Tombol Daftar Admin - Berbeda untuk mobile --}}
+                <a href="{{ route('admin.register') }}" class="block px-4 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg mt-2 text-center">
+                    <i class="fas fa-user-plus mr-2"></i>Daftar Admin
+                </a>
+            @endif
         </nav>
     </div>
 </header>

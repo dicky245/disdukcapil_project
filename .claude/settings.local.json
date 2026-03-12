@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd D:\\\\Semester 6\\\\PA 3\\\\Project\\\\PA3:*)",
+      "Bash(cd D:\\\\Semester 6\\\\PA 3\\\\Project\\\\PA3\\\\database\\\\migrations:*)"
+    ]
+  }
+}

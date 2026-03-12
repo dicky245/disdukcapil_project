@@ -88,12 +88,8 @@ class RolePermissionSeeder extends Seeder
                 'delete dokumen',
             ]);
 
-            $admin = User::create([
-                'name' => 'Administrator',
-                'username' => 'admin',
-                'password' => Hash::make('admin123'),
-            ]);
-            $admin->assignRole($adminRole);
+            // Admin user akan dibuat melalui form registrasi
+            // User::query()->delete(); sudah dipanggil di atas
 
             $this->command->info('');
             $this->command->info('========================================');
@@ -104,11 +100,7 @@ class RolePermissionSeeder extends Seeder
             $this->command->info('  - Admin (Semua permissions)');
             $this->command->info('  - Keagamaan (Antrian, Pernikahan, Sinkronisasi, Dokumen)');
             $this->command->info('');
-            $this->command->info('AKUN ADMIN:');
-            $this->command->info('  Username: admin');
-            $this->command->info('  Password: admin123');
-            $this->command->info('');
-            $this->command->info('CATATAN: Akun Keagamaan dapat dibuat oleh Admin');
+            $this->command->info('CATATAN: Silakan registrasi admin melalui halaman /admin/register');
             $this->command->info('========================================');
         });
     }

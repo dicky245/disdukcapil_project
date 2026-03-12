@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin - Disdukcapil Kabupaten Toba</title>
+    <title>Registrasi Admin - Disdukcapil Kabupaten Toba</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -82,7 +82,9 @@
         }
 
         .input-group input:focus ~ label,
-        .input-group input:not(:placeholder-shown) ~ label {
+        .input-group input:not(:placeholder-shown) ~ label,
+        .input-group select:focus ~ label,
+        .input-group select:valid ~ label {
             transform: translateY(-24px) scale(0.85);
             color: #0052CC;
         }
@@ -114,6 +116,17 @@
             width: 300px;
             height: 300px;
         }
+
+        /* Password Strength Indicator */
+        .strength-meter {
+            height: 4px;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .strength-weak { background: #ef4444; width: 33%; }
+        .strength-medium { background: #f59e0b; width: 66%; }
+        .strength-strong { background: #10b981; width: 100%; }
     </style>
 </head>
 <body class="bg-animated min-h-screen flex items-center justify-center p-4">
@@ -125,7 +138,7 @@
         <div class="absolute w-48 h-48 bg-white/10 rounded-full top-1/4 right-1/4 float-animation" style="animation-delay: 4s;"></div>
     </div>
 
-    <!-- Login Container -->
+    <!-- Register Container -->
     <div class="relative z-10 w-full max-w-md">
         <!-- Logo & Header -->
         <div class="text-center mb-8">
@@ -133,17 +146,17 @@
                 <img src="{{ asset('images/logo_toba.jpeg') }}" alt="Logo Kabupaten Toba" class="w-full h-full object-contain">
             </div>
             <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-2">Disdukcapil Toba</h1>
-            <p class="text-blue-100 text-lg">Portal Admin</p>
+            <p class="text-blue-100 text-lg">Registrasi Admin</p>
         </div>
 
-        <!-- Login Card -->
+        <!-- Register Card -->
         <div class="bg-white rounded-3xl shadow-2xl p-8">
             <div class="text-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-1">Selamat Datang</h2>
-                <p class="text-gray-600">Masuk ke dashboard admin</p>
+                <h2 class="text-2xl font-bold text-gray-800 mb-1">Buat Akun Admin</h2>
+                <p class="text-gray-600">Registrasi hanya dapat dilakukan sekali</p>
             </div>
 
-            <!-- Info Messages -->
+            <!-- Info Message -->
             @if (session('info'))
                 <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-xl mb-4">
                     <div class="flex items-center gap-2">
@@ -153,26 +166,9 @@
                 </div>
             @endif
 
-            @if (session('success'))
-                <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-4">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-check-circle"></i>
-                        <span>{{ session('success') }}</span>
-                    </div>
-                </div>
-            @endif
-
-            @if (session('warning'))
-                <div class="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-xl mb-4">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span>{{ session('warning') }}</span>
-                    </div>
-                </div>
-            @endif
-
-            <form method="POST" action="{{ $isAdmin ?? false ? route('admin.login.submit') : route('login.submit') }}" class="space-y-5">
+            <form method="POST" action="{{ route('admin.register.submit') }}" class="space-y-5" id="registerForm">
                 @csrf
+
                 <!-- Validation Errors -->
                 @if ($errors->any())
                     <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
@@ -184,13 +180,23 @@
                     </div>
                 @endif
 
+                <!-- Name Input -->
+                <div class="input-group">
+                    <input type="text" id="name" name="name" required placeholder=" "
+                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition peer"
+                           value="{{ old('name') }}">
+                    <label for="name" class="absolute left-4 top-3 text-gray-400 pointer-events-none">
+                        <i class="fas fa-user mr-2"></i>Nama Lengkap
+                    </label>
+                </div>
+
                 <!-- Username Input -->
                 <div class="input-group">
                     <input type="text" id="username" name="username" required placeholder=" "
                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition peer"
                            value="{{ old('username') }}">
                     <label for="username" class="absolute left-4 top-3 text-gray-400 pointer-events-none">
-                        <i class="fas fa-user mr-2"></i>Username
+                        <i class="fas fa-at mr-2"></i>Username
                     </label>
                 </div>
 
@@ -202,24 +208,78 @@
                         <label for="password" class="absolute left-4 top-3 text-gray-400 pointer-events-none">
                             <i class="fas fa-lock mr-2"></i>Password
                         </label>
-                        <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        <button type="button" onclick="togglePassword('password', 'eyeIcon1')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-eye" id="eyeIcon1"></i>
+                        </button>
+                    </div>
+                    <!-- Password Strength Indicator -->
+                    <div class="mt-2 h-1 bg-gray-200 rounded-full overflow-hidden">
+                        <div id="strengthMeter" class="strength-meter"></div>
+                    </div>
+                    <p id="strengthText" class="text-xs mt-1 text-gray-500"></p>
+                </div>
+
+                <!-- Confirm Password Input -->
+                <div class="input-group">
+                    <div class="relative">
+                        <input type="password" id="password_confirmation" name="password_confirmation" required placeholder=" "
+                               class="w-full px-4 py-3 pr-12 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition peer">
+                        <label for="password_confirmation" class="absolute left-4 top-3 text-gray-400 pointer-events-none">
+                            <i class="fas fa-lock mr-2"></i>Konfirmasi Password
+                        </label>
+                        <button type="button" onclick="togglePassword('password_confirmation', 'eyeIcon2')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-eye" id="eyeIcon2"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- Remember Me -->
-                <div class="flex items-center">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" name="remember" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500" {{ old('remember') ? 'checked' : '' }}>
-                        <span class="text-sm text-gray-600">Ingat saya</span>
+                <!-- Security Question Select -->
+                <div class="input-group">
+                    <select id="security_question_id" name="security_question_id" required
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition peer appearance-none bg-white">
+                        <option value="" disabled selected></option>
+                        @foreach($securityQuestions as $question)
+                            <option value="{{ $question->id }}" {{ old('security_question_id') == $question->id ? 'selected' : '' }}>
+                                {{ $question->question }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <label for="security_question_id" class="absolute left-4 top-3 text-gray-400 pointer-events-none">
+                        <i class="fas fa-shield-alt mr-2"></i>Pilih Pertanyaan Keamanan
                     </label>
+                    <div class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
                 </div>
 
-                <!-- Login Button -->
+                <!-- Security Answer Input -->
+                <div class="input-group">
+                    <input type="text" id="security_answer" name="security_answer" required placeholder=" "
+                           class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition peer"
+                           value="{{ old('security_answer') }}">
+                    <label for="security_answer" class="absolute left-4 top-3 text-gray-400 pointer-events-none">
+                        <i class="fas fa-key mr-2"></i>Jawaban Pertanyaan Keamanan
+                    </label>
+                    <p class="text-xs text-gray-500 mt-1">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Jawaban akan dienkripsi untuk keamanan
+                    </p>
+                </div>
+
+                <!-- Warning Message -->
+                <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-xl">
+                    <div class="flex items-start gap-2">
+                        <i class="fas fa-exclamation-triangle mt-0.5"></i>
+                        <p class="text-sm">
+                            <strong>PENTING:</strong> Registrasi hanya dapat dilakukan sekali. Pastikan Anda mengingat username, password, dan jawaban pertanyaan keamanan dengan baik.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Register Button -->
                 <button type="submit" class="w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-cyan-700 transition-all transform hover:scale-[1.02] shadow-lg btn-ripple flex items-center justify-center gap-2">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Masuk
+                    <i class="fas fa-user-plus"></i>
+                    Daftar Sekarang
                 </button>
             </form>
 
@@ -230,27 +290,11 @@
                 <div class="flex-1 h-px bg-gray-200"></div>
             </div>
 
-            <!-- Register Admin Link (Hanya tampil jika belum ada admin) -->
-            @if(isset($adminExists) && !$adminExists && ($isAdmin ?? false))
-                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4">
-                    <div class="text-center">
-                        <p class="text-sm text-blue-800 mb-3">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            Belum ada admin terdaftar
-                        </p>
-                        <a href="{{ route('admin.register') }}" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition-all transform hover:scale-[1.02] shadow-lg">
-                            <i class="fas fa-user-plus"></i>
-                            Daftar Admin Pertama
-                        </a>
-                    </div>
-                </div>
-            @endif
-
-            <!-- Back to Home -->
+            <!-- Back to Login -->
             <div class="text-center">
-                <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 font-medium transition">
+                <a href="{{ route('admin.login') }}" class="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 font-medium transition">
                     <i class="fas fa-arrow-left"></i>
-                    Kembali ke Beranda
+                    Kembali ke Login
                 </a>
             </div>
         </div>
@@ -263,9 +307,9 @@
 
     <script>
         // Toggle Password Visibility
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const eyeIcon = document.getElementById('eyeIcon');
+        function togglePassword(inputId, iconId) {
+            const passwordInput = document.getElementById(inputId);
+            const eyeIcon = document.getElementById(iconId);
 
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
@@ -277,6 +321,48 @@
                 eyeIcon.classList.add('fa-eye');
             }
         }
+
+        // Password Strength Checker
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthMeter = document.getElementById('strengthMeter');
+            const strengthText = document.getElementById('strengthText');
+
+            let strength = 0;
+
+            // Check password length
+            if (password.length >= 8) strength++;
+            if (password.length >= 12) strength++;
+
+            // Check for lowercase
+            if (/[a-z]/.test(password)) strength++;
+
+            // Check for uppercase
+            if (/[A-Z]/.test(password)) strength++;
+
+            // Check for numbers
+            if (/[0-9]/.test(password)) strength++;
+
+            // Check for special characters
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+            // Update strength meter
+            strengthMeter.className = 'strength-meter';
+
+            if (strength <= 2) {
+                strengthMeter.classList.add('strength-weak');
+                strengthText.textContent = 'Lemah - Tambahkan karakter, angka, dan simbol';
+                strengthText.className = 'text-xs mt-1 text-red-500';
+            } else if (strength <= 4) {
+                strengthMeter.classList.add('strength-medium');
+                strengthText.textContent = 'Sedang - Bisa lebih kuat';
+                strengthText.className = 'text-xs mt-1 text-yellow-500';
+            } else {
+                strengthMeter.classList.add('strength-strong');
+                strengthText.textContent = 'Kuat - Password yang baik!';
+                strengthText.className = 'text-xs mt-1 text-green-500';
+            }
+        });
 
         // Auto-hide flash messages after 5 seconds
         document.addEventListener('DOMContentLoaded', function() {
