@@ -15,10 +15,6 @@ class User extends Authenticatable
         'name',
         'username',
         'password',
-        'agama',    // Tambahkan ini
-        'phone',    // Tambahkan ini
-        'role',     // Tambahkan ini
-        'status',    // Tambahkan ini
     ];
 
     protected $hidden = [
@@ -36,5 +32,10 @@ class User extends Authenticatable
     public function username(): string
     {
         return 'username';
+    }
+    public function detail_keagamaan()
+    {
+        // User memiliki satu record di tabel keagamaan
+        return $this->hasOne(Keagamaan_Model::class, 'user_id', 'id');
     }
 }

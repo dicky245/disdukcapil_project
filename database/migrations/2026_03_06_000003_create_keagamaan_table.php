@@ -13,15 +13,16 @@ return new class extends Migration
     {
         Schema::create('keagamaan', function (Blueprint $table) {
             $table->id('keagamaan_id');
+            // Tambahkan kolom ini sebagai penghubung ke tabel users
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+
             $table->foreignId('jenis_keagamaan_id')->constrained(
                 table: 'jenis_keagamaan',
                 column: 'jenis_keagamaan_id'
             )->onDelete('cascade');
             $table->text('alamat');
-            $table->text('keterangan')->nullable();
+            $table->enum('status', ['aktif', 'non-aktif'])->default('aktif');
             $table->timestamps();
-
-            $table->index('jenis_keagamaan_id');
         });
     }
 

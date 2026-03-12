@@ -16,11 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('username')->unique();
             $table->string('password');
-            $table->string('agama')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('role')->default('Keagamaan');
-            $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
