@@ -401,7 +401,7 @@
     .hero-bg-left,
     .hero-bg-right {
         position: absolute;
-        top: 50%;
+        top: 60%;
         transform: translateY(-50%);
         width: 450px;
         height: 650px;

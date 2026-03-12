@@ -3,8 +3,8 @@
     <div class="max-w-7xl mx-auto px-6">
         <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600">
             <div class="flex items-center gap-3 mb-4 md:mb-0">
-                <div class="w-8 h-8 bg-gradient-to-br from-teal-600 to-teal-700 rounded-lg flex items-center justify-center">
-                    <span class="text-sm">🕌</span>
+                <div class="w-8 h-8 bg-gradient-to-br from-teal-600 to-teal-700 rounded-lg flex items-center justify-center overflow-hidden p-1">
+                    <img src="{{ asset('images/logo_toba.jpeg') }}" alt="Logo Toba" class="w-full h-full object-contain">
                 </div>
                 <p>&copy; {{ date('Y') }} Disdukcapil Kabupaten Toba - Layanan Keagamaan</p>
             </div>

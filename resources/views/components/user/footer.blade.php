@@ -1,11 +1,11 @@
 {{-- Footer --}}
 <footer class="bg-gray-900 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="grid md:grid-cols-4 gap-8">
-            <div class="md:col-span-2">
+        <div class="grid md:grid-cols-3 gap-8">
+            <div>
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
-                        <span class="text-2xl">🏛️</span>
+                    <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center overflow-hidden p-1">
+                        <img src="{{ asset('images/logo_toba.jpeg') }}" alt="Logo Toba" class="w-full h-full object-contain">
                     </div>
                     <div>
                         <h3 class="text-xl font-bold">Disdukcapil Toba</h3>
