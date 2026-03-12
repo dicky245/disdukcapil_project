@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Antrian_Online_Model;
 use App\Models\Lacak_Berkas_Model;
+use App\Models\Jenis_Keagamaan_Model; // TAMBAHKAN INI
+use App\Models\User;
 use App\Models\Layanan_Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -139,15 +141,56 @@ class Admin_Controller extends Controller
     /**
      * Tampilkan halaman manajemen akun
      */
+    // Pastikan Anda sudah mengimpor Model di bagian atas file
+
+    // Pastikan nama fungsinya 'manajemen_akun' sesuai dengan Route Anda
     public function manajemen_akun()
     {
         if (!Auth::user()->hasRole('Admin')) {
-            abort(403, 'Anda tidak memiliki akses.');
+            abort(403);
         }
 
-        return view('admin.manajemen_akun');
-    }
+        $users = User::all();
 
+        // Pastikan variabel ini diambil agar tidak error di @foreach
+        $list_agama = Jenis_Keagamaan_Model::all();
+
+        return view('admin.manajemen_akun', compact('users', 'list_agama'));
+    }
+    // --- TARUH FUNGSI STORE DI SINI ---
+    public function store_akun(Request $request)
+    {
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'username' => 'required|unique:users,username,' . $request->accountId,
+            'agama'    => 'required',
+            'status'   => 'required',
+            // Password wajib diisi jika akun baru (accountId null)
+            'password' => $request->accountId ? 'nullable|min:8' : 'required|min:8',
+        ]);
+
+        // Menyiapkan data untuk disimpan
+        $data = [
+            'name'     => $request->name,
+            'username' => $request->username,
+            'agama'    => $request->agama,
+            'phone'    => $request->phone,
+            'status'   => $request->status,
+            'role'     => 'Petugas',
+        ];
+
+        // Cek apakah password diisi (untuk akun baru atau jika admin ingin ganti password)
+        if ($request->filled('password')) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        $user = User::updateOrCreate(
+            ['id' => $request->accountId],
+            $data // Gunakan variabel $data yang sudah kita susun di atas
+        );
+
+        return redirect()->back()->with('success', 'Akun berhasil disimpan!');
+    }
     /**
      * Tampilkan halaman akun keagamaan
      */
@@ -243,9 +286,9 @@ class Admin_Controller extends Controller
             $query->where('layanan_id', $request->layanan_id);
         }
 
-        // Filter berdasarkan tanggal (menggunakan created_at)
+        // Filter berdasarkan tanggal
         if ($request->has('tanggal') && $request->tanggal != '') {
-            $query->whereDate('created_at', $request->tanggal);
+            $query->where('tanggal', $request->tanggal);
         }
 
         $data_antrian = $query->orderBy('created_at', 'desc')->get();
@@ -257,9 +300,9 @@ class Admin_Controller extends Controller
     }
 
     /**
-     * Terima dokumen (langkah pertama)
+     * Mulai proses antrian
      */
-    public function Terima_Dokumen($id)
+    public function Mulai_Antrian($id)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
@@ -274,41 +317,26 @@ class Admin_Controller extends Controller
             ], 404);
         }
 
-        // Cek apakah status sudah Dokumen Diterima
-        if ($antrian->status_antrian === 'Dokumen Diterima') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Dokumen sudah diterima sebelumnya',
-            ], 400);
-        }
+        $antrian->update(['status_antrian' => 'Sedang Diproses']);
 
-        $antrian->update(['status_antrian' => 'Dokumen Diterima']);
-
-        // Cek apakah sudah ada lacak berkas dengan status Dokumen Diterima
-        $existing_lacak = Lacak_Berkas_Model::where('antrian_online_id', $antrian->antrian_online_id)
-            ->where('status', 'Dokumen Diterima')
-            ->first();
-
-        // Hanya buat lacak berkas baru jika belum ada
-        if (!$existing_lacak) {
-            Lacak_Berkas_Model::create([
-                'antrian_online_id' => $antrian->antrian_online_id,
-                'status' => 'Dokumen Diterima',
-                'tanggal' => date('Y-m-d'),
-                'keterangan' => 'Dokumen diterima, menunggu verifikasi',
-            ]);
-        }
+        // Tambahkan riwayat lacak berkas
+        Lacak_Berkas_Model::create([
+            'antrian_online_id' => $antrian->antrian_online_id,
+            'status' => 'Sedang Diproses',
+            'tanggal' => date('Y-m-d'),
+            'keterangan' => 'Antrian mulai diproses oleh admin',
+        ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Dokumen berhasil diterima',
+            'message' => 'Antrian berhasil diproses',
         ]);
     }
 
     /**
-     * Mulai verifikasi data
+     * Selesaikan antrian
      */
-    public function Verifikasi_Data($id)
+    public function Selesaikan_Antrian($id)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
@@ -323,132 +351,19 @@ class Admin_Controller extends Controller
             ], 404);
         }
 
-        // Cek apakah status sudah Verifikasi Data
-        if ($antrian->status_antrian === 'Verifikasi Data') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Status sudah Verifikasi Data',
-            ], 400);
-        }
+        $antrian->update(['status_antrian' => 'Selesai']);
 
-        $antrian->update(['status_antrian' => 'Verifikasi Data']);
-
-        // Cek apakah sudah ada lacak berkas dengan status Verifikasi Data
-        $existing_lacak = Lacak_Berkas_Model::where('antrian_online_id', $antrian->antrian_online_id)
-            ->where('status', 'Verifikasi Data')
-            ->first();
-
-        // Hanya buat lacak berkas baru jika belum ada
-        if (!$existing_lacak) {
-            Lacak_Berkas_Model::create([
-                'antrian_online_id' => $antrian->antrian_online_id,
-                'status' => 'Verifikasi Data',
-                'tanggal' => date('Y-m-d'),
-                'keterangan' => 'Data sedang diverifikasi oleh admin',
-            ]);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Verifikasi data berhasil dimulai',
+        // Tambahkan riwayat lacak berkas
+        Lacak_Berkas_Model::create([
+            'antrian_online_id' => $antrian->antrian_online_id,
+            'status' => 'Selesai',
+            'tanggal' => date('Y-m-d'),
+            'keterangan' => 'Antrian telah selesai diproses',
         ]);
-    }
-
-    /**
-     * Proses cetak dokumen
-     */
-    public function Proses_Cetak($id)
-    {
-        if (!Auth::user()->hasRole('Admin')) {
-            abort(403, 'Anda tidak memiliki akses.');
-        }
-
-        $antrian = Antrian_Online_Model::find($id);
-
-        if (!$antrian) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Antrian tidak ditemukan',
-            ], 404);
-        }
-
-        // Cek apakah status sudah Proses Cetak
-        if ($antrian->status_antrian === 'Proses Cetak') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Status sudah Proses Cetak',
-            ], 400);
-        }
-
-        $antrian->update(['status_antrian' => 'Proses Cetak']);
-
-        // Cek apakah sudah ada lacak berkas dengan status Proses Cetak
-        $existing_lacak = Lacak_Berkas_Model::where('antrian_online_id', $antrian->antrian_online_id)
-            ->where('status', 'Proses Cetak')
-            ->first();
-
-        // Hanya buat lacak berkas baru jika belum ada
-        if (!$existing_lacak) {
-            Lacak_Berkas_Model::create([
-                'antrian_online_id' => $antrian->antrian_online_id,
-                'status' => 'Proses Cetak',
-                'tanggal' => date('Y-m-d'),
-                'keterangan' => 'Dokumen sedang dalam proses cetak',
-            ]);
-        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Proses cetak berhasil dimulai',
-        ]);
-    }
-
-    /**
-     * Siap diambil
-     */
-    public function Siap_Pengambilan($id)
-    {
-        if (!Auth::user()->hasRole('Admin')) {
-            abort(403, 'Anda tidak memiliki akses.');
-        }
-
-        $antrian = Antrian_Online_Model::find($id);
-
-        if (!$antrian) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Antrian tidak ditemukan',
-            ], 404);
-        }
-
-        // Cek apakah status sudah Siap Pengambilan
-        if ($antrian->status_antrian === 'Siap Pengambilan') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Status sudah Siap Pengambilan',
-            ], 400);
-        }
-
-        $antrian->update(['status_antrian' => 'Siap Pengambilan']);
-
-        // Cek apakah sudah ada lacak berkas dengan status Siap Pengambilan
-        $existing_lacak = Lacak_Berkas_Model::where('antrian_online_id', $antrian->antrian_online_id)
-            ->where('status', 'Siap Pengambilan')
-            ->first();
-
-        // Hanya buat lacak berkas baru jika belum ada
-        if (!$existing_lacak) {
-            Lacak_Berkas_Model::create([
-                'antrian_online_id' => $antrian->antrian_online_id,
-                'status' => 'Siap Pengambilan',
-                'tanggal' => date('Y-m-d'),
-                'keterangan' => 'Dokumen siap diambil oleh pemohon',
-            ]);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Dokumen siap diambil',
+            'message' => 'Antrian berhasil diselesaikan',
         ]);
     }
 
@@ -464,7 +379,6 @@ class Admin_Controller extends Controller
         $request->validate([
             'status' => 'required|string|max:100',
             'keterangan' => 'nullable|string',
-            'alasan_penolakan' => 'required_if:status,Ditolak|string|nullable',
         ]);
 
         $antrian = Antrian_Online_Model::find($id);
@@ -476,40 +390,13 @@ class Admin_Controller extends Controller
             ], 404);
         }
 
-        // Cek apakah status yang akan diupdate sama dengan status sekarang
-        if ($antrian->status_antrian === $request->status) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Status antrian sama dengan status sekarang',
-            ], 400);
-        }
-
-        // Update status antrian di tabel antrian_online
-        $antrian->update(['status_antrian' => $request->status]);
-
-        // Cek apakah sudah ada lacak berkas dengan status yang sama
-        $existing_lacak = Lacak_Berkas_Model::where('antrian_online_id', $antrian->antrian_online_id)
-            ->where('status', $request->status)
-            ->first();
-
-        // Hanya buat lacak berkas baru jika belum ada
-        if (!$existing_lacak) {
-            // Siapkan data untuk lacak berkas
-            $dataLacak = [
-                'antrian_online_id' => $antrian->antrian_online_id,
-                'status' => $request->status,
-                'tanggal' => date('Y-m-d'),
-                'keterangan' => $request->keterangan ?? "Status diperbarui: {$request->status}",
-            ];
-
-            // Tambahkan alasan penolakan jika statusnya Ditolak
-            if ($request->status === 'Ditolak' && $request->has('alasan_penolakan')) {
-                $dataLacak['alasan_penolakan'] = $request->alasan_penolakan;
-            }
-
-            // Tambahkan riwayat lacak berkas baru
-            Lacak_Berkas_Model::create($dataLacak);
-        }
+        // Tambahkan riwayat lacak berkas baru
+        Lacak_Berkas_Model::create([
+            'antrian_online_id' => $antrian->antrian_online_id,
+            'status' => $request->status,
+            'tanggal' => date('Y-m-d'),
+            'keterangan' => $request->keterangan ?? "Status diperbarui: {$request->status}",
+        ]);
 
         return response()->json([
             'success' => true,
@@ -532,9 +419,7 @@ class Admin_Controller extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'riwayat' => $riwayat_berkas,
-            ],
+            'data' => $riwayat_berkas,
         ]);
     }
 

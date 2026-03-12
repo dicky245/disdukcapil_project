@@ -128,9 +128,12 @@ Route::prefix('admin')->group(function () {
         Route::get('/penerbitan-akte-kematian', [Admin_Controller::class, 'penerbitan_akte_kematian'])->name('admin.penerbitan-akte-kematian');
         Route::get('/penerbitan-lahir-mati', [Admin_Controller::class, 'penerbitan_lahir_mati'])->name('admin.penerbitan-lahir-mati');
         Route::get('/penerbitan-pernikahan', [Admin_Controller::class, 'penerbitan_pernikahan'])->name('admin.penerbitan-pernikahan');
-
         // Manajemen Akun
+       // Ganti admin.manajemen_akun menjadi admin.manajemen-akun
         Route::get('/manajemen-akun', [Admin_Controller::class, 'manajemen_akun'])->name('admin.manajemen-akun');
+
+        // Route untuk memproses simpan (Pastikan NAME ini sama dengan yang ada di ACTION FORM HTML)
+        Route::post('/manajemen-akun/store', [Admin_Controller::class, 'store_akun'])->name('admin.manajemen-akun.store');
         Route::get('/akun-keagamaan', [Admin_Controller::class, 'akun_keagamaan'])->name('admin.akun-keagamaan');
     });
 });
