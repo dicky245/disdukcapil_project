@@ -12,7 +12,7 @@ class Layanan_Model extends Model
 
     protected $table = 'layanan';
     protected $primaryKey = 'layanan_id';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'nama_layanan',

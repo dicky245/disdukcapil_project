@@ -49,7 +49,7 @@
             <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
                 <div class="border rounded-lg p-4 text-center">
                     <p class="text-sm font-semibold mb-3">
-                        KK Lama
+                        Kartu Keluarga Lama
                     </p>
                     <button onclick="openPreview('{{ asset('storage/'.$berkas->kk_lama) }}')"
                     class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">

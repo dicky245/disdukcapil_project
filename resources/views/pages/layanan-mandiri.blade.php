@@ -293,7 +293,7 @@
         modalIcon.innerHTML = `<i class="fas ${getIconById(serviceId)} text-2xl text-${serviceColor}-600"></i>`;
 
         if(serviceId === 'kk'){
-        form.action = "{{ route('kk.store') }}";
+            form.action = "{{ route('kk.store') }}";
         }
 
         formFields.innerHTML = fields.length > 0 ? fields.map(field => {
