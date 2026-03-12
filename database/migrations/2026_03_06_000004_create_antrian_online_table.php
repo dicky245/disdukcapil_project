@@ -19,10 +19,9 @@ return new class extends Migration
                 table: 'layanan',
                 column: 'layanan_id'
             )->onDelete('cascade');
-            $table->enum('status_antrian', ['Menunggu', 'Sedang Diproses', 'Selesai', 'Dibatalkan'])->default('Menunggu');
+            $table->enum('status_antrian', ['Menunggu', 'Dokumen Diterima', 'Verifikasi Data', 'Proses Cetak', 'Siap Pengambilan', 'Ditolak', 'Dibatalkan'])->default('Menunggu');
             $table->timestamps();
             $table->index('nomor_antrian');
-            // $table->index('tanggal');
             $table->index('status_antrian');
         });
     }

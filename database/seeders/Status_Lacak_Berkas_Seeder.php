@@ -19,6 +19,7 @@ class Status_Lacak_Berkas_Seeder extends Seeder
             'Verifikasi Data',
             'Proses Cetak',
             'Siap Pengambilan',
+            'Ditolak',
         ];
 
         // Untuk demo, kita akan membuat riwayat status untuk setiap antrian yang ada

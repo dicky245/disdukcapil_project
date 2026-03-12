@@ -14,10 +14,6 @@ return new class extends Migration
         Schema::create('jenis_keagamaan', function (Blueprint $table) {
             $table->id('jenis_keagamaan_id');
             $table->string('nama_jenis_keagamaan', 100)->unique();
-            $table->text('keterangan')->nullable();
-            $table->timestamps();
-
-            $table->index('nama_jenis_keagamaan');
         });
     }
 

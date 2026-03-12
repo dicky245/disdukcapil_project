@@ -40,8 +40,11 @@
                     <select id="filterStatus" class="w-full pl-4 pr-10 py-2.5 bg-slate-50 border-transparent rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all appearance-none font-medium text-slate-700">
                         <option value="">Semua Status</option>
                         <option value="Menunggu">Menunggu</option>
-                        <option value="Sedang Diproses">Sedang Diproses</option>
-                        <option value="Selesai">Selesai</option>
+                        <option value="Dokumen Diterima">Dokumen Diterima</option>
+                        <option value="Verifikasi Data">Verifikasi Data</option>
+                        <option value="Proses Cetak">Proses Cetak</option>
+                        <option value="Siap Pengambilan">Siap Pengambilan</option>
+                        <option value="Ditolak">Ditolak</option>
                         <option value="Dibatalkan">Dibatalkan</option>
                     </select>
                 </div>
@@ -173,8 +176,11 @@
     function getStatusConfig(status) {
         const configs = {
             'Menunggu': { class: 'bg-amber-50 text-amber-600 border-amber-100', icon: 'fa-hourglass' },
-            'Sedang Diproses': { class: 'bg-blue-50 text-blue-600 border-blue-100', icon: 'fa-spinner fa-spin' },
-            'Selesai': { class: 'bg-emerald-50 text-emerald-600 border-emerald-100', icon: 'fa-check' },
+            'Dokumen Diterima': { class: 'bg-blue-50 text-blue-600 border-blue-100', icon: 'fa-file-check' },
+            'Verifikasi Data': { class: 'bg-indigo-50 text-indigo-600 border-indigo-100', icon: 'fa-search' },
+            'Proses Cetak': { class: 'bg-purple-50 text-purple-600 border-purple-100', icon: 'fa-print' },
+            'Siap Pengambilan': { class: 'bg-emerald-50 text-emerald-600 border-emerald-100', icon: 'fa-box-open' },
+            'Ditolak': { class: 'bg-red-50 text-red-600 border-red-100', icon: 'fa-ban' },
             'Dibatalkan': { class: 'bg-rose-50 text-rose-600 border-rose-100', icon: 'fa-times' }
         };
         return configs[status] || { class: 'bg-slate-100 text-slate-500', icon: 'fa-info-circle' };
@@ -241,24 +247,84 @@
 
     function renderActions(q) {
         if (q.status_antrian === 'Menunggu') {
-            return `<button onclick="updateStatus('${q.antrian_online_id}', 'mulai')" class="px-5 py-2 bg-emerald-500 text-white rounded-xl text-sm font-bold hover:bg-emerald-600 shadow-md shadow-emerald-100 transition-all">Mulai Layanan</button>`;
+            return `
+                <button onclick="updateStatus('${q.antrian_online_id}', 'terima')" class="px-5 py-2 bg-blue-500 text-white rounded-xl text-sm font-bold hover:bg-blue-600 shadow-md shadow-blue-100 transition-all">
+                    <i class="fas fa-file-import mr-1"></i> Terima Dokumen
+                </button>
+                <button onclick="showTolakModal('${q.antrian_online_id}')" class="px-5 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 shadow-md shadow-red-100 transition-all">
+                    <i class="fas fa-ban mr-1"></i> Tolak
+                </button>
+            `;
         }
-        if (q.status_antrian === 'Sedang Diproses') {
-            return `<button onclick="updateStatus('${q.antrian_online_id}', 'selesai')" class="px-5 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 shadow-md shadow-blue-100 transition-all">Selesaikan</button>`;
+        if (q.status_antrian === 'Dokumen Diterima') {
+            return `
+                <button onclick="updateStatus('${q.antrian_online_id}', 'verifikasi')" class="px-5 py-2 bg-indigo-500 text-white rounded-xl text-sm font-bold hover:bg-indigo-600 shadow-md shadow-indigo-100 transition-all">
+                    <i class="fas fa-search mr-1"></i> Verifikasi Data
+                </button>
+                <button onclick="showTolakModal('${q.antrian_online_id}')" class="px-5 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 shadow-md shadow-red-100 transition-all">
+                    <i class="fas fa-ban mr-1"></i> Tolak
+                </button>
+            `;
         }
-        return `<span class="px-4 py-2 bg-slate-100 text-slate-400 rounded-xl text-xs font-bold uppercase tracking-widest">Archived</span>`;
+        if (q.status_antrian === 'Verifikasi Data') {
+            return `
+                <button onclick="updateStatus('${q.antrian_online_id}', 'cetak')" class="px-5 py-2 bg-purple-500 text-white rounded-xl text-sm font-bold hover:bg-purple-600 shadow-md shadow-purple-100 transition-all">
+                    <i class="fas fa-print mr-1"></i> Proses Cetak
+                </button>
+                <button onclick="showTolakModal('${q.antrian_online_id}')" class="px-5 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 shadow-md shadow-red-100 transition-all">
+                    <i class="fas fa-ban mr-1"></i> Tolak
+                </button>
+            `;
+        }
+        if (q.status_antrian === 'Proses Cetak') {
+            return `
+                <button onclick="updateStatus('${q.antrian_online_id}', 'selesai')" class="px-5 py-2 bg-emerald-500 text-white rounded-xl text-sm font-bold hover:bg-emerald-600 shadow-md shadow-emerald-100 transition-all">
+                    <i class="fas fa-box-open mr-1"></i> Siap Diambil
+                </button>
+                <button onclick="showTolakModal('${q.antrian_online_id}')" class="px-5 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 shadow-md shadow-red-100 transition-all">
+                    <i class="fas fa-ban mr-1"></i> Tolak
+                </button>
+            `;
+        }
+        return `<span class="px-4 py-2 bg-slate-100 text-slate-400 rounded-xl text-xs font-bold uppercase tracking-widest">Selesai</span>`;
     }
 
     async function updateStatus(id, type) {
         const actionMap = {
-            'mulai': { route: '{{ route("admin.antrian-online.mulai", ":id") }}', color: '#10b981', label: 'Proses' },
-            'selesai': { route: '{{ route("admin.antrian-online.selesai", ":id") }}', color: '#2563eb', label: 'Selesaikan' }
+            'terima': {
+                route: '{{ route("admin.antrian-online.terima", ":id") }}',
+                color: '#3b82f6',
+                label: 'Terima Dokumen',
+                title: 'Terima Dokumen',
+                text: 'Konfirmasi penerimaan dokumen antrian ini?'
+            },
+            'verifikasi': {
+                route: '{{ route("admin.antrian-online.verifikasi", ":id") }}',
+                color: '#6366f1',
+                label: 'Verifikasi Data',
+                title: 'Verifikasi Data',
+                text: 'Mulai verifikasi data untuk antrian ini?'
+            },
+            'cetak': {
+                route: '{{ route("admin.antrian-online.cetak", ":id") }}',
+                color: '#a855f7',
+                label: 'Proses Cetak',
+                title: 'Proses Cetak',
+                text: 'Mulai proses cetak dokumen untuk antrian ini?'
+            },
+            'selesai': {
+                route: '{{ route("admin.antrian-online.selesai", ":id") }}',
+                color: '#10b981',
+                label: 'Siap Diambil',
+                title: 'Siap Diambil',
+                text: 'Tandai dokumen sebagai siap diambil?'
+            }
         };
 
         const config = actionMap[type];
         const result = await Swal.fire({
-            title: 'Konfirmasi Tindakan',
-            text: `Apakah Anda ingin memproses antrian ini?`,
+            title: config.title,
+            text: config.text,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: config.color,
@@ -275,6 +341,8 @@
                 if (data.success) {
                     Swal.fire('Berhasil', data.message, 'success');
                     refreshData();
+                } else {
+                    Swal.fire('Gagal', data.message || 'Terjadi kesalahan', 'error');
                 }
             } catch (e) {
                 Swal.fire('Gagal', 'Terjadi kesalahan sistem', 'error');
@@ -376,16 +444,27 @@
 
                 if (resp.success && resp.data.riwayat) {
                     const riwayatContainer = document.getElementById('riwayatContainer');
-                    riwayatContainer.innerHTML = resp.data.riwayat.map((r, index) => `
+                    riwayatContainer.innerHTML = resp.data.riwayat.map((r, index) => {
+                        // Tentukan warna berdasarkan status
+                        let dotColor = 'bg-blue-500';
+                        if (r.status === 'Ditolak') dotColor = 'bg-red-500';
+                        else if (r.status === 'Siap Pengambilan') dotColor = 'bg-emerald-500';
+                        else if (r.status === 'Dokumen Diterima') dotColor = 'bg-blue-500';
+                        else if (r.status === 'Verifikasi Data') dotColor = 'bg-indigo-500';
+                        else if (r.status === 'Proses Cetak') dotColor = 'bg-purple-500';
+                        else if (r.status === 'Menunggu') dotColor = 'bg-amber-500';
+
+                        return `
                         <div class="flex items-start gap-3 p-3 border border-slate-100 rounded-xl hover:bg-slate-50 transition">
-                            <div class="mt-1 w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
+                            <div class="mt-1 w-2 h-2 rounded-full ${dotColor} shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
                             <div class="flex-1">
                                 <p class="text-sm font-bold text-slate-800">${r.status}</p>
-                                <p class="text-[11px] text-slate-400">${new Date(r.tanggal).toLocaleString('id-ID')}</p>
+                                <p class="text-[11px] text-slate-400">${new Date(r.tanggal).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'})}</p>
                                 ${r.keterangan ? `<p class="text-xs text-slate-500 mt-1">${r.keterangan}</p>` : ''}
+                                ${r.alasan_penolakan ? `<p class="text-xs text-red-600 mt-1 font-semibold"><i class="fas fa-exclamation-circle mr-1"></i>Alasan: ${r.alasan_penolakan}</p>` : ''}
                             </div>
                         </div>
-                    `).join('');
+                    `}).join('');
                 } else {
                     document.getElementById('riwayatContainer').innerHTML = `
                         <div class="p-4 bg-slate-50 rounded-xl text-center">
@@ -416,6 +495,63 @@
         container.classList.add('scale-95');
 
         setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    // Modal Tolak
+    function showTolakModal(id) {
+        Swal.fire({
+            title: 'Tolak Antrian',
+            text: 'Masukkan alasan penolakan untuk antrian ini',
+            input: 'textarea',
+            inputLabel: 'Alasan Penolakan',
+            inputPlaceholder: 'Contoh: Dokumen tidak lengkap, Data tidak valid, dll.',
+            inputAttributes: {
+                'aria-label': 'Alasan Penolakan',
+                'rows': 4,
+                'maxlength': 500
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Tolak',
+            confirmButtonColor: '#ef4444',
+            cancelButtonText: 'Batal',
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'Alasan penolakan wajib diisi!';
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                tolakAntrian(id, result.value);
+            }
+        });
+    }
+
+    async function tolakAntrian(id, alasan) {
+        try {
+            const res = await fetch(`{{ route('admin.antrian-online.update-berkas', ':id') }}`.replace(':id', id), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    status: 'Ditolak',
+                    keterangan: 'Antrian ditolak oleh admin',
+                    alasan_penolakan: alasan
+                })
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                Swal.fire('Berhasil', 'Antrian berhasil ditolak', 'success');
+                refreshData();
+            } else {
+                Swal.fire('Gagal', data.message || 'Terjadi kesalahan', 'error');
+            }
+        } catch (e) {
+            console.error('Error:', e);
+            Swal.fire('Gagal', 'Terjadi kesalahan sistem', 'error');
+        }
     }
 
     // Close modal on ESC key

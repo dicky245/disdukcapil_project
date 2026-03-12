@@ -12,11 +12,10 @@ class Jenis_Keagamaan_Model extends Model
 
     protected $table = 'jenis_keagamaan';
     protected $primaryKey = 'jenis_keagamaan_id';
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = [
         'nama_jenis_keagamaan',
-        'keterangan',
     ];
 
     /**

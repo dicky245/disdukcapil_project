@@ -226,7 +226,7 @@
             Swal.fire({
                 icon: 'warning',
                 title: 'Peringatan',
-                text: 'Masukkan nomor berkas atau nama pasangan',
+                text: 'Masukkan nomor antrian atau nama lengkap',
                 confirmButtonColor: '#0d9488'
             });
             return;
@@ -242,12 +242,135 @@
             }
         });
 
-        // Simulate search
-        setTimeout(() => {
-            Swal.close();
-            document.getElementById('trackingResult').classList.remove('hidden');
-            document.getElementById('trackingResult').scrollIntoView({ behavior: 'smooth' });
-        }, 1000);
+        // Tentukan apakah input adalah nomor antrian atau nama
+        const isNomorAntrian = /^[A-Z]{3}-\d{3}-\d{3}$/.test(input.toUpperCase());
+        const params = new URLSearchParams();
+        if (isNomorAntrian) {
+            params.append('nomor_antrian', input.toUpperCase());
+        } else {
+            params.append('nama_lengkap', input);
+        }
+
+        // Lakukan pencarian menggunakan API antrian online
+        fetch(`{{ route('antrian.lacak') }}?${params}`)
+            .then(response => response.json())
+            .then(data => {
+                Swal.close();
+                if (data.success) {
+                    displayTrackingResult(data.data);
+                    document.getElementById('trackingResult').classList.remove('hidden');
+                    document.getElementById('trackingResult').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Tidak Ditemukan',
+                        text: data.message || 'Data antrian tidak ditemukan',
+                        confirmButtonColor: '#0d9488'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.close();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: 'Gagal mencari data. Silakan coba lagi.',
+                    confirmButtonColor: '#0d9488'
+                });
+            });
+    }
+
+    function displayTrackingResult(data) {
+        // Update informasi utama
+        document.getElementById('resultId').textContent = data.nomor_antrian;
+        document.getElementById('resultStatus').textContent = data.status_antrian;
+        document.getElementById('resultName').textContent = data.nama_lengkap;
+        document.getElementById('resultType').textContent = data.layanan;
+
+        // Format tanggal
+        const createdDate = new Date(data.created_at);
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        document.getElementById('resultDate').textContent = createdDate.toLocaleDateString('id-ID', options);
+
+        // Update timeline riwayat
+        const timelineContainer = document.querySelector('#trackingResult .relative');
+        if (data.riwayat && data.riwayat.length > 0) {
+            let timelineHTML = '<div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>';
+
+            data.riwayat.forEach((item, index) => {
+                const isActive = item.status === data.status_antrian;
+                const dotColor = getStatusColor(item.status);
+                const icon = getStatusIcon(item.status);
+                const date = new Date(item.tanggal);
+                const formattedDate = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+
+                timelineHTML += `
+                    <div class="relative pl-10 ${index < data.riwayat.length - 1 ? 'pb-6' : ''}">
+                        <div class="absolute left-2.5 w-3 h-3 ${dotColor} rounded-full border-2 border-white"></div>
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="font-semibold text-gray-800">${item.status}</p>
+                                <p class="text-sm text-gray-600">${item.keterangan || ''}</p>
+                                ${item.alasan_penolakan ? `<p class="text-sm text-red-600 mt-1 font-semibold"><i class="fas fa-exclamation-circle mr-1"></i>Alasan: ${item.alasan_penolakan}</p>` : ''}
+                            </div>
+                            <span class="text-sm text-gray-500">${formattedDate}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            timelineContainer.innerHTML = timelineHTML;
+        } else {
+            timelineContainer.innerHTML = '<div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div><div class="relative pl-10"><p class="text-gray-500">Belum ada riwayat</p></div>';
+        }
+
+        // Update tombol aksi berdasarkan status
+        const actionsContainer = document.querySelector('#trackingResult .flex.gap-3');
+        if (data.status_antrian === 'Siap Pengambilan') {
+            actionsContainer.innerHTML = `
+                <button class="flex-1 px-6 py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-download"></i>
+                    <span>Unduh Bukti</span>
+                </button>
+                <button onclick="window.print()" class="flex-1 px-6 py-3 bg-gray-100 text-gray-800 rounded-xl hover:bg-gray-200 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-print"></i>
+                    <span>Cetak</span>
+                </button>
+            `;
+        } else {
+            actionsContainer.innerHTML = `
+                <button onclick="window.print()" class="flex-1 px-6 py-3 bg-gray-100 text-gray-800 rounded-xl hover:bg-gray-200 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-print"></i>
+                    <span>Cetak</span>
+                </button>
+            `;
+        }
+    }
+
+    function getStatusColor(status) {
+        switch(status) {
+            case 'Menunggu': return 'bg-amber-500';
+            case 'Dokumen Diterima': return 'bg-blue-500';
+            case 'Verifikasi Data': return 'bg-indigo-500';
+            case 'Proses Cetak': return 'bg-purple-500';
+            case 'Siap Pengambilan': return 'bg-emerald-500';
+            case 'Ditolak': return 'bg-red-500';
+            case 'Dibatalkan': return 'bg-rose-500';
+            default: return 'bg-gray-500';
+        }
+    }
+
+    function getStatusIcon(status) {
+        switch(status) {
+            case 'Menunggu': return 'fa-clock';
+            case 'Dokumen Diterima': return 'fa-file-check';
+            case 'Verifikasi Data': return 'fa-search';
+            case 'Proses Cetak': return 'fa-print';
+            case 'Siap Pengambilan': return 'fa-box-open';
+            case 'Ditolak': return 'fa-ban';
+            case 'Dibatalkan': return 'fa-times';
+            default: return 'fa-info-circle';
+        }
     }
 
     function trackThis(id) {
