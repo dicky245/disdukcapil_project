@@ -37,11 +37,11 @@
         'fields' => [
             ['name' => 'layanan_id', 'value' => '3', 'type' => 'hidden'],
             ['name' => 'nama_almarhum', 'label' => 'Nama Lengkap Almarhum', 'type' => 'text', 'placeholder' => 'Sesuai KTP'],
-            ['name' => 'nik_almarhum', 'label' => 'NIK Almarhum', 'type' => 'text', 'placeholder' => '16 digit NIK'],
+            ['name' => 'nik_almarhum', 'label' => 'NIK Almarhum', 'type' => 'nik', 'placeholder' => '16 digit NIK'],
             ['name' => 'tgl_meninggal', 'label' => 'Tanggal Meninggal', 'type' => 'date'],
             ['name' => 'tempat_meninggal', 'label' => 'Tempat Meninggal', 'type' => 'text', 'placeholder' => 'Rumah sakit/lokasi'],
             ['name' => 'sebab_meninggal', 'label' => 'Sebab Meninggal', 'type' => 'textarea', 'placeholder' => 'Jelaskan penyebab kematian'],
-            ['name' => 'nik_pelapor', 'label' => 'NIK Pelapor', 'type' => 'text', 'placeholder' => '16 digit NIK'],
+            ['name' => 'nik_pelapor', 'label' => 'NIK Pelapor', 'type' => 'nik', 'placeholder' => '16 digit NIK'],
             ['name' => 'nama_pelapor', 'label' => 'Nama Pelapor', 'type' => 'text', 'placeholder' => 'Nama lengkap pelapor'],
             ['name' => 'hubungan_pelapor', 'label' => 'Hubungan dengan Almarhum', 'type' => 'select', 'options' => ['Ayah', 'Ibu', 'Suami', 'Istri', 'Anak', 'Saudara Kandung', 'Lainnya']],
             ['name' => 'surat_keterangan_kematian', 'label' => 'Surat Keterangan Kematian (RS/Kelurahan)', 'type' => 'file'],
@@ -60,9 +60,9 @@
             ['name' => 'tgl_lahir', 'label' => 'Tanggal & Waktu Lahir', 'type' => 'datetime-local'],
             ['name' => 'tempat_lahir', 'label' => 'Tempat Lahir', 'type' => 'text', 'placeholder' => 'Nama RS/Klinik/Rumah'],
             ['name' => 'nama_ayah', 'label' => 'Nama Ayah', 'type' => 'text', 'placeholder' => 'Nama lengkap ayah'],
-            ['name' => 'nik_ayah', 'label' => 'NIK Ayah', 'type' => 'text', 'placeholder' => '16 digit NIK ayah'],
+            ['name' => 'nik_ayah', 'label' => 'NIK Ayah', 'type' => 'nik', 'placeholder' => '16 digit NIK ayah'],
             ['name' => 'nama_ibu', 'label' => 'Nama Ibu', 'type' => 'text', 'placeholder' => 'Nama lengkap ibu'],
-            ['name' => 'nik_ibu', 'label' => 'NIK Ibu', 'type' => 'text', 'placeholder' => '16 digit NIK ibu'],
+            ['name' => 'nik_ibu', 'label' => 'NIK Ibu', 'type' => 'nik', 'placeholder' => '16 digit NIK ibu'],
             ['name' => 'keterangan', 'label' => 'Keterangan', 'type' => 'textarea', 'placeholder' => 'Keterangan tambahan'],
             ['name' => 'surat_keterangan_lahir_mati', 'label' => 'Surat Keterangan Lahir Mati', 'type' => 'file'],
             ['name' => 'ktp_ayah', 'label' => 'KTP Ayah', 'type' => 'file'],
@@ -405,6 +405,7 @@
         
         if(field.type === 'textarea') return `<textarea name="${field.name}" ${req} placeholder="${field.placeholder}" class="${baseClass} h-24 resize-none"></textarea>`;
         if(field.type === 'select') return `<select name="${field.name}" ${req} class="${baseClass}"><option value="">Pilih...</option>${field.options.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`;
+        if(field.type === 'nik') return `<input type="text" name="${field.name}" ${req} placeholder="${field.placeholder || ''}" inputmode="numeric" pattern="[0-9]{16}" minlength="16" maxlength="16" title="NIK harus terdiri dari 16 digit angka" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="${baseClass}">`;
         return `<input type="${field.type}" name="${field.name}" ${req} placeholder="${field.placeholder || ''}" class="${baseClass}">`;
     }
 

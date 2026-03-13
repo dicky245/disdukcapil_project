@@ -15,11 +15,11 @@ class AkteKematianController extends Controller
         $request->validate([
             'layanan_id'        => 'required|integer',
             'nama_almarhum'     => 'required|string',
-            'nik_almarhum'      => 'nullable|string',
+            'nik_almarhum'      => 'nullable|string|digits:16',
             'tgl_meninggal'     => 'required|date',
             'tempat_meninggal'  => 'required|string',
             'sebab_meninggal'   => 'nullable|string',
-            'nik_pelapor'       => 'required|string',
+            'nik_pelapor'       => 'required|string|digits:16',
             'nama_pelapor'      => 'required|string',
             'hubungan_pelapor'  => 'required|string',
             'surat_keterangan_kematian' => 'nullable|file|max:5120',
