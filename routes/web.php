@@ -128,7 +128,6 @@ Route::prefix('admin')->group(function () {
 
         Route::get('/tracking-berkas', [Admin_Controller::class, 'tracking_berkas'])->name('admin.tracking-berkas');
         Route::get('/dokumen-upload', [Admin_Controller::class, 'dokumen_upload'])->name('admin.dokumen-upload');
-        Route::get('/konfirmasi-status', [Admin_Controller::class, 'konfirmasi_status'])->name('admin.konfirmasi-status');
 
         // Penerbitan Dokumen
         // Kartu Keluarga
@@ -160,7 +159,10 @@ Route::prefix('admin')->group(function () {
 
         // Route untuk memproses simpan (Pastikan NAME ini sama dengan yang ada di ACTION FORM HTML)
         Route::post('/manajemen-akun/store', [Admin_Controller::class, 'store_akun'])->name('admin.manajemen-akun.store');
-        Route::get('/akun-keagamaan', [Admin_Controller::class, 'akun_keagamaan'])->name('admin.akun-keagamaan');
+
+        // API Routes untuk Admin
+        Route::get('/api/total-akun', [Admin_Controller::class, 'getTotalAkun'])->name('admin.api.total-akun');
+        Route::get('/api/chart-antrian', [Admin_Controller::class, 'getChartAntrian'])->name('admin.api.chart-antrian');
     });
 });
 

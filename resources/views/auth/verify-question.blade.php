@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verifikasi Keamanan - Disdukcapil Kabupaten Toba</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo_toba.jpeg') }}">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -42,13 +48,16 @@
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
             background: #f1f5f9;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #0052CC;
             border-radius: 4px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: #0047B3;
         }
@@ -61,15 +70,30 @@
         }
 
         @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         /* Float Animation */
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
         }
 
         .float-animation {
@@ -78,8 +102,15 @@
 
         /* Pulse Animation */
         @keyframes pulse-ring {
-            0% { transform: scale(0.8); opacity: 1; }
-            100% { transform: scale(1.3); opacity: 0; }
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1.3);
+                opacity: 0;
+            }
         }
 
         .pulse-ring {
@@ -112,9 +143,19 @@
 
         /* Shake Animation for Error */
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
         }
 
         .shake-animation {
@@ -122,13 +163,16 @@
         }
     </style>
 </head>
+
 <body class="bg-animated min-h-screen flex items-center justify-center p-4">
 
     <!-- Background Particles -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none">
         <div class="absolute w-64 h-64 bg-white/10 rounded-full -top-32 -left-32 float-animation"></div>
-        <div class="absolute w-96 h-96 bg-white/10 rounded-full -bottom-48 -right-48 float-animation" style="animation-delay: 2s;"></div>
-        <div class="absolute w-48 h-48 bg-white/10 rounded-full top-1/4 right-1/4 float-animation" style="animation-delay: 4s;"></div>
+        <div class="absolute w-96 h-96 bg-white/10 rounded-full -bottom-48 -right-48 float-animation"
+            style="animation-delay: 2s;"></div>
+        <div class="absolute w-48 h-48 bg-white/10 rounded-full top-1/4 right-1/4 float-animation"
+            style="animation-delay: 4s;"></div>
     </div>
 
     <!-- Verification Container -->
@@ -137,8 +181,10 @@
         <div class="text-center mb-8">
             <div class="relative inline-flex items-center justify-center">
                 <div class="absolute w-24 h-24 bg-blue-400/30 rounded-full pulse-ring"></div>
-                <div class="relative w-20 h-20 bg-white rounded-2xl shadow-xl float-animation flex items-center justify-center">
-                    <span class="text-4xl">🔐</span>
+                <div
+                    class="inline-flex items-center justify-center w-24 h-24 bg-white rounded-2xl shadow-xl mb-4 float-animation overflow-hidden border-4 border-white/30">
+                    <img src="{{ asset('images/logo_toba.jpeg') }}" alt="Logo Kabupaten Toba"
+                        class="w-full h-full object-contain">
                 </div>
             </div>
             <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-2 mt-6">Verifikasi Keamanan</h1>
@@ -163,7 +209,6 @@
                     </div>
                     <div>
                         <p class="font-semibold text-gray-800">{{ $user->name }}</p>
-                        <p class="text-sm text-gray-600">@{{ $user->username }}</p>
                     </div>
                 </div>
             </div>
@@ -200,9 +245,10 @@
                     <label for="security_answer" class="block text-sm font-medium text-gray-700">
                         <i class="fas fa-key mr-2"></i>Jawaban Anda
                     </label>
-                    <input type="text" id="security_answer" name="security_answer" required placeholder="Ketik jawaban Anda..."
-                           class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-lg"
-                           autofocus>
+                    <input type="text" id="security_answer" name="security_answer" required
+                        placeholder="Ketik jawaban Anda..."
+                        class="w-full px-4 py-4 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-lg"
+                        autofocus>
                     <p class="text-xs text-gray-500">
                         <i class="fas fa-info-circle mr-1"></i>
                         Jawaban bersifat case-sensitive (huruf besar/kecil berpengaruh)
@@ -210,7 +256,7 @@
                 </div>
 
                 <!-- Attempts Warning -->
-                @if(session('attempts'))
+                @if (session('attempts'))
                     <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-xl">
                         <div class="flex items-center gap-2">
                             <i class="fas fa-exclamation-triangle"></i>
@@ -220,7 +266,8 @@
                 @endif
 
                 <!-- Verify Button -->
-                <button type="submit" class="w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-cyan-700 transition-all transform hover:scale-[1.02] shadow-lg btn-ripple flex items-center justify-center gap-2">
+                <button type="submit"
+                    class="w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-cyan-700 transition-all transform hover:scale-[1.02] shadow-lg btn-ripple flex items-center justify-center gap-2">
                     <i class="fas fa-unlock"></i>
                     Verifikasi & Masuk
                 </button>
@@ -235,7 +282,8 @@
 
             <!-- Cancel Button -->
             <div class="text-center">
-                <a href="{{ route('admin.login') }}" class="inline-flex items-center gap-2 text-gray-600 hover:text-red-600 font-medium transition">
+                <a href="{{ route('admin.login') }}"
+                    class="inline-flex items-center gap-2 text-gray-600 hover:text-red-600 font-medium transition">
                     <i class="fas fa-times"></i>
                     Batalkan dan Kembali ke Login
                 </a>
@@ -280,4 +328,5 @@
         });
     </script>
 </body>
+
 </html>

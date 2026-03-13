@@ -6,6 +6,9 @@
     <title>{{ $page_title ?? 'Disdukcapil Kabupaten Toba' }}</title>
     <meta name="description" content="{{ $page_description ?? 'Layanan Kependudukan dan Pencatatan Sipil Kabupaten Toba' }}">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo_toba.jpeg') }}">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 

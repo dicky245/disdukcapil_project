@@ -12,14 +12,6 @@
             </div>
         </div>
 
-        {{-- Right --}}
-        <div class="flex items-center gap-4">
-            {{-- Notifications --}}
-            <button class="relative p-2 hover:bg-gray-100 rounded-lg transition">
-                <i class="fas fa-bell text-gray-600"></i>
-                <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-
             {{-- Profile --}}
             <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
                 <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">

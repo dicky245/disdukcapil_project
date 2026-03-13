@@ -118,18 +118,6 @@ class Admin_Controller extends Controller
     }
 
     /**
-     * Tampilkan halaman konfirmasi status
-     */
-    public function konfirmasi_status()
-    {
-        if (!Auth::user()->hasRole('Admin')) {
-            abort(403, 'Anda tidak memiliki akses.');
-        }
-
-        return view('admin.konfirmasi_status');
-    }
-
-    /**
      * Tampilkan halaman kelola layanan
      */
     public function kelola_layanan()
@@ -212,17 +200,6 @@ class Admin_Controller extends Controller
             // Mengirim session error untuk memicu pop-up SweetAlert2 di View
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
-    }
-    /**
-     * Tampilkan halaman akun keagamaan
-     */
-    public function akun_keagamaan()
-    {
-        if (!Auth::user()->hasRole('Admin')) {
-            abort(403, 'Anda tidak memiliki akses.');
-        }
-
-        return view('admin.akun_keagamaan');
     }
 
     /**
@@ -630,6 +607,81 @@ class Admin_Controller extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Antrian berhasil dihapus',
+        ]);
+    }
+
+    /**
+     * API: Get total akun admin dan keagamaan
+     */
+    public function getTotalAkun()
+    {
+        if (!Auth::user()->hasRole('Admin')) {
+            return response()->json(['success' => false], 403);
+        }
+
+        $totalAdmin = User::role('Admin')->count();
+        $totalKeagamaan = User::role('Keagamaan')->count();
+        $total = $totalAdmin + $totalKeagamaan;
+
+        return response()->json([
+            'success' => true,
+            'total' => $total,
+            'total_admin' => $totalAdmin,
+            'total_keagamaan' => $totalKeagamaan,
+        ]);
+    }
+
+    /**
+     * API: Get statistik antrian untuk chart
+     */
+    public function getChartAntrian(Request $request)
+    {
+        if (!Auth::user()->hasRole('Admin')) {
+            return response()->json(['success' => false], 403);
+        }
+
+        $days = $request->get('days', 7);
+
+        // Ambil data antrian berdasarkan periode
+        $startDate = now()->subDays($days - 1)->startOfDay();
+        $endDate = now()->endOfDay();
+
+        $antrianData = Antrian_Online_Model::select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('COUNT(*) as total'),
+                DB::raw('SUM(CASE WHEN status_antrian = "Menunggu" THEN 1 ELSE 0 END) as menunggu'),
+                DB::raw('SUM(CASE WHEN status_antrian IN ("Dokumen Diterima", "Verifikasi Data", "Proses Cetak") THEN 1 ELSE 0 END) as proses'),
+                DB::raw('SUM(CASE WHEN status_antrian = "Siap Pengambilan" THEN 1 ELSE 0 END) as selesai')
+            )
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // Generate labels dan data untuk chart
+        $labels = [];
+        $dataMenunggu = [];
+        $dataProses = [];
+        $dataSelesai = [];
+
+        for ($i = $days - 1; $i >= 0; $i--) {
+            $date = now()->subDays($i)->format('Y-m-d');
+            $data = $antrianData->firstWhere('date', $date);
+
+            $labels[] = now()->subDays($i)->locale('id')->format('D/M');
+            $dataMenunggu[] = $data ? $data->menunggu : 0;
+            $dataProses[] = $data ? $data->proses : 0;
+            $dataSelesai[] = $data ? $data->selesai : 0;
+        }
+
+        return response()->json([
+            'success' => true,
+            'labels' => $labels,
+            'data' => [
+                'menunggu' => $dataMenunggu,
+                'proses' => $dataProses,
+                'selesai' => $dataSelesai,
+            ],
         ]);
     }
 }

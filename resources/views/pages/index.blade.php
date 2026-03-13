@@ -88,7 +88,6 @@
     <section class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 md:p-12 text-white text-center reveal">
-                <div class="text-4xl mb-4">👋</div>
                 <h2 class="text-2xl md:text-3xl font-bold mb-3">Selamat Datang di Portal Disdukcapil</h2>
                 <p class="text-blue-100 text-lg max-w-3xl mx-auto">
                     Kabupaten Toba berkomitmen memberikan pelayanan administrasi kependudukan
