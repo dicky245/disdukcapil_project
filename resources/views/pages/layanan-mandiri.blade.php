@@ -30,32 +30,45 @@
         ['name'=>'tes', 'label'=>'tes','type'=>'text']
         ]
     ],
-        'Penerbitan Akte Kematian' => [
-            'icon' => 'fa-user-times',
-            'color' => 'orange',
-            'id' => 'akta-kematian',
-            'fields' => [
-                ['name' => 'nama_almarhum', 'label' => 'Nama Lengkap Almarhum', 'type' => 'text', 'placeholder' => 'Sesuai KTP'],
-                ['name' => 'tgl_meninggal', 'label' => 'Tanggal Meninggal', 'type' => 'date'],
-                ['name' => 'tempat_meninggal', 'label' => 'Tempat Meninggal', 'type' => 'text', 'placeholder' => 'Rumah sakit/lokasi'],
-                ['name' => 'sebab_meninggal', 'label' => 'Sebab Meninggal', 'type' => 'textarea', 'placeholder' => 'Jelaskan penyebab'],
-                ['name' => 'nik_pelapor', 'label' => 'NIK Pelapor', 'type' => 'text', 'placeholder' => '16 digit NIK'],
-                ['name' => 'hubungan_pelapor', 'label' => 'Hubungan dengan Almarhum', 'type' => 'select', 'options' => ['Ayah', 'Ibu', 'Suami', 'Istri', 'Anak', 'Lainnya']],
-            ]
-        ],
-        'Penerbitan Akte Lahir Mati' => [
-            'icon' => 'fa-exclamation-triangle',
-            'color' => 'red',
-            'id' => 'lahir-mati',
-            'fields' => [
-                ['name' => 'nama_bayi', 'label' => 'Nama Bayi', 'type' => 'text', 'placeholder' => 'Nama lengkap bayi'],
-                ['name' => 'tgl_lahir', 'label' => 'Tanggal Lahir', 'type' => 'datetime-local'],
-                ['name' => 'nama_ayah', 'label' => 'Nama Ayah', 'type' => 'text', 'placeholder' => 'Nama lengkap ayah'],
-                ['name' => 'nama_ibu', 'label' => 'Nama Ibu', 'type' => 'text', 'placeholder' => 'Nama lengkap ibu'],
-                ['name' => 'nik_ayah', 'label' => 'NIK Ayah', 'type' => 'text', 'placeholder' => '16 digit NIK ayah'],
-                ['name' => 'keterangan', 'label' => 'Keterangan', 'type' => 'textarea', 'placeholder' => 'Keterangan tambahan'],
-            ]
-        ],
+    3 => [ // Akte Kematian
+        'icon' => 'fa-user-times',
+        'color' => 'orange',
+        'id' => 'akte_kematian',
+        'fields' => [
+            ['name' => 'layanan_id', 'value' => '3', 'type' => 'hidden'],
+            ['name' => 'nama_almarhum', 'label' => 'Nama Lengkap Almarhum', 'type' => 'text', 'placeholder' => 'Sesuai KTP'],
+            ['name' => 'nik_almarhum', 'label' => 'NIK Almarhum', 'type' => 'text', 'placeholder' => '16 digit NIK'],
+            ['name' => 'tgl_meninggal', 'label' => 'Tanggal Meninggal', 'type' => 'date'],
+            ['name' => 'tempat_meninggal', 'label' => 'Tempat Meninggal', 'type' => 'text', 'placeholder' => 'Rumah sakit/lokasi'],
+            ['name' => 'sebab_meninggal', 'label' => 'Sebab Meninggal', 'type' => 'textarea', 'placeholder' => 'Jelaskan penyebab kematian'],
+            ['name' => 'nik_pelapor', 'label' => 'NIK Pelapor', 'type' => 'text', 'placeholder' => '16 digit NIK'],
+            ['name' => 'nama_pelapor', 'label' => 'Nama Pelapor', 'type' => 'text', 'placeholder' => 'Nama lengkap pelapor'],
+            ['name' => 'hubungan_pelapor', 'label' => 'Hubungan dengan Almarhum', 'type' => 'select', 'options' => ['Ayah', 'Ibu', 'Suami', 'Istri', 'Anak', 'Saudara Kandung', 'Lainnya']],
+            ['name' => 'surat_keterangan_kematian', 'label' => 'Surat Keterangan Kematian (RS/Kelurahan)', 'type' => 'file'],
+            ['name' => 'ktp_almarhum', 'label' => 'KTP Almarhum', 'type' => 'file'],
+            ['name' => 'kartu_keluarga', 'label' => 'Kartu Keluarga', 'type' => 'file'],
+        ]
+    ],
+    4 => [ // Lahir Mati
+        'icon' => 'fa-exclamation-triangle',
+        'color' => 'red',
+        'id' => 'lahir_mati',
+        'fields' => [
+            ['name' => 'layanan_id', 'value' => '4', 'type' => 'hidden'],
+            ['name' => 'nama_bayi', 'label' => 'Nama Bayi', 'type' => 'text', 'placeholder' => 'Nama lengkap bayi'],
+            ['name' => 'jenis_kelamin', 'label' => 'Jenis Kelamin', 'type' => 'select', 'options' => ['Laki-laki', 'Perempuan']],
+            ['name' => 'tgl_lahir', 'label' => 'Tanggal & Waktu Lahir', 'type' => 'datetime-local'],
+            ['name' => 'tempat_lahir', 'label' => 'Tempat Lahir', 'type' => 'text', 'placeholder' => 'Nama RS/Klinik/Rumah'],
+            ['name' => 'nama_ayah', 'label' => 'Nama Ayah', 'type' => 'text', 'placeholder' => 'Nama lengkap ayah'],
+            ['name' => 'nik_ayah', 'label' => 'NIK Ayah', 'type' => 'text', 'placeholder' => '16 digit NIK ayah'],
+            ['name' => 'nama_ibu', 'label' => 'Nama Ibu', 'type' => 'text', 'placeholder' => 'Nama lengkap ibu'],
+            ['name' => 'nik_ibu', 'label' => 'NIK Ibu', 'type' => 'text', 'placeholder' => '16 digit NIK ibu'],
+            ['name' => 'keterangan', 'label' => 'Keterangan', 'type' => 'textarea', 'placeholder' => 'Keterangan tambahan'],
+            ['name' => 'surat_keterangan_lahir_mati', 'label' => 'Surat Keterangan Lahir Mati', 'type' => 'file'],
+            ['name' => 'ktp_ayah', 'label' => 'KTP Ayah', 'type' => 'file'],
+            ['name' => 'ktp_ibu', 'label' => 'KTP Ibu', 'type' => 'file'],
+        ]
+    ],
         5 => [
             'icon' => 'fa-ring',
             'color' => 'blue',
@@ -309,6 +322,10 @@
 
         if(serviceId === 'kk'){
             form.action = "{{ route('kk.store') }}";
+        } else if(serviceId === 'akte_kematian'){
+            form.action = "{{ route('akte-kematian.store') }}";
+        } else if(serviceId === 'lahir_mati'){
+            form.action = "{{ route('lahir-mati.store') }}";
         }
 
         formFields.innerHTML = fields.length > 0 ? fields.map(field => {
@@ -392,7 +409,7 @@
     }
 
     function getIconById(id) {
-        const map = { 'kk': 'fa-address-card', 'akta-lahir': 'fa-baby', 'akta-kematian': 'fa-user-times', 'lahir-mati': 'fa-exclamation-triangle', 'akta-perkawinan': 'fa-ring' };
+        const map = { 'kk': 'fa-address-card', 'akte_kelahiran': 'fa-baby', 'akte_kematian': 'fa-user-times', 'lahir_mati': 'fa-exclamation-triangle', 'layanan-pernikahan': 'fa-ring' };
         return map[id] || 'fa-file-alt';
     }
 

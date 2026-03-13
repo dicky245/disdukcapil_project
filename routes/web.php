@@ -7,6 +7,8 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\Admin_Controller;
 use App\Http\Controllers\Keagamaan\Keagamaan_Controller;
 use App\Http\Controllers\KartKeluargaController;
+use App\Http\Controllers\AkteKematianController;
+use App\Http\Controllers\LahirMatiController;
 use App\Http\Controllers\PageController;
 use App\Models\Layanan_Model;
 use Illuminate\Support\Facades\Route;
@@ -47,6 +49,8 @@ Route::prefix('layanan-mandiri')->group(function () {
 });
 
 Route::post('/kk/store', [KartKeluargaController::class, 'store'])->name('kk.store');
+Route::post('/akte-kematian/store', [AkteKematianController::class, 'store'])->name('akte-kematian.store');
+Route::post('/lahir-mati/store', [LahirMatiController::class, 'store'])->name('lahir-mati.store');
 // Statistik/Data Publik
 Route::get('/statistik', [PageController::class, 'statistik'])->name('statistik');
 
@@ -134,8 +138,21 @@ Route::prefix('admin')->group(function () {
             Route::post('/{id}/status',[KartKeluargaController::class, 'updateStatus'])->name('admin.status');
         }); 
         Route::get('/penerbitan-akte-lahir', [Admin_Controller::class, 'penerbitan_akte_lahir'])->name('admin.penerbitan-akte-lahir');
-        Route::get('/penerbitan-akte-kematian', [Admin_Controller::class, 'penerbitan_akte_kematian'])->name('admin.penerbitan-akte-kematian');
-        Route::get('/penerbitan-lahir-mati', [Admin_Controller::class, 'penerbitan_lahir_mati'])->name('admin.penerbitan-lahir-mati');
+
+        // Penerbitan Akte Kematian
+        Route::prefix('penerbitan-akte-kematian')->group(function () {
+            Route::get('/', [AkteKematianController::class, 'daftar'])->name('admin.penerbitan-akte-kematian');
+            Route::get('/detail/{id}', [AkteKematianController::class, 'detail'])->name('admin.akte-kematian.detail');
+            Route::post('/{id}/status', [AkteKematianController::class, 'updateStatus'])->name('admin.akte-kematian.status');
+        });
+
+        // Penerbitan Lahir Mati
+        Route::prefix('penerbitan-lahir-mati')->group(function () {
+            Route::get('/', [LahirMatiController::class, 'daftar'])->name('admin.penerbitan-lahir-mati');
+            Route::get('/detail/{id}', [LahirMatiController::class, 'detail'])->name('admin.lahir-mati.detail');
+            Route::post('/{id}/status', [LahirMatiController::class, 'updateStatus'])->name('admin.lahir-mati.status');
+        });
+
         Route::get('/penerbitan-pernikahan', [Admin_Controller::class, 'penerbitan_pernikahan'])->name('admin.penerbitan-pernikahan');
         // Manajemen Akun
        // Ganti admin.manajemen_akun menjadi admin.manajemen-akun
