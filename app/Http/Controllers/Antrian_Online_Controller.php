@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class Antrian_Online_Controller extends Controller
 {
+
     /**
      * Tampilkan halaman antrian online
      */
@@ -28,6 +29,8 @@ class Antrian_Online_Controller extends Controller
         $validator = Validator::make($request->all(), [
             'layanan_id' => 'required|exists:layanan,layanan_id',
             'nama_lengkap' => 'required|string|max:100',
+            'alamat' => 'nullable|string',
+            'tanggal_lahir' => 'nullable|date',
         ]);
 
         if ($validator->fails()) {
@@ -60,10 +63,12 @@ class Antrian_Online_Controller extends Controller
             $nomor_antrian = $this->Generate_Nomor_Antrian();
         }
 
-        // Buat antrian baru
+        // Buat antrian baru dengan alamat dan tanggal lahir
         $antrian = Antrian_Online_Model::create([
             'nomor_antrian' => $nomor_antrian,
             'nama_lengkap' => $request->nama_lengkap,
+            'alamat' => $request->alamat,
+            'tanggal_lahir' => $request->tanggal_lahir,
             'layanan_id' => $request->layanan_id,
             'status_antrian' => 'Menunggu',
         ]);
@@ -248,5 +253,40 @@ class Antrian_Online_Controller extends Controller
         $angka2 = str_pad(rand(0, 999), 3, '0', STR_PAD_LEFT);
 
         return "{$huruf}-{$angka1}-{$angka2}";
+    }
+
+    /**
+                'error' => 'Terjadi kesalahan saat memproses gambar'
+            ], 500);
+        }
+    }
+
+    /**
+     * Get data antrian by nomor antrian untuk auto-fill form layanan
+     *
+     * GET /antrian-online/get-data/{nomor_antrian}
+     *
+     * @param string $nomor_antrian
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function Get_Data_Antrian($nomor_antrian)
+    {
+        $antrian = Antrian_Online_Model::where('nomor_antrian', $nomor_antrian)->first();
+
+        if (!$antrian) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Antrian tidak ditemukan'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'nama_lengkap' => $antrian->nama_lengkap,
+                'alamat' => $antrian->alamat,
+                'tanggal_lahir' => $antrian->tanggal_lahir,
+            ]
+        ]);
     }
 }

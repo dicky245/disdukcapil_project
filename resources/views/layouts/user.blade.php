@@ -9,6 +9,9 @@
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="{{ asset('images/logo_toba.jpeg') }}">
 
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 

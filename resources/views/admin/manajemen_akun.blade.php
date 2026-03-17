@@ -1,478 +1,408 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.admin')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen Akun - Disdukcapil</title>
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo_toba.jpeg') }}">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
-                    colors: { brand: { 600: '#0052CC', 700: '#003d99' } }
-                }
-            }
-        }
-    </script>
-    <style>
-        .sidebar {
-            transition: all 0.3s ease;
-            width: 260px;
-        }
-
-        .sidebar.collapsed {
-            width: 80px;
-        }
-
-        .sidebar.collapsed .sidebar-text,
-        .sidebar.collapsed .logo-text,
-        .sidebar.collapsed .fa-chevron-down {
-            display: none;
-        }
-
-        .sidebar-link {
-            transition: all 0.2s;
-            border-left: 4px solid transparent;
-            color: #4b5563;
-            font-weight: 500;
-        }
-
-        .sidebar-link:hover,
-        .sidebar-link.active {
-            color: #0052CC;
-            background: #f8fafc;
-        }
-
-        .sidebar-link.active {
-            border-left-color: #0052CC;
-            background: #f0f7ff;
-            font-weight: 700;
-        }
-
-        .dropdown-menu {
-            display: none;
-        }
-
-        .dropdown-menu.active {
-            display: block;
-        }
-
-        .main-content {
-            transition: all 0.3s ease;
-            margin-left: 260px;
-        }
-
-        .main-content.expanded {
-            margin-left: 80px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-    </style>
-</head>
-
-<body class="bg-gray-50 font-sans antialiased">
-
-    <aside id="sidebar" class="sidebar fixed left-0 top-0 h-full bg-white border-r border-gray-100 z-50 shadow-sm">
-        <div class="h-20 flex items-center px-6 mb-4">
-            <div
-                class="w-10 h-10 bg-[#0052CC] rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-100">
-                <i class="fas fa-university text-white text-lg"></i>
-            </div>
-            <span class="logo-text ml-4 font-bold text-xl text-gray-800 tracking-tight">Disdukcapil</span>
+@section('content')
+{{-- Welcome Banner --}}
+<div class="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl p-6 md:p-8 text-white mb-6 reveal shadow-lg">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div>
+            <h2 class="text-2xl md:text-3xl font-bold mb-2">Manajemen Akun</h2>
+            <p class="text-blue-100 text-lg">Kelola akun keagamaan dan petugas di sistem Disdukcapil</p>
         </div>
-
-        <nav class="px-3 space-y-1 overflow-y-auto h-[calc(100vh-6rem)]">
-            <a href="{{ route('admin.dashboard') }}" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl">
-                <i class="fas fa-home w-6 text-center text-lg"></i>
-                <span class="sidebar-text">Dashboard</span>
-            </a>
-
-            <div class="pt-6 pb-2 px-4">
-                <p class="sidebar-text text-[11px] font-bold text-gray-400 uppercase tracking-[2px]">Manajemen</p>
+        <div class="flex items-center gap-4">
+            <div class="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2">
+                <p class="text-xs text-blue-100">Total Akun</p>
+                <p class="text-2xl font-bold">{{ $users->count() }}</p>
             </div>
-            <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl"><i
-                    class="fas fa-newspaper w-6 text-center text-lg"></i><span class="sidebar-text">Kelola
-                    Berita</span></a>
-            <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl"><i
-                    class="fas fa-sitemap w-6 text-center text-lg"></i><span class="sidebar-text">Organisasi</span></a>
-            <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl"><i
-                    class="fas fa-trophy w-6 text-center text-lg"></i><span class="sidebar-text">Penghargaan</span></a>
-            <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl"><i
-                    class="fas fa-balance-scale w-6 text-center text-lg"></i><span class="sidebar-text">Dasar
-                    Hukum</span></a>
-            <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl"><i
-                    class="fas fa-chart-line w-6 text-center text-lg"></i><span
-                    class="sidebar-text">Statistik</span></a>
+        </div>
+    </div>
+</div>
 
-            <div class="pt-6 pb-2 px-4">
-                <p class="sidebar-text text-[11px] font-bold text-gray-400 uppercase tracking-[2px]">Layanan</p>
+{{-- Statistics Cards --}}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 reveal">
+    <div class="stat-card bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                <i class="fas fa-users text-xl text-indigo-600"></i>
             </div>
-            <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl"><i
-                    class="fas fa-clock w-6 text-center text-lg"></i><span class="sidebar-text">Antrian
-                    Online</span></a>
-            <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl"><i
-                    class="fas fa-clipboard-check w-6 text-center text-lg"></i><span class="sidebar-text">Konfirmasi
-                    Status</span></a>
+            <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                Total
+            </span>
+        </div>
+        <h3 class="text-3xl font-extrabold text-gray-800 mb-1">{{ $users->count() }}</h3>
+        <p class="text-sm text-gray-600 font-medium">Total Akun</p>
+    </div>
 
-            <div class="layanan-dropdown">
-                <button onclick="toggleDropdown(event)"
-                    class="w-full sidebar-link flex items-center justify-between px-4 py-3 rounded-xl outline-none">
-                    <div class="flex items-center gap-3"><i class="fas fa-list-ul w-6 text-center text-lg"></i><span
-                            class="sidebar-text">Kelola Layanan</span></div>
-                    <i class="fas fa-chevron-down text-[10px] sidebar-text transition-transform"></i>
-                </button>
-                <div class="dropdown-menu px-2 py-2 space-y-1 bg-gray-50/50 rounded-xl mx-2">
-                    <a href="#" class="block px-8 py-2 text-sm text-gray-500 hover:text-brand-600">Kartu Keluarga</a>
-                    <a href="#" class="block px-8 py-2 text-sm text-gray-500 hover:text-brand-600">Akta Kelahiran</a>
-                    <a href="#" class="block px-8 py-2 text-sm text-gray-500 hover:text-brand-600">Akta Kematian</a>
-                    <a href="#" class="block px-8 py-2 text-sm text-gray-500 hover:text-brand-600">Lahir Mati</a>
-                    <a href="#" class="block px-8 py-2 text-sm text-gray-500 hover:text-brand-600">Akta Pernikahan</a>
-                </div>
+    <div class="stat-card bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                <i class="fas fa-user-check text-xl text-green-600"></i>
             </div>
+            <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                <i class="fas fa-check mr-1"></i>Aktif
+            </span>
+        </div>
+        <h3 class="text-3xl font-extrabold text-gray-800 mb-1 text-green-600">
+            {{ $users->where('detail_keagamaan.status', 'aktif')->count() }}
+        </h3>
+        <p class="text-sm text-gray-600 font-medium">Akun Aktif</p>
+    </div>
 
-            <div class="pt-6 pb-2 px-4">
-                <p class="sidebar-text text-[11px] font-bold text-gray-400 uppercase tracking-[2px]">Akun</p>
+    <div class="stat-card bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between mb-4">
+            <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                <i class="fas fa-user-slash text-xl text-red-600"></i>
             </div>
-            <a href="#" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl"><i
-                    class="fas fa-users-cog w-6 text-center text-lg"></i><span class="sidebar-text">Manajemen
-                    Akun</span></a>
-            <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl"><i
-                    class="fas fa-pray w-6 text-center text-lg"></i><span class="sidebar-text">Akun Keagamaan</span></a>
+            <span class="text-xs font-medium text-red-600 bg-red-50 px-2 py-1 rounded-full">
+                <i class="fas fa-ban mr-1"></i>Non-Aktif
+            </span>
+        </div>
+        <h3 class="text-3xl font-extrabold text-gray-800 mb-1 text-red-600">
+            {{ $users->where('detail_keagamaan.status', 'non-aktif')->count() }}
+        </h3>
+        <p class="text-sm text-gray-600 font-medium">Non-Aktif</p>
+    </div>
+</div>
 
-            <div class="pt-10 pb-8">
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
-                <a href="#" onclick="handleLogout()"
-                    class="flex items-center gap-3 px-8 py-3 text-[#E53E3E] font-bold hover:bg-red-50 rounded-xl transition-all">
-                    <i class="fas fa-sign-out-alt text-lg"></i>
-                    <span class="sidebar-text">Logout</span>
-                </a>
-            </div>
-        </nav>
-    </aside>
+ {{-- Search and Add Button --}}
+<div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-8 reveal">
+    <div class="p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="relative w-full md:w-1/2">
+            <input type="text" id="searchBox" onkeyup="filterAccounts()"
+                placeholder="Cari nama atau username..."
+                class="w-full pl-11 pr-4 py-3 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        </div>
+        <button onclick="openAddModal()"
+            class="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg flex items-center gap-2">
+            <i class="fas fa-plus"></i> Tambah Akun
+        </button>
+    </div>
 
-    <main id="mainContent" class="main-content min-h-screen">
-        <header
-            class="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-40 px-8 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <button onclick="toggleSidebar()" class="p-2 hover:bg-gray-100 rounded-lg text-gray-500"><i
-                        class="fas fa-bars"></i></button>
-                <h1 class="text-xl font-bold text-gray-800">Manajemen Akun</h1>
-            </div>
-
-            <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
-                <div class="text-right hidden sm:block">
-                    <p class="text-sm font-bold text-gray-800">Administrator</p>
-                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Super Admin</p>
-                </div>
-                <div
-                    class="w-10 h-10 bg-brand-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-blue-100">
-                    <i class="fas fa-user-shield"></i>
-                </div>
-            </div>
-        </header>
-
-        <div class="p-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div>
-                        <p class="text-gray-400 text-[11px] font-bold uppercase tracking-wider">Total Akun</p>
-                        <h3 class="text-2xl font-black">{{ $users->count() }}</h3>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                    <div
-                        class="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center text-xl">
-                        <i class="fas fa-user-check"></i>
-                    </div>
-                    <div>
-                        <p class="text-gray-400 text-[11px] font-bold uppercase tracking-wider">Akun Aktif</p>
-                        <h3 class="text-2xl font-black text-green-600">
-                            {{ $users->where('detail_keagamaan.status', 'aktif')->count() }}
-                        </h3>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-                    <div class="w-12 h-12 bg-red-50 text-red-600 rounded-xl flex items-center justify-center text-xl"><i
-                            class="fas fa-user-slash"></i></div>
-                    <div>
-                        <p class="text-gray-400 text-[11px] font-bold uppercase tracking-wider">Non-Aktif</p>
-                        <h3 class="text-2xl font-black text-red-600">
-                            {{ $users->where('detail_keagamaan.status', 'non-aktif')->count() }}
-                        </h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-8">
-                <div class="p-6 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div class="relative w-full md:w-1/2">
-                        <input type="text" id="searchBox" onkeyup="filterAccounts()"
-                            placeholder="Cari nama atau username..."
-                            class="w-full pl-11 pr-4 py-3 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-brand-600 outline-none">
-                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                    </div>
-                    <button onclick="openAddModal()"
-                        class="w-full md:w-auto px-8 py-3 bg-brand-600 text-white rounded-2xl font-bold flex items-center gap-2 hover:bg-brand-700 shadow-lg shadow-blue-100 transition-all">
-                        <i class="fas fa-plus"></i> Tambah Akun
-                    </button>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left" id="userTable">
-                        <thead class="bg-gray-50 text-[11px] uppercase font-bold text-gray-400 tracking-widest">
-                            <tr>
-                                <th class="px-8 py-5">Nama Lengkap</th>
-                                <th class="px-8 py-5">Username</th>
-                                <th class="px-8 py-5">Agama</th>
-                                <th class="px-8 py-5">Alamat</th>
-                                <th class="px-8 py-5 text-center">Status</th>
-                                <th class="px-8 py-5 text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="accountTableBody" class="divide-y divide-gray-50">
-                            @foreach($users as $user)
-                                <tr class="hover:bg-gray-50/50">
-                                    <td class="px-8 py-5 font-bold text-gray-700">{{ $user->name }}</td>
-                                    <td class="px-8 py-5 text-gray-500 italic">@ {{ $user->username }}</td>
-                                    <td class="px-8 py-5">
-                                        <span
-                                            class="px-3 py-1 bg-brand-50 text-brand-600 rounded-lg text-[10px] font-bold uppercase tracking-widest">
-                                            {{ $user->detail_keagamaan->jenis_keagamaan->nama_jenis_keagamaan ?? 'Umum' }}
-                                        </span>
-                                    </td>
-                                    <td class="px-8 py-5 text-gray-600">{{ $user->detail_keagamaan->alamat ?? '-' }}</td>
-                                    <td class="px-8 py-5 text-center">
-                                        <span
-                                            class="px-3 py-1 rounded-full text-[10px] font-bold {{ ($user->detail_keagamaan->status ?? 'aktif') === 'aktif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }} uppercase">
-                                            {{ ($user->detail_keagamaan->status ?? 'aktif') === 'aktif' ? 'Aktif' : 'Non-Aktif' }}
-                                        </span>
-                                    </td>
-                                    <td class="px-8 py-5 text-center">
-                                        <button onclick="editAccount({{ json_encode($user->load('detail_keagamaan')) }})"
-                                            class="px-4 py-2 bg-gray-100 text-brand-600 rounded-xl text-xs font-bold hover:bg-brand-600 hover:text-white transition-all">
-                                            <i class="fas fa-edit mr-1"></i> Edit Akun
-                                        </button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="religionStats" class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
-                @php $religions = ['Islam', 'Kristen Protestan', 'Kristen Katolik', 'Hindu', 'Buddha']; @endphp
-                @foreach($religions as $rel)
-                                <div class="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm text-center">
-                                    <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">{{ $rel }}</p>
-                                    <p class="text-xl font-black text-brand-600">
-                                        {{ $users->filter(function ($u) use ($rel) {
-                        return ($u->detail_keagamaan->jenis_keagamaan->nama_jenis_keagamaan ?? '') === $rel;
-                    })->count() }}
-                                    </p>
-                                </div>
+    {{-- User Table --}}
+    <div class="overflow-x-auto">
+        <table class="w-full text-left" id="userTable">
+            <thead class="bg-gray-50 text-[11px] uppercase font-bold text-gray-400 tracking-widest">
+                <tr>
+                    <th class="px-8 py-5">Nama Lengkap</th>
+                    <th class="px-8 py-5">Username</th>
+                    <th class="px-8 py-5">Agama</th>
+                    <th class="px-8 py-5">Alamat</th>
+                    <th class="px-8 py-5 text-center">Status</th>
+                    <th class="px-8 py-5 text-center">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="accountTableBody" class="divide-y divide-gray-50">
+                @foreach($users as $user)
+                    <tr class="hover:bg-gray-50/50">
+                        <td class="px-8 py-5 font-bold text-gray-700">{{ $user->name }}</td>
+                        <td class="px-8 py-5 text-gray-500 italic">@ {{ $user->username }}</td>
+                        <td class="px-8 py-5">
+                            <span
+                                class="px-3 py-1 bg-brand-50 text-brand-600 rounded-lg text-[10px] font-bold uppercase tracking-widest">
+                                {{ $user->detail_keagamaan->jenis_keagamaan->nama_jenis_keagamaan ?? 'Umum' }}
+                            </span>
+                        </td>
+                        <td class="px-8 py-5 text-gray-600">{{ $user->detail_keagamaan->alamat ?? '-' }}</td>
+                        <td class="px-8 py-5 text-center">
+                            <span
+                                class="px-3 py-1 rounded-full text-[10px] font-bold {{ ($user->detail_keagamaan->status ?? 'aktif') === 'aktif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }} uppercase">
+                                {{ ($user->detail_keagamaan->status ?? 'aktif') === 'aktif' ? 'Aktif' : 'Non-Aktif' }}
+                            </span>
+                        </td>
+                        <td class="px-8 py-5 text-center">
+                            <button onclick="editAccount({{ json_encode($user->load('detail_keagamaan')) }})"
+                                class="px-4 py-2 bg-gray-100 text-brand-600 rounded-xl text-xs font-bold hover:bg-brand-600 hover:text-white transition-all">
+                                <i class="fas fa-edit mr-1"></i> Edit Akun
+                            </button>
+                        </td>
+                    </tr>
                 @endforeach
-            </div>
-        </div>
-    </main>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-    <div id="accountModal" class="modal">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-0 mx-4 overflow-hidden">
+ {{-- Religion Statistics --}}
+<div id="religionStats" class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10 reveal">
+    @php $religions = ['Islam', 'Kristen Protestan', 'Kristen Katolik', 'Hindu', 'Buddha']; @endphp
+    @foreach($religions as $rel)
+        <div class="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm text-center">
+            <p class="text-[10px] font-bold text-gray-400 uppercase mb-1">{{ $rel }}</p>
+            <p class="text-xl font-black text-brand-600">
+                {{ $users->filter(function ($u) use ($rel) {
+                    return ($u->detail_keagamaan->jenis_keagamaan->nama_jenis_keagamaan ?? '') === $rel;
+                })->count() }}
+            </p>
+        </div>
+    @endforeach
+</div>
+
+{{-- Modal Form --}}
+<div id="accountModal" class="fixed inset-0 z-50 hidden">
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-0 mx-4 overflow-hidden transform transition-all relative z-10">
             <div class="p-6 border-b border-gray-100 flex justify-between items-center">
                 <h3 class="text-xl font-bold text-gray-800" id="modalTitle">Tambah Akun Baru</h3>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 transition"><i
-                        class="fas fa-times"></i></button>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 transition">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
 
             <form id="accountForm" action="{{ route('admin.manajemen-akun.store') }}" method="POST"
-                class="p-6 space-y-5">
+                class="p-6 space-y-4">
                 @csrf
                 <input type="hidden" name="accountId" id="accountId">
 
+                {{-- Nama & Username --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">
+                            Nama Lengkap <span class="text-red-500">*</span>
+                        </label>
                         <input type="text" name="name" id="fullName" required
-                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-600">
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none transition text-sm"
+                            placeholder="Masukkan nama lengkap">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Username *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">
+                            Username <span class="text-red-500">*</span>
+                        </label>
                         <input type="text" name="username" id="username_field" required
-                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-600">
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none transition text-sm"
+                            placeholder="Masukkan username">
                     </div>
                 </div>
 
+                {{-- Agama --}}
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">
+                        Agama <span class="text-red-500">*</span>
+                    </label>
+                    <select name="agama" id="agama_select" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none transition text-sm bg-white">
+                        <option value="" disabled selected>Pilih agama...</option>
+                        @foreach($list_agama as $agama)
+                            <option value="{{ $agama->jenis_keagamaan_id }}">{{ $agama->nama_jenis_keagamaan }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Alamat --}}
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">
+                        Alamat Lengkap <span class="text-red-500">*</span>
+                    </label>
+                    <textarea name="alamat" id="alamat_field" required rows="3"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none transition text-sm resize-none"
+                        placeholder="Contoh: Jl. Sudirman No. 123, Kelurahan..."></textarea>
+                </div>
+
+                {{-- Password & Confirm Password --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Agama *</label>
-                        <select name="agama" id="agama_select" required
-                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-600">
-                            <option value="">Pilih Agama</option>
-                            @foreach($list_agama as $agama)
-                                <option value="{{ $agama->jenis_keagamaan_id }}">{{ $agama->nama_jenis_keagamaan }}</option>
-                            @endforeach
-                        </select>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">
+                            Password <span id="passwordRequiredLabel" class="text-red-500">*</span>
+                            <span id="passwordOptionalLabel" class="text-gray-400 text-xs hidden">(Opsional)</span>
+                        </label>
+                        <input type="password" name="password" id="password_field"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm"
+                            placeholder="Masukkan password">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Status *</label>
-                        <select name="status" id="status_select"
-                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-600">
-                            <option value="aktif">Aktif</option>
-                            <option value="non-aktif">Non-Aktif</option>
-                        </select>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">
+                            Konfirmasi Password <span id="passwordConfirmRequiredLabel" class="text-red-500">*</span>
+                            <span id="passwordConfirmOptionalLabel" class="text-gray-400 text-xs hidden">(Opsional)</span>
+                        </label>
+                        <input type="password" name="password_confirmation" id="password_confirmation_field"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm"
+                            placeholder="Ulangi password">
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Alamat Lengkap *</label>
-                    <textarea name="alamat" id="alamat_field" required rows="3"
-                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-600"
-                        placeholder="Contoh: Jl. Sudirman No. 123..."></textarea>
+                {{-- Info: Status otomatis aktif --}}
+                <div class="flex items-center gap-2 px-4 py-3 bg-green-50 border border-green-200 rounded-xl">
+                    <i class="fas fa-info-circle text-green-600"></i>
+                    <p class="text-sm text-green-700">Status akun akan otomatis diatur sebagai <strong>Aktif</strong></p>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
-                    <input type="password" name="password" id="password_field"
-                        placeholder="Isi jika ingin ganti password"
-                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-brand-600">
-                </div>
-
-                <div class="flex items-center gap-3 pt-4 border-t">
+                {{-- Buttons --}}
+                <div class="flex items-center gap-3 pt-4 border-t border-gray-100">
                     <button type="submit"
-                        class="flex-1 py-3 bg-brand-600 text-white rounded-xl font-bold hover:bg-brand-700 transition shadow-lg shadow-blue-100">
+                        class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg">
                         <i class="fas fa-save mr-2"></i> Simpan
                     </button>
                     <button type="button" onclick="closeModal()"
-                        class="px-6 py-3 border border-gray-200 text-gray-600 rounded-xl font-bold hover:bg-gray-50">Batal</button>
+                        class="px-6 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 rounded-xl font-bold hover:from-gray-200 hover:to-gray-300 transition-all shadow-md">
+                        Batal
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+</div>
+@endsection
 
-    <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-            document.getElementById('mainContent').classList.toggle('expanded');
+@push('scripts')
+<script>
+    // Reveal animation
+    function reveal() {
+        const reveals = document.querySelectorAll('.reveal');
+        reveals.forEach(element => {
+            const windowHeight = window.innerHeight;
+            const elementTop = element.getBoundingClientRect().top;
+            if (elementTop < windowHeight - 50) {
+                element.classList.add('active');
+            }
+        });
+    }
+    window.addEventListener('scroll', reveal);
+    window.addEventListener('load', reveal);
+
+    // Modal functions
+    function openAddModal() {
+        document.getElementById('accountForm').reset();
+        document.getElementById('accountId').value = '';
+        document.getElementById('modalTitle').innerText = 'Tambah Akun Baru';
+
+        // Set password as required for new account
+        document.getElementById('password_field').required = true;
+        document.getElementById('password_confirmation_field').required = true;
+
+        // Show required labels, hide optional labels
+        document.getElementById('passwordRequiredLabel').classList.remove('hidden');
+        document.getElementById('passwordOptionalLabel').classList.add('hidden');
+        document.getElementById('passwordConfirmRequiredLabel').classList.remove('hidden');
+        document.getElementById('passwordConfirmOptionalLabel').classList.add('hidden');
+
+        document.getElementById('accountModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function editAccount(user) {
+        document.getElementById('accountId').value = user.id;
+        document.getElementById('fullName').value = user.name;
+        document.getElementById('username_field').value = user.username;
+
+        if (user.detail_keagamaan) {
+            document.getElementById('agama_select').value = user.detail_keagamaan.jenis_keagamaan_id;
+            document.getElementById('alamat_field').value = user.detail_keagamaan.alamat || '';
         }
 
-        function toggleDropdown(e) {
-            e.currentTarget.nextElementSibling.classList.toggle('active');
-            e.currentTarget.querySelector('.fa-chevron-down').classList.toggle('rotate-180');
-        }
+        document.getElementById('modalTitle').innerText = 'Edit Akun';
 
-        function handleLogout() {
-            Swal.fire({
-                title: 'Konfirmasi Logout',
-                text: "Apakah Anda yakin ingin keluar?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#0052CC',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Keluar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('logout-form').submit();
+        // Set password as optional for existing account
+        document.getElementById('password_field').required = false;
+        document.getElementById('password_confirmation_field').required = false;
+
+        // Hide required labels, show optional labels
+        document.getElementById('passwordRequiredLabel').classList.add('hidden');
+        document.getElementById('passwordOptionalLabel').classList.remove('hidden');
+        document.getElementById('passwordConfirmRequiredLabel').classList.add('hidden');
+        document.getElementById('passwordConfirmOptionalLabel').classList.remove('hidden');
+
+        document.getElementById('accountModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('accountModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Filter accounts
+    function filterAccounts() {
+        const q = document.getElementById('searchBox').value.toLowerCase();
+        const rows = document.querySelectorAll('#accountTableBody tr');
+        rows.forEach(row => {
+            const name = row.children[0].innerText.toLowerCase();
+            const user = row.children[1].innerText.toLowerCase();
+            row.style.display = (name.includes(q) || user.includes(q)) ? "" : "none";
+        });
+    }
+
+    // Form validation for password confirmation
+    document.addEventListener('DOMContentLoaded', function() {
+        const accountForm = document.getElementById('accountForm');
+        if (accountForm) {
+            accountForm.addEventListener('submit', function(e) {
+                const accountId = document.getElementById('accountId').value;
+                const password = document.getElementById('password_field').value;
+                const passwordConfirmation = document.getElementById('password_confirmation_field').value;
+
+                // Untuk akun baru (accountId kosong), password wajib diisi
+                if (!accountId) {
+                    if (!password) {
+                        e.preventDefault();
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Password Wajib Diisi!',
+                            text: 'Silakan masukkan password minimal 6 karakter untuk akun baru.',
+                            confirmButtonColor: '#0052CC'
+                        });
+                        return false;
+                    }
+                    if (password.length < 6) {
+                        e.preventDefault();
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Password Terlalu Pendek!',
+                            text: 'Password minimal 6 karakter.',
+                            confirmButtonColor: '#0052CC'
+                        });
+                        return false;
+                    }
+                }
+
+                // Validasi password confirmation
+                const passwordValue = document.getElementById('password_field').value;
+                const passwordConfirmValue = document.getElementById('password_confirmation_field').value;
+
+                // Jika password diisi, konfirmasi harus sama
+                if (passwordValue || passwordConfirmValue) {
+                    if (passwordValue !== passwordConfirmValue) {
+                        e.preventDefault();
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Password Tidak Cocok!',
+                            text: 'Password dan konfirmasi password harus sama.',
+                            confirmButtonColor: '#0052CC'
+                        });
+                        return false;
+                    }
                 }
             });
         }
+    });
 
-        function openAddModal() {
-            document.getElementById('accountForm').reset();
-            document.getElementById('accountId').value = '';
-            document.getElementById('modalTitle').innerText = 'Tambah Akun Baru';
-            document.getElementById('password_field').required = true;
-            document.getElementById('accountModal').classList.add('active');
-        }
+    // SweetAlert2 Pop-up Handlers
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: "{{ session('success') }}",
+            confirmButtonColor: '#0052CC',
+            timer: 3000,
+            timerProgressBar: true
+        });
+    @endif
 
-        function editAccount(user) {
-            document.getElementById('accountId').value = user.id;
-            document.getElementById('fullName').value = user.name;
-            document.getElementById('username_field').value = user.username;
+    @if(session('error'))
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: "{{ session('error') }}",
+            confirmButtonColor: '#0052CC'
+        });
+    @endif
 
-            if (user.detail_keagamaan) {
-                document.getElementById('agama_select').value = user.detail_keagamaan.jenis_keagamaan_id;
-                document.getElementById('alamat_field').value = user.detail_keagamaan.alamat || '';
-                // Menyesuaikan value ke Bahasa Indonesia 'aktif'
-                document.getElementById('status_select').value = user.detail_keagamaan.status || 'aktif';
-            }
-
-            document.getElementById('modalTitle').innerText = 'Edit Akun';
-            document.getElementById('password_field').required = false;
-            document.getElementById('accountModal').classList.add('active');
-        }
-
-        function closeModal() { document.getElementById('accountModal').classList.remove('active'); }
-
-        function filterAccounts() {
-            const q = document.getElementById('searchBox').value.toLowerCase();
-            const rows = document.querySelectorAll('#accountTableBody tr');
-            rows.forEach(row => {
-                const name = row.children[0].innerText.toLowerCase();
-                const user = row.children[1].innerText.toLowerCase();
-                row.style.display = (name.includes(q) || user.includes(q)) ? "" : "none";
-            });
-        }
-    </script>
-
-    <script>
-        // SweetAlert2 Pop-up Handlers
-        @if(session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: "{{ session('success') }}",
-                confirmButtonColor: '#0052CC',
-                timer: 3000,
-                timerProgressBar: true
-            });
-        @endif
-
-        @if(session('error'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: "{{ session('error') }}",
-                confirmButtonColor: '#0052CC'
-            });
-        @endif
-
-        @if ($errors->any())
-            Swal.fire({
-                icon: 'warning',
-                title: 'Perhatian!',
-                text: "{{ $errors->first() }}",
-                confirmButtonColor: '#0052CC'
-            });
-        @endif
-    </script>
-</body>
-
-</html>
+    @if ($errors->any())
+        Swal.fire({
+            icon: 'warning',
+            title: 'Perhatian!',
+            text: "{{ $errors->first() }}",
+            confirmButtonColor: '#0052CC'
+        });
+    @endif
+</script>
+@endpush

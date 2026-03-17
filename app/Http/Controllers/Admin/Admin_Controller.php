@@ -159,7 +159,7 @@ class Admin_Controller extends Controller
             'username' => 'required|unique:users,username,' . $request->accountId,
             'agama'    => 'required',
             'alamat'   => 'required',
-            'status'   => 'required',
+            'password' => 'nullable|required_if:accountId,null|min:6|confirmed',
         ]);
 
         DB::beginTransaction();
@@ -182,13 +182,13 @@ class Admin_Controller extends Controller
             $user->syncRoles(['Keagamaan']);
 
             // 2. Simpan/Update ke tabel 'keagamaan' (Detail Profil)
+            // Status selalu 'aktif' secara default
             $user->detail_keagamaan()->updateOrCreate(
                 ['user_id' => $user->id],
                 [
                     'jenis_keagamaan_id' => $request->agama,
                     'alamat'             => $request->alamat,
-                    'status'             => $request->status,
-                    // Kolom role tidak ditambahkan di sini sesuai instruksi Anda
+                    'status'             => 'aktif', // Selalu aktif secara default
                 ]
             );
 
@@ -683,5 +683,5 @@ class Admin_Controller extends Controller
                 'selesai' => $dataSelesai,
             ],
         ]);
-    }
+    }    
 }
