@@ -100,17 +100,17 @@
     </div>
 
     {{-- Hero Section --}}
-    <section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-800 text-white py-16">
+    <section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-800 text-white py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium mb-4">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium mb-6">
                     <i class="fas fa-rocket"></i>
                     Layanan Mandiri
                 </div>
-                <h1 class="text-3xl md:text-4xl font-extrabold mb-4">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-6">
                     Pilih Jenis Layanan
                 </h1>
-                <p class="text-base text-blue-100 mb-6">
+                <p class="text-lg text-blue-100 mb-8">
                     Pilih jenis layanan yang Anda butuhkan dan isi form pendaftaran secara online.
                 </p>
             </div>
@@ -125,7 +125,7 @@
 
     {{-- Services Section --}}
     <section class="py-12 bg-gray-50 -mt-6 relative z-10">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             {{-- Info Box (Sekarang di Atas Grid) --}}
             <div class="mb-8 bg-blue-50 border border-blue-200 rounded-2xl p-5 reveal shadow-sm">
