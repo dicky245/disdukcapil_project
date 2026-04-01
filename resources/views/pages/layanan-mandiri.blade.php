@@ -32,7 +32,7 @@
     ],
     3 => [ // Akte Kematian
         'icon' => 'fa-user-times',
-        'color' => 'orange',
+        'color' => 'blue',
         'id' => 'akte_kematian',
         'fields' => [
             ['name' => 'layanan_id', 'value' => '3', 'type' => 'hidden'],
@@ -51,7 +51,7 @@
     ],
     4 => [ // Lahir Mati
         'icon' => 'fa-exclamation-triangle',
-        'color' => 'red',
+        'color' => 'blue',
         'id' => 'lahir_mati',
         'fields' => [
             ['name' => 'layanan_id', 'value' => '4', 'type' => 'hidden'],
