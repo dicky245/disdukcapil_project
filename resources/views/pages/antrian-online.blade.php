@@ -93,6 +93,7 @@
             </div>
 
             <div class="bg-white rounded-2xl shadow-lg p-8">
+
                 <form id="antrianForm" class="space-y-6">
                     @csrf
 
@@ -102,9 +103,28 @@
                             Nama Lengkap <span class="text-red-500">*</span>
                         </label>
                         <input type="text" name="nama_lengkap" id="nama_lengkap" required
-                               placeholder="Masukkan nama lengkap sesuai KTP"
+                               placeholder="Masukkan nama lengkap sesuai identitas"
                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-base">
                         <p id="namaError" class="text-red-500 text-sm mt-2 hidden">Masukkan nama lengkap</p>
+                    </div>
+
+                    {{-- Alamat --}}
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-700 mb-2">
+                            Alamat <span class="text-gray-400 text-sm"></span>
+                        </label>
+                        <textarea name="alamat" id="alamat" rows="3"
+                                  placeholder="Masukkan alamat lengkap"
+                                  class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-base resize-none"></textarea>
+                    </div>
+
+                    {{-- Tanggal Lahir --}}
+                    <div>
+                        <label class="block text-lg font-semibold text-gray-700 mb-2">
+                            Tanggal Lahir <span class="text-gray-400 text-sm"></span>
+                        </label>
+                        <input type="date" name="tanggal_lahir" id="tanggal_lahir"
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-base">
                     </div>
 
                     {{-- Jenis Layanan --}}
@@ -643,10 +663,21 @@
 
 @push('scripts')
 <script>
+
     // Load Statistics on Page Load
-    document.addEventListener('DOMContentLoaded', function() {
-        loadStatistics();
-    });
+    function loadStatistics() {
+        fetch('{{ route('antrian.statistik') }}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    animateCounter('totalToday', data.data.total_antrian);
+                    animateCounter('waitingToday', data.data.antrian_menunggu);
+                    animateCounter('processingToday', data.data.antrian_diproses);
+                    animateCounter('completedToday', data.data.antrian_selesai);
+                }
+            })
+            .catch(err => console.error('Gagal memuat statistik:', err));
+    }
 
     function loadStatistics() {
         fetch('{{ route('antrian.statistik') }}')

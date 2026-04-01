@@ -39,6 +39,7 @@ Route::prefix('antrian-online')->group(function () {
     Route::get('/detail/{nomor_antrian}', [Antrian_Online_Controller::class, 'Get_Detail_Antrian'])->name('antrian.detail');
     Route::get('/statistik', [Antrian_Online_Controller::class, 'Get_Statistik_Antrian'])->name('antrian.statistik');
     Route::get('/lacak', [Antrian_Online_Controller::class, 'Lacak_Berkas'])->name('antrian.lacak');
+    Route::get('/get-data/{nomor_antrian}', [Antrian_Online_Controller::class, 'Get_Data_Antrian'])->name('antrian.get-data');
 });
 
 // Layanan Mandiri (Public)

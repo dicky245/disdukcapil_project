@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id('antrian_online_id');
             $table->string('nomor_antrian', 20)->unique();
             $table->string('nama_lengkap', 100);
+            $table->text('alamat')->nullable();
+            $table->date('tanggal_lahir')->nullable();
             $table->foreignId('layanan_id')->constrained(
                 table: 'layanan',
                 column: 'layanan_id'

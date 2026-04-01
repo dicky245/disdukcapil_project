@@ -123,10 +123,6 @@
                 </div>
             </div>
 
-            <div class="w-32 h-32 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6 float-animation overflow-hidden">
-                <i class="fas fa-exclamation-triangle text-6xl text-white"></i>
-            </div>
-
             <h1 class="text-9xl font-black text-white mb-4 animate-bounce-slow">404</h1>
             <p class="text-2xl md:text-3xl font-bold text-white mb-2">Halaman Tidak Ditemukan</p>
             <p class="text-blue-100 text-lg">Maaf, halaman yang Anda cari tidak dapat ditemukan.</p>

@@ -27,6 +27,7 @@
         'color'=> 'blue',
         'id'=>'akte_kelahiran', 
         'fields'=>[
+<<<<<<< HEAD
         ['name'=>'tes', 'label'=>'tes','type'=>'text']
         ]
     ],
@@ -67,8 +68,45 @@
             ['name' => 'surat_keterangan_lahir_mati', 'label' => 'Surat Keterangan Lahir Mati', 'type' => 'file'],
             ['name' => 'ktp_ayah', 'label' => 'KTP Ayah', 'type' => 'file'],
             ['name' => 'ktp_ibu', 'label' => 'KTP Ibu', 'type' => 'file'],
+=======
+            ['name' => 'layanan_id', 'value' => '2', 'type' => 'hidden'],
+            ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi', 'placeholder' => 'Masukkan Nomor Reqistrasi', 'type' => 'text'],
+            ['name' => 'nama', 'label' => 'Nama Kepala Keluarga', 'placeholder' => 'Masukkan Nama Kepala Keluarga','type' => 'text'],
+            ['name' => 'alamat', 'label' => 'Alamat', 'placeholder' => 'Masukkan Alamat','type' => 'textarea'],
+            ['name' => 'fotokopi_buku_nikah','label'=>'Foto Buku Nikah Orang Tua', 'type'=>'file'],
+            ['name' => 'surat_bidan','label'=>'Surat Keterangan dari Bidan', 'type'=>'file'],
+            ['name' => 'ktp_orangtua','label'=>'Foto KTP Orang Tua', 'type'=>'file'],
+            ['name' => 'fotokopi_kk','label'=>'Foto Kartu Keluarga', 'type'=>'file'],
+            ['name' => 'identitas_saksi','label'=>'Identitas Saksi', 'placeholder' => 'Masukkan Data Identitas Saksi', 'type'=>'text'],
+>>>>>>> 7d40513c353fa7162c4c073a09a61bc333a184f2
         ]
     ],
+        'Penerbitan Akte Kematian' => [
+            'icon' => 'fa-user-times',
+            'color' => 'orange',
+            'id' => 'akta-kematian',
+            'fields' => [
+                ['name' => 'nama_almarhum', 'label' => 'Nama Lengkap Almarhum', 'type' => 'text', 'placeholder' => 'Sesuai KTP'],
+                ['name' => 'tgl_meninggal', 'label' => 'Tanggal Meninggal', 'type' => 'date'],
+                ['name' => 'tempat_meninggal', 'label' => 'Tempat Meninggal', 'type' => 'text', 'placeholder' => 'Rumah sakit/lokasi'],
+                ['name' => 'sebab_meninggal', 'label' => 'Sebab Meninggal', 'type' => 'textarea', 'placeholder' => 'Jelaskan penyebab'],
+                ['name' => 'nik_pelapor', 'label' => 'NIK Pelapor', 'type' => 'text', 'placeholder' => '16 digit NIK'],
+                ['name' => 'hubungan_pelapor', 'label' => 'Hubungan dengan Almarhum', 'type' => 'select', 'options' => ['Ayah', 'Ibu', 'Suami', 'Istri', 'Anak', 'Lainnya']],
+            ]
+        ],
+        'Penerbitan Akte Lahir Mati' => [
+            'icon' => 'fa-exclamation-triangle',
+            'color' => 'red',
+            'id' => 'lahir-mati',
+            'fields' => [
+                ['name' => 'nama_bayi', 'label' => 'Nama Bayi', 'type' => 'text', 'placeholder' => 'Nama lengkap bayi'],
+                ['name' => 'tgl_lahir', 'label' => 'Tanggal Lahir', 'type' => 'datetime-local'],
+                ['name' => 'nama_ayah', 'label' => 'Nama Ayah', 'type' => 'text', 'placeholder' => 'Nama lengkap ayah'],
+                ['name' => 'nama_ibu', 'label' => 'Nama Ibu', 'type' => 'text', 'placeholder' => 'Nama lengkap ibu'],
+                ['name' => 'nik_ayah', 'label' => 'NIK Ayah', 'type' => 'text', 'placeholder' => '16 digit NIK ayah'],
+                ['name' => 'keterangan', 'label' => 'Keterangan', 'type' => 'textarea', 'placeholder' => 'Keterangan tambahan'],
+            ]
+        ],
         5 => [
             'icon' => 'fa-ring',
             'color' => 'blue',
@@ -105,17 +143,17 @@
     </div>
 
     {{-- Hero Section --}}
-    <section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-800 text-white py-20 pb-24">
+    <section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-800 text-white py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-4xl mx-auto">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium mb-4">
+            <div class="text-center max-w-3xl mx-auto">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium mb-6">
                     <i class="fas fa-rocket"></i>
                     Layanan Mandiri
                 </div>
-                <h1 class="text-3xl md:text-4xl font-extrabold mb-4">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-6">
                     Pilih Jenis Layanan
                 </h1>
-                <p class="text-base text-blue-100 mb-6">
+                <p class="text-lg text-blue-100 mb-8">
                     Pilih jenis layanan yang Anda butuhkan dan isi form pendaftaran secara online.
                 </p>
             </div>
@@ -130,7 +168,7 @@
 
     {{-- Services Section --}}
     <section class="py-12 bg-gray-50 -mt-6 relative z-10">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             {{-- Info Box (Sekarang di Atas Grid) --}}
             <div class="mb-8 bg-blue-50 border border-blue-200 rounded-2xl p-5 reveal shadow-sm">
@@ -258,6 +296,53 @@
                 </div>
                 @endif
             <div class="p-6" id="modalBody">
+                {{-- Auto-fill dari Antrian Online --}}
+                <div id="antrianOnlineSection" class="mb-6">
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-5 border border-green-200">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-ticket-alt text-xl text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-800 mb-2">Isi Form Otomatis dari Antrian Online</h4>
+                                <p class="text-sm text-gray-600 mb-3">Sudah punya nomor antrian online? Masukkan nomor antrian untuk mengisi form secara otomatis.</p>
+
+                                <div class="flex gap-3">
+                                    <input type="text" id="nomorAntrianInput"
+                                           placeholder="Contoh: ABC-123-456"
+                                           class="flex-1 px-4 py-3 border-2 border-green-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-base uppercase">
+                                    <button type="button" onclick="fetchAntrianData()"
+                                            class="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all shadow-lg">
+                                        <i class="fas fa-download mr-2"></i>
+                                        Ambil Data
+                                    </button>
+                                </div>
+
+                                <div id="antrianLoading" class="hidden mt-3">
+                                    <div class="flex items-center gap-2 text-green-600">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <span class="text-sm font-medium">Mengambil data antrian...</span>
+                                    </div>
+                                </div>
+
+                                <div id="antrianSuccess" class="hidden mt-3">
+                                    <div class="flex items-center gap-2 text-green-600">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span class="text-sm font-medium">Data antrian berhasil diambil!</span>
+                                    </div>
+                                </div>
+
+                                <div id="antrianError" class="hidden mt-3">
+                                    <div class="flex items-center gap-2 text-red-600">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        <span class="text-sm" id="antrianErrorMessage"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <form id="serviceForm" method="POST" enctype="multipart/form-data" class="space-y-5">
                     @csrf
                     <div id="formFields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
@@ -306,6 +391,8 @@
     window.addEventListener('scroll', reveal);
     window.addEventListener('load', reveal);
 
+    let currentServiceId = null;
+
     // Modal logic
     function openServiceForm(serviceId, serviceName, serviceColor, fields) {
         const modal = document.getElementById('serviceModal');
@@ -314,20 +401,25 @@
         const modalSubtitle = document.getElementById('modalSubtitle');
         const modalIcon = document.getElementById('modalIcon');
         const form = document.getElementById('serviceForm');
+        const antrianOnlineSection = document.getElementById('antrianOnlineSection');
+
+        // Simpan service ID
+        currentServiceId = serviceId;
 
         modalTitle.textContent = serviceName;
         modalSubtitle.textContent = 'Formulir pengajuan online';
         modalIcon.className = `w-12 h-12 rounded-xl flex items-center justify-center bg-${serviceColor}-100`;
         modalIcon.innerHTML = `<i class="fas ${getIconById(serviceId)} text-2xl text-${serviceColor}-600"></i>`;
 
-        if(serviceId === 'kk'){
-            form.action = "{{ route('kk.store') }}";
-        } else if(serviceId === 'akte_kematian'){
-            form.action = "{{ route('akte-kematian.store') }}";
-        } else if(serviceId === 'lahir_mati'){
-            form.action = "{{ route('lahir-mati.store') }}";
+        // Show antrian online section untuk semua layanan
+        if (antrianOnlineSection) {
+            antrianOnlineSection.classList.remove('hidden');
+            resetAntrianForm();
         }
 
+        if(serviceId === 'kk'){
+            form.action = "{{ route('kk.store') }}";
+        }
         formFields.innerHTML = fields.length > 0 ? fields.map(field => {
             if(field.type === 'hidden'){
                 return `<input type="hidden" name="${field.name}" value="${field.value}">`;
@@ -344,58 +436,12 @@
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
 
-        document.getElementById('serviceForm').onsubmit = function(e) {
-        e.preventDefault();
-
-        // Validasi form
-        const formData = new FormData(this);
-        const requiredFields = this.querySelectorAll('[required]');
-        let isValid = true;
-
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                isValid = false;
-                field.classList.add('border-red-500');
-            } else {
-                field.classList.remove('border-red-500');
-            }
-        });
-
-        if (!isValid) {
-            SwalHelper.warning('Harap isi semua field yang wajib diisi!');
-            return false;
-        }
-
-        // Show loading
-        SwalHelper.loading('Memproses pengajuan...');
-
-        // Submit form
-        fetch(this.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            SwalHelper.close();
-            if (data.success) {
-                SwalHelper.success('Pengajuan berhasil dikirim! Nomor registrasi: ' + data.nomor_registrasi);
-                modal.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-                this.reset();
-            } else {
-                SwalHelper.error(data.message || 'Terjadi kesalahan. Silakan coba lagi.');
-            }
-        })
-        .catch(error => {
-            SwalHelper.close();
-            SwalHelper.error('Terjadi kesalahan. Silakan coba lagi.');
-            console.error('Error:', error);
-        });
-
-        return false;
+        document.getElementById('serviceForm').onsubmit = function() {
+        Swal.fire({
+        title: 'Memproses...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
 };
     }
 
@@ -405,12 +451,11 @@
         
         if(field.type === 'textarea') return `<textarea name="${field.name}" ${req} placeholder="${field.placeholder}" class="${baseClass} h-24 resize-none"></textarea>`;
         if(field.type === 'select') return `<select name="${field.name}" ${req} class="${baseClass}"><option value="">Pilih...</option>${field.options.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`;
-        if(field.type === 'nik') return `<input type="text" name="${field.name}" ${req} placeholder="${field.placeholder || ''}" inputmode="numeric" pattern="[0-9]{16}" minlength="16" maxlength="16" title="NIK harus terdiri dari 16 digit angka" oninput="this.value=this.value.replace(/[^0-9]/g,'')" class="${baseClass}">`;
         return `<input type="${field.type}" name="${field.name}" ${req} placeholder="${field.placeholder || ''}" class="${baseClass}">`;
     }
 
     function getIconById(id) {
-        const map = { 'kk': 'fa-address-card', 'akte_kelahiran': 'fa-baby', 'akte_kematian': 'fa-user-times', 'lahir_mati': 'fa-exclamation-triangle', 'layanan-pernikahan': 'fa-ring' };
+        const map = { 'kk': 'fa-address-card', 'akta-lahir': 'fa-baby', 'akta-kematian': 'fa-user-times', 'lahir-mati': 'fa-exclamation-triangle', 'akta-perkawinan': 'fa-ring' };
         return map[id] || 'fa-file-alt';
     }
 
@@ -430,6 +475,159 @@
             }).then(() => closeModal());
         }, 1500);
     }
+
+    // ========== ANTRIAN ONLINE AUTO-FILL FUNCTIONS ==========
+
+    // Fetch data dari antrian online
+    async function fetchAntrianData() {
+        const nomorAntrianInput = document.getElementById('nomorAntrianInput');
+        const nomorAntrian = nomorAntrianInput.value.trim().toUpperCase();
+
+        // Validate nomor antrian
+        if (!nomorAntrian) {
+            showAntrianError('Masukkan nomor antrian');
+            return;
+        }
+
+        // Format: ABC-123-456
+        const antrianPattern = /^[A-Z]{3}-\d{3}-\d{3}$/;
+        if (!antrianPattern.test(nomorAntrian)) {
+            showAntrianError('Format nomor antrian tidak valid. Contoh: ABC-123-456');
+            return;
+        }
+
+        // Show loading
+        showAntrianLoading();
+        hideAntrianError();
+
+        try {
+            const response = await fetch(`/antrian-online/get-data/${nomorAntrian}`, {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success && result.data) {
+                // Auto-fill form dengan data antrian
+                autoFillFormFromAntrian(result.data);
+
+                // Show success
+                showAntrianSuccess();
+            } else {
+                showAntrianError(result.message || 'Antrian tidak ditemukan');
+            }
+
+        } catch (error) {
+            console.error('Error fetching antrian data:', error);
+            showAntrianError('Terjadi kesalahan saat mengambil data antrian');
+        } finally {
+            hideAntrianLoading();
+        }
+    }
+
+    // Auto-fill form dari data antrian online
+    function autoFillFormFromAntrian(data) {
+        // Fill nama_lengkap field
+        if (data.nama_lengkap) {
+            const namaInput = document.querySelector('input[name="nama"]');
+            if (!namaInput) {
+                namaInput = document.querySelector('input[name="nama_lengkap"]');
+            }
+            if (!namaInput) {
+                namaInput = document.querySelector('input[name="nama_kepala_keluarga"]');
+            }
+            if (!namaInput) {
+                namaInput = document.querySelector('input[name="nama_almarhum"]');
+            }
+            if (!namaInput) {
+                namaInput = document.querySelector('input[name="nama_ayah"]');
+            }
+            if (!namaInput) {
+                namaInput = document.querySelector('input[name="nama_ibu"]');
+            }
+
+            if (namaInput) {
+                namaInput.value = data.nama_lengkap;
+                namaInput.dispatchEvent(new Event('input', { bubbles: true }));
+                namaInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+                // Add visual indicator
+                namaInput.classList.add('border-green-500', 'bg-green-50');
+                setTimeout(() => {
+                    namaInput.classList.remove('border-green-500', 'bg-green-50');
+                }, 3000);
+            }
+        }
+
+        // Fill alamat field
+        if (data.alamat) {
+            const alamatInput = document.querySelector('textarea[name="alamat"]');
+            if (alamatInput) {
+                alamatInput.value = data.alamat;
+                alamatInput.dispatchEvent(new Event('input', { bubbles: true }));
+                alamatInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+                alamatInput.classList.add('border-green-500', 'bg-green-50');
+                setTimeout(() => {
+                    alamatInput.classList.remove('border-green-500', 'bg-green-50');
+                }, 3000);
+            }
+        }
+    }
+
+    // Show antrian loading
+    function showAntrianLoading() {
+        const loading = document.getElementById('antrianLoading');
+        if (loading) loading.classList.remove('hidden');
+    }
+
+    // Hide antrian loading
+    function hideAntrianLoading() {
+        const loading = document.getElementById('antrianLoading');
+        if (loading) loading.classList.add('hidden');
+    }
+
+    // Show antrian success
+    function showAntrianSuccess() {
+        const success = document.getElementById('antrianSuccess');
+        if (success) {
+            success.classList.remove('hidden');
+            setTimeout(() => success.classList.add('hidden'), 5000);
+        }
+    }
+
+    // Show antrian error
+    function showAntrianError(message) {
+        const error = document.getElementById('antrianError');
+        const errorMessage = document.getElementById('antrianErrorMessage');
+
+        if (error && errorMessage) {
+            errorMessage.textContent = message;
+            error.classList.remove('hidden');
+            setTimeout(() => error.classList.add('hidden'), 5000);
+        }
+    }
+
+    // Hide antrian error
+    function hideAntrianError() {
+        const error = document.getElementById('antrianError');
+        if (error) error.classList.add('hidden');
+    }
+
+    // Reset antrian form
+    function resetAntrianForm() {
+        const nomorAntrianInput = document.getElementById('nomorAntrianInput');
+        const success = document.getElementById('antrianSuccess');
+        const error = document.getElementById('antrianError');
+
+        if (nomorAntrianInput) nomorAntrianInput.value = '';
+        if (success) success.classList.add('hidden');
+        if (error) error.classList.add('hidden');
+    }
+
 </script>
 @endpush
 @endsection

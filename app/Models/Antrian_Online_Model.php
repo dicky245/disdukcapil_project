@@ -18,6 +18,8 @@ class Antrian_Online_Model extends Model
     protected $fillable = [
         'nomor_antrian',
         'nama_lengkap',
+        'alamat',
+        'tanggal_lahir',
         'layanan_id',
         'status_antrian',
     ];
