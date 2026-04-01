@@ -13,15 +13,19 @@ return new class extends Migration
     {
         Schema::create('lacak_berkas', function (Blueprint $table) {
             $table->id('lacak_berkas_id');
-            $table->foreignId('antrian_online_id')->constrained(
-                table: 'antrian_online',
-                column: 'antrian_online_id'
-            )->onDelete('cascade');
+            // Gunakan CHAR(36) untuk UUID foreign key
+            $table->char('antrian_online_id', 36);
             $table->string('status', 100);
             $table->date('tanggal');
             $table->text('keterangan')->nullable();
             $table->text('alasan_penolakan')->nullable();
             $table->timestamps();
+
+            // Foreign key constraint
+            $table->foreign('antrian_online_id')
+                ->references('antrian_online_id')
+                ->on('antrian_online')
+                ->onDelete('cascade');
 
             $table->index('antrian_online_id');
             $table->index('status');

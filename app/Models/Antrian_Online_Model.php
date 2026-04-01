@@ -19,6 +19,7 @@ class Antrian_Online_Model extends Model
     protected $keyType = 'int';  // ✅ integer
 
     protected $fillable = [
+        'antrian_online_id',
         'nomor_antrian',
         'nama_lengkap',
         'alamat',

@@ -60,6 +60,14 @@ return [
             'report' => false,
         ],
 
+        'secure_uploads' => [
+            'driver' => 'local',
+            'root' => storage_path('app/secure_uploads'),
+            'visibility' => 'private',
+            'throw' => false,
+            'report' => false,
+        ],
+
     ],
 
     /*
