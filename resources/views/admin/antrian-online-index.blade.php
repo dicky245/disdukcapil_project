@@ -207,35 +207,41 @@
 
             return `
             <div class="group p-5 sm:p-6 hover:bg-slate-50 transition-all">
-                <div class="flex flex-col sm:flex-row sm:items-center gap-6">
+                <div class="flex items-center gap-6">
+                    <!-- Avatar -->
                     <div class="relative flex-shrink-0">
                         <div class="w-16 h-16 bg-gradient-to-tr from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform border-4 border-white">
                             <span class="text-xl font-black tracking-tighter">${initial}</span>
                         </div>
                     </div>
 
-                    <div class="flex-1 space-y-1">
-                        <div class="flex flex-wrap items-center gap-3">
+                    <!-- Info Section -->
+                    <div class="flex-1 min-w-0">
+                        <!-- Name & Status -->
+                        <div class="flex flex-wrap items-center gap-3 mb-2">
                             <h4 class="text-lg font-bold text-slate-800">${q.nama_lengkap}</h4>
-                            <span class="px-3 py-1 border rounded-full text-[10px] font-black uppercase ${cfg.class}">
+                            <span class="px-3 py-1 border rounded-full text-[10px] font-black uppercase ${cfg.class} flex-shrink-0">
                                 <i class="fas ${cfg.icon} mr-1"></i> ${q.status_antrian}
                             </span>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-1 gap-x-6 text-sm text-slate-500 font-medium">
+
+                        <!-- Service & Date - Aligned in one row -->
+                        <div class="flex flex-wrap items-center gap-6 text-sm text-slate-500 font-medium">
                             <div class="flex items-center gap-2">
-                                <i class="fas fa-id-card text-blue-400 w-4 text-xs"></i>
+                                <i class="fas fa-id-card text-blue-400 w-4 text-xs flex-shrink-0"></i>
                                 <span class="text-slate-600">${q.layanan ? q.layanan.nama_layanan : 'Layanan Umum'}</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <i class="fas fa-calendar-alt text-blue-400 w-4 text-xs"></i>
+                                <i class="fas fa-calendar-alt text-blue-400 w-4 text-xs flex-shrink-0"></i>
                                 <span>${new Date(q.created_at).toLocaleString('id-ID', {day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit'})}</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="flex flex-wrap gap-2">
+                    <!-- Actions -->
+                    <div class="flex flex-wrap gap-2 items-center flex-shrink-0">
                         ${renderActions(q)}
-                        <button onclick="showDetail('${q.antrian_online_id}')" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm font-semibold text-sm flex items-center gap-2">
+                        <button onclick="showDetail('${q.antrian_online_id}')" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm font-semibold text-sm flex items-center gap-2 h-[44px]">
                             <i class="fas fa-expand-alt text-xs"></i>
                             <span>Detail</span>
                         </button>
@@ -248,45 +254,45 @@
     function renderActions(q) {
         if (q.status_antrian === 'Menunggu') {
             return `
-                <button onclick="updateStatus('${q.antrian_online_id}', 'terima')" class="px-5 py-2 bg-blue-500 text-white rounded-xl text-sm font-bold hover:bg-blue-600 shadow-md shadow-blue-100 transition-all">
+                <button onclick="updateStatus('${q.antrian_online_id}', 'terima')" class="inline-flex items-center px-5 py-2 bg-blue-500 text-white rounded-xl text-sm font-bold hover:bg-blue-600 shadow-md shadow-blue-100 transition-all h-[44px]">
                     <i class="fas fa-file-import mr-1"></i> Terima Dokumen
                 </button>
-                <button onclick="showTolakModal('${q.antrian_online_id}')" class="px-5 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 shadow-md shadow-red-100 transition-all">
+                <button onclick="showTolakModal('${q.antrian_online_id}')" class="inline-flex items-center px-5 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 shadow-md shadow-red-100 transition-all h-[44px]">
                     <i class="fas fa-ban mr-1"></i> Tolak
                 </button>
             `;
         }
         if (q.status_antrian === 'Dokumen Diterima') {
             return `
-                <button onclick="updateStatus('${q.antrian_online_id}', 'verifikasi')" class="px-5 py-2 bg-indigo-500 text-white rounded-xl text-sm font-bold hover:bg-indigo-600 shadow-md shadow-indigo-100 transition-all">
+                <button onclick="updateStatus('${q.antrian_online_id}', 'verifikasi')" class="inline-flex items-center px-5 py-2 bg-indigo-500 text-white rounded-xl text-sm font-bold hover:bg-indigo-600 shadow-md shadow-indigo-100 transition-all h-[44px]">
                     <i class="fas fa-search mr-1"></i> Verifikasi Data
                 </button>
-                <button onclick="showTolakModal('${q.antrian_online_id}')" class="px-5 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 shadow-md shadow-red-100 transition-all">
+                <button onclick="showTolakModal('${q.antrian_online_id}')" class="inline-flex items-center px-5 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 shadow-md shadow-red-100 transition-all h-[44px]">
                     <i class="fas fa-ban mr-1"></i> Tolak
                 </button>
             `;
         }
         if (q.status_antrian === 'Verifikasi Data') {
             return `
-                <button onclick="updateStatus('${q.antrian_online_id}', 'cetak')" class="px-5 py-2 bg-purple-500 text-white rounded-xl text-sm font-bold hover:bg-purple-600 shadow-md shadow-purple-100 transition-all">
+                <button onclick="updateStatus('${q.antrian_online_id}', 'cetak')" class="inline-flex items-center px-5 py-2 bg-purple-500 text-white rounded-xl text-sm font-bold hover:bg-purple-600 shadow-md shadow-purple-100 transition-all h-[44px]">
                     <i class="fas fa-print mr-1"></i> Proses Cetak
                 </button>
-                <button onclick="showTolakModal('${q.antrian_online_id}')" class="px-5 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 shadow-md shadow-red-100 transition-all">
+                <button onclick="showTolakModal('${q.antrian_online_id}')" class="inline-flex items-center px-5 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 shadow-md shadow-red-100 transition-all h-[44px]">
                     <i class="fas fa-ban mr-1"></i> Tolak
                 </button>
             `;
         }
         if (q.status_antrian === 'Proses Cetak') {
             return `
-                <button onclick="updateStatus('${q.antrian_online_id}', 'selesai')" class="px-5 py-2 bg-emerald-500 text-white rounded-xl text-sm font-bold hover:bg-emerald-600 shadow-md shadow-emerald-100 transition-all">
+                <button onclick="updateStatus('${q.antrian_online_id}', 'selesai')" class="inline-flex items-center px-5 py-2 bg-emerald-500 text-white rounded-xl text-sm font-bold hover:bg-emerald-600 shadow-md shadow-emerald-100 transition-all h-[44px]">
                     <i class="fas fa-box-open mr-1"></i> Siap Diambil
                 </button>
-                <button onclick="showTolakModal('${q.antrian_online_id}')" class="px-5 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 shadow-md shadow-red-100 transition-all">
+                <button onclick="showTolakModal('${q.antrian_online_id}')" class="inline-flex items-center px-5 py-2 bg-red-500 text-white rounded-xl text-sm font-bold hover:bg-red-600 shadow-md shadow-red-100 transition-all h-[44px]">
                     <i class="fas fa-ban mr-1"></i> Tolak
                 </button>
             `;
         }
-        return `<span class="px-4 py-2 bg-slate-100 text-slate-400 rounded-xl text-xs font-bold uppercase tracking-widest">Selesai</span>`;
+        return `<span class="inline-flex items-center justify-center px-5 py-2 bg-slate-100 text-slate-400 rounded-xl text-xs font-bold uppercase tracking-widest h-[44px]">Selesai</span>`;
     }
 
     async function updateStatus(id, type) {

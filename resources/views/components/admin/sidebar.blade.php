@@ -105,10 +105,10 @@
             <i class="fas fa-users-cog w-5"></i>
             <span class="sidebar-text font-medium">Manajemen Akun</span>
         </a>
-        <form method="POST" action="{{ route('logout') }}" class="inline" onsubmit="handleLogout(event)">
+        <form method="POST" action="{{ route('logout') }}" id="logoutForm" class="inline">
             @csrf
-            <button type="submit"
-                class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50">
+            <button type="button" onclick="handleLogout()"
+                class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-all">
                 <i class="fas fa-sign-out-alt w-5"></i>
                 <span class="sidebar-text font-medium">Logout</span>
             </button>
@@ -140,23 +140,92 @@
         toggle.classList.toggle('active');
     }
 
-    // Logout Handler with SweetAlert
-    function handleLogout(event) {
-        event.preventDefault();
-        const form = event.target.closest('form');
-
-        SwalHelper.confirm(
-            'Konfirmasi Logout',
-            'Apakah Anda yakin ingin keluar dari sistem? Session Anda akan diakhiri.',
-            function() {
-                // Show loading before logout
-                SwalHelper.loading('Memproses logout...');
-
-                // Submit form after short delay to show loading
-                setTimeout(function() {
-                    form.submit();
-                }, 500);
+    // Logout Handler - SweetAlert Confirmation
+    function handleLogout() {
+        Swal.fire({
+            title: 'Konfirmasi Logout',
+            html: `
+                <div class="text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-sign-out-alt text-6xl text-red-500"></i>
+                    </div>
+                    <p class="text-gray-600 text-lg mb-2">Apakah Anda yakin ingin keluar dari sistem?</p>
+                    <p class="text-gray-500 text-sm">Session Anda akan diakhiri dan Anda akan kembali ke halaman login.</p>
+                </div>
+            `,
+            icon: false,
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: '<i class="fas fa-sign-out-alt mr-2"></i>Ya, Keluar',
+            cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+            reverseButtons: true,
+            customClass: {
+                popup: 'swal2-custom-popup',
+                confirmButton: 'swal2-custom-confirm-button',
+                cancelButton: 'swal2-custom-cancel-button'
             }
-        );
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show loading
+                Swal.fire({
+                    title: 'Memproses Logout',
+                    html: `
+                        <div class="text-center">
+                            <div class="swal2-loader"></div>
+                            <p class="text-gray-600 mt-4">Sedang mengakhiri session...</p>
+                        </div>
+                    `,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Submit form setelah delay
+                setTimeout(function() {
+                    document.getElementById('logoutForm').submit();
+                }, 1000);
+            }
+        });
     }
 </script>
+
+<style>
+    /* Custom SweetAlert Styles untuk Logout */
+    .swal2-custom-popup {
+        border-radius: 16px !important;
+        padding: 24px !important;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    .swal2-custom-confirm-button {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+        border-radius: 12px !important;
+        padding: 12px 24px !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+    }
+
+    .swal2-custom-confirm-button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4) !important;
+    }
+
+    .swal2-custom-cancel-button {
+        background: #64748b !important;
+        border-radius: 12px !important;
+        padding: 12px 24px !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .swal2-custom-cancel-button:hover {
+        background: #475569 !important;
+        transform: translateY(-2px) !important;
+    }
+</style>

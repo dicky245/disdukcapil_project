@@ -86,6 +86,12 @@ Route::get('/tracking', [Pengguna_Controller::class, 'tracking'])->name('trackin
 // Login routes (public access)
 Route::get('login', [Login_Controller::class, 'tampilkan_form_login'])->name('login');
 Route::post('login', [Login_Controller::class, 'proses_login'])->name('login.submit');
+
+// Logout route - POST only untuk form, redirect GET ke home
+Route::get('logout', function() {
+    return redirect('/')->with('info', 'Silakan gunakan tombol logout untuk keluar dari sistem.');
+})->name('logout.get');
+
 Route::post('logout', [Login_Controller::class, 'proses_logout'])->name('logout')->middleware('auth');
 
 /*
@@ -104,7 +110,7 @@ Route::prefix('admin')->group(function () {
     Route::post('/register', [RegisterController::class, 'register'])->name('admin.register.submit');
 
     // Verifikasi Pertanyaan Keamanan
-    Route::get('/verify/{uuid}', [Login_Controller::class, 'showVerifyQuestion'])->name('admin.verify.question');
+    Route::get('/verify/{user_id}', [Login_Controller::class, 'showVerifyQuestion'])->name('admin.verify.question');
     Route::post('/verify', [RegisterController::class, 'verifySecurityQuestion'])->name('admin.verify.submit');
 
     // Admin Dashboard & Pages (membutuhkan auth)

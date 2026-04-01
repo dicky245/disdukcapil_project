@@ -130,7 +130,7 @@
                 @empty
                 <tr>
                     <td colspan="7" class="p-8 text-center text-gray-400">
-                        <div class="text-4xl mb-2">📋</div>
+                        <div class="text-4xl mb-2"><i class="fas fa-clipboard-list"></i></div>
                         <p class="font-semibold">Belum ada permohonan lahir mati</p>
                     </td>
                 </tr>

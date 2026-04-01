@@ -150,16 +150,16 @@ class Login_Controller extends Controller
         }
 
         // Username dan password benar - redirect ke verifikasi pertanyaan keamanan
-        return redirect()->route('admin.verify.question', ['user' => $user->id])
+        return redirect()->route('admin.verify.question', ['user_id' => $user->id])
             ->with('info', 'Username dan password benar. Silakan verifikasi dengan pertanyaan keamanan.');
     }
 
     /**
      * Tampilkan halaman verifikasi pertanyaan keamanan
      */
-    public function showVerifyQuestion($uuid)
+    public function showVerifyQuestion($user_id)
     {
-        $user = User::where('id', $uuid)->first();
+        $user = User::where('id', $user_id)->first();
 
         if (!$user) {
             return redirect()->route('admin.login')

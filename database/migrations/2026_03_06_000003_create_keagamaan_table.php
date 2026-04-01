@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('keagamaan', function (Blueprint $table) {
-            $table->id('keagamaan_id');
-            // Tambahkan kolom ini sebagai penghubung ke tabel users
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            // Gunakan CHAR(36) untuk UUID sesuai dengan Keagamaan_Model
+            $table->char('keagamaan_id', 36)->primary();
+            // Gunakan CHAR(36) untuk user_id yang merujuk ke UUID users
+            $table->char('user_id', 36)->nullable();
 
             $table->foreignId('jenis_keagamaan_id')->constrained(
                 table: 'jenis_keagamaan',
@@ -23,6 +24,12 @@ return new class extends Migration
             $table->text('alamat');
             $table->enum('status', ['aktif', 'non-aktif'])->default('aktif');
             $table->timestamps();
+
+            // Foreign key constraint untuk user_id
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
         });
     }
 

@@ -73,7 +73,7 @@
             <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
         </div>
         <button onclick="openAddModal()"
-            class="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg flex items-center gap-2">
+            class="w-full md:w-auto px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg hover:shadow-xl hover:from-emerald-600 hover:to-green-700 transition-all transform hover:scale-105 border-2 border-emerald-300 flex items-center gap-2">
             <i class="fas fa-plus"></i> Tambah Akun
         </button>
     </div>
@@ -229,7 +229,7 @@
                 {{-- Buttons --}}
                 <div class="flex items-center gap-3 pt-4 border-t border-gray-100">
                     <button type="submit"
-                        class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg">
+                        class="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl font-bold hover:from-emerald-600 hover:to-green-700 transition-all shadow-lg hover:shadow-xl border-2 border-emerald-300">
                         <i class="fas fa-save mr-2"></i> Simpan
                     </button>
                     <button type="button" onclick="closeModal()"

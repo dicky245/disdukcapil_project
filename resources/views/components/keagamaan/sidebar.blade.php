@@ -3,7 +3,7 @@
     {{-- Logo --}}
     <div class="h-16 flex items-center px-6 border-b border-gray-100">
         <div class="w-10 h-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-xl flex items-center justify-center flex-shrink-0">
-            <span class="text-lg">🕌</span>
+            <i class="fas fa-mosque text-white text-lg"></i>
         </div>
         <span class="sidebar-text logo-text ml-3 font-bold text-lg text-gray-800">Keagamaan</span>
     </div>
@@ -40,9 +40,10 @@
             <p class="sidebar-text px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Akun</p>
         </div>
 
-        <form method="POST" action="{{ route('logout') }}" class="inline" onsubmit="handleLogout(event)">
+        <form method="POST" action="{{ route('logout') }}" id="logoutForm" class="inline">
             @csrf
-            <button type="submit" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50">
+            <button type="button" onclick="handleLogout()"
+                class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50">
                 <i class="fas fa-sign-out-alt w-5"></i>
                 <span class="sidebar-text font-medium">Logout</span>
             </button>
@@ -63,23 +64,12 @@
         });
     }
 
-    // Logout Handler with SweetAlert
-    function handleLogout(event) {
-        event.preventDefault();
-        const form = event.target.closest('form');
-
-        SwalHelper.confirm(
-            'Konfirmasi Logout',
-            'Apakah Anda yakin ingin keluar dari sistem? Session Anda akan diakhiri.',
-            function() {
-                // Show loading before logout
-                SwalHelper.loading('Memproses logout...');
-
-                // Submit form after short delay to show loading
-                setTimeout(function() {
-                    form.submit();
-                }, 500);
-            }
-        );
+    // Logout Handler - Simple & Direct
+    function handleLogout() {
+        // Tampilkan konfirmasi sederhana
+        if (confirm('Apakah Anda yakin ingin keluar dari sistem?')) {
+            // Submit form langsung
+            document.getElementById('logoutForm').submit();
+        }
     }
 </script>

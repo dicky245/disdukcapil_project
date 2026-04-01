@@ -29,7 +29,7 @@
                     <p class="text-sm font-semibold text-gray-800">{{ auth()->user()->name }}</p>
                     <p class="text-xs text-gray-500">Petugas Keagamaan</p>
                 </div>
-                <form method="POST" action="{{ route('logout') }}" class="inline">
+                <form method="POST" action="{{ route('logout') }}" class="inline" onsubmit="handleLogout(event)">
                     @csrf
                     <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="Logout">
                         <i class="fas fa-sign-out-alt"></i>

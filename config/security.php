@@ -17,7 +17,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'csp' => [
-        'enabled' => env('CSP_ENABLED', true),
+        'enabled' => env('CSP_ENABLED', false),
         'directives' => [
             'default-src' => ["'self'"],
             'script-src' => ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.tailwindcss.com", "https://cdn.jsdelivr.net"],

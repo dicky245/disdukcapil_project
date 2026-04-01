@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('aktelahir', function (Blueprint $table) {
-            $table->id();
+        Schema::create('akte_lahir', function (Blueprint $table) {
+            // Gunakan CHAR(36) untuk UUID sesuai dengan AkteLahir model
+            $table->char('id', 36)->primary();
             $table->foreignId('layanan_id')->constrained(
                 table: 'layanan',
                 column: 'layanan_id'
@@ -34,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('aktelahir');
+        Schema::dropIfExists('akte_lahir');
     }
 };

@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kk', function (Blueprint $table) {
-            $table->id();
+            // Gunakan CHAR(36) untuk UUID sesuai dengan KartuKeluarga model
+            $table->char('id', 36)->primary();
             $table->foreignId('layanan_id')->constrained(
                 table: 'layanan',
                 column: 'layanan_id'

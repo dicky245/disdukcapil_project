@@ -242,7 +242,7 @@
                             <i class="fas fa-info-circle mr-2"></i>
                             Belum ada admin terdaftar
                         </p>
-                        <a href="{{ route('admin.register') }}" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition-all transform hover:scale-[1.02] shadow-lg">
+                        <a href="{{ route('admin.register') }}" class="ml-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg hover:shadow-xl hover:from-emerald-600 hover:to-green-700 transition-all transform hover:scale-105 border-2 border-emerald-300 inline-flex items-center gap-2">
                             <i class="fas fa-user-plus"></i>
                             Daftar Admin Pertama
                         </a>
@@ -265,6 +265,9 @@
         </div>
     </div>
 
+    <!-- Load SweetAlert Helper Global -->
+    <script src="{{ asset('js/sweetalert-helper.js') }}"></script>
+
     <script>
         // Toggle Password Visibility
         function togglePassword() {
@@ -282,160 +285,6 @@
             }
         }
 
-        // SweetAlert Helper Functions
-        window.SwalHelper = {
-            // Success Toast
-            success: function(message) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer);
-                        toast.addEventListener('mouseleave', Swal.resumeTimer);
-                    }
-                });
-                Toast.fire({
-                    icon: 'success',
-                    title: message
-                });
-            },
-
-            // Error Toast
-            error: function(message) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer);
-                        toast.addEventListener('mouseleave', Swal.resumeTimer);
-                    }
-                });
-                Toast.fire({
-                    icon: 'error',
-                    title: message
-                });
-            },
-
-            // Info Toast
-            info: function(message) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer);
-                        toast.addEventListener('mouseleave', Swal.resumeTimer);
-                    }
-                });
-                Toast.fire({
-                    icon: 'info',
-                    title: message
-                });
-            },
-
-            // Warning Toast
-            warning: function(message) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer);
-                        toast.addEventListener('mouseleave', Swal.resumeTimer);
-                    }
-                });
-                Toast.fire({
-                    icon: 'warning',
-                    title: message
-                });
-            },
-
-            // Confirm Dialog
-            confirm: function(title, text, callback) {
-                Swal.fire({
-                    title: title,
-                    text: text,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#0052CC',
-                    cancelButtonColor: '#64748b',
-                    confirmButtonText: 'Ya, lanjutkan',
-                    cancelButtonText: 'Batal',
-                    showClass: {
-                        popup: 'swal2-show',
-                        backdrop: 'swal2-backdrop-show',
-                        icon: 'swal2-icon-show'
-                    },
-                    hideClass: {
-                        popup: 'swal2-hide',
-                        backdrop: 'swal2-backdrop-hide',
-                        icon: 'swal2-icon-show'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed && callback) {
-                        callback();
-                    }
-                });
-            },
-
-            // Delete Confirm
-            deleteConfirm: function(title, text, callback) {
-                Swal.fire({
-                    title: title,
-                    text: text,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#ef4444',
-                    cancelButtonColor: '#64748b',
-                    confirmButtonText: 'Ya, hapus',
-                    cancelButtonText: 'Batal',
-                    showClass: {
-                        popup: 'swal2-show',
-                        backdrop: 'swal2-backdrop-show',
-                        icon: 'swal2-icon-show'
-                    },
-                    hideClass: {
-                        popup: 'swal2-hide',
-                        backdrop: 'swal2-backdrop-hide',
-                        icon: 'swal2-icon-show'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed && callback) {
-                        callback();
-                    }
-                });
-            },
-
-            // Loading
-            loading: function(message = 'Memuat...') {
-                Swal.fire({
-                    title: message,
-                    html: '<div class="swal2-loader"></div>',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    showConfirmButton: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-            },
-
-            // Close Loading
-            close: function() {
-                Swal.close();
-            }
-        };
-
         // Auto-hide flash messages after 5 seconds
         document.addEventListener('DOMContentLoaded', function() {
             const flashMessages = document.querySelectorAll('.bg-blue-50, .bg-green-50, .bg-yellow-50, .bg-red-50');
@@ -449,25 +298,25 @@
                 }, 5000);
             });
 
-            // Show SweetAlert for session messages
+            // Show SweetAlert for session messages menggunakan helper global
             @if(session('success'))
-                SwalHelper.success('{{ session('success') }}');
+                SwalHelper.toastSuccess('{{ session('success') }}');
             @endif
 
             @if(session('error'))
-                SwalHelper.error('{{ session('error') }}');
+                SwalHelper.toastError('{{ session('error') }}');
             @endif
 
             @if(session('info'))
-                SwalHelper.info('{{ session('info') }}');
+                SwalHelper.toastInfo('{{ session('info') }}');
             @endif
 
             @if(session('warning'))
-                SwalHelper.warning('{{ session('warning') }}');
+                SwalHelper.toastWarning('{{ session('warning') }}');
             @endif
         });
 
-        // Enhanced form submission with loading
+        // Enhanced form submission dengan loading
         document.querySelector('form').addEventListener('submit', function(e) {
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;

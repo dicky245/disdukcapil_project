@@ -144,10 +144,48 @@
             @endif
 
             @if (session('error'))
-                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span>{{ session('error') }}</span>
+                <div class="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-xl mb-6 shadow-md">
+                    <div class="flex items-start gap-3">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-circle text-red-500 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-semibold text-red-800 mb-2">
+                                Oops! Terjadi Kesalahan
+                            </h3>
+                            <p class="text-sm text-red-700 mb-2">{{ session('error') }}</p>
+
+                            @if(session('error_detail'))
+                            <div class="bg-red-100 rounded-lg p-3 mb-2">
+                                <p class="text-xs font-medium text-red-900 mb-1">
+                                    <i class="fas fa-info-circle mr-1"></i>Detail Teknis:
+                                </p>
+                                <p class="text-xs text-red-800">{{ session('error_detail') }}</p>
+                            </div>
+                            @endif
+
+                            @if(session('error_location'))
+                            <p class="text-xs text-red-600 mb-2">
+                                <i class="fas fa-map-marker-alt mr-1"></i>
+                                <strong>Lokasi:</strong> {{ session('error_location') }}
+                            </p>
+                            @endif
+
+                            @if(session('error_solution'))
+                            <div class="bg-green-50 rounded-lg p-3 border border-green-200">
+                                <p class="text-xs font-semibold text-green-900 mb-1">
+                                    <i class="fas fa-lightbulb mr-1"></i>Cara Mengatasi:
+                                </p>
+                                <p class="text-xs text-green-800">{{ session('error_solution') }}</p>
+                            </div>
+                            @endif
+
+                            @if(session('error_code'))
+                            <p class="text-xs text-gray-500 mt-2">
+                                Error Code: {{ session('error_code') }}
+                            </p>
+                            @endif
+                        </div>
                     </div>
                 </div>
             @endif
@@ -255,17 +293,7 @@
                     confirmButtonColor: '#0052CC',
                     cancelButtonColor: '#64748b',
                     confirmButtonText: 'Ya, lanjutkan',
-                    cancelButtonText: 'Batal',
-                    showClass: {
-                        popup: 'swal2-show',
-                        backdrop: 'swal2-backdrop-show',
-                        icon: 'swal2-icon-show'
-                    },
-                    hideClass: {
-                        popup: 'swal2-hide',
-                        backdrop: 'swal2-backdrop-hide',
-                        icon: 'swal2-icon-hide'
-                    }
+                    cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed && callback) {
                         callback();
@@ -283,17 +311,7 @@
                     confirmButtonColor: '#ef4444',
                     cancelButtonColor: '#64748b',
                     confirmButtonText: 'Ya, hapus',
-                    cancelButtonText: 'Batal',
-                    showClass: {
-                        popup: 'swal2-show',
-                        backdrop: 'swal2-backdrop-show',
-                        icon: 'swal2-icon-show'
-                    },
-                    hideClass: {
-                        popup: 'swal2-hide',
-                        backdrop: 'swal2-backdrop-hide',
-                        icon: 'swal2-icon-hide'
-                    }
+                    cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed && callback) {
                         callback();
@@ -305,9 +323,7 @@
             loading: function(message = 'Memuat...') {
                 Swal.fire({
                     title: message,
-                    html: '<div class="swal2-loader"></div>',
                     allowOutsideClick: false,
-                    allowEscapeKey: false,
                     showConfirmButton: false,
                     didOpen: () => {
                         Swal.showLoading();
@@ -328,7 +344,49 @@
             @endif
 
             @if(session('error'))
-                SwalHelper.error('{{ session('error') }}');
+            Swal.fire({
+                icon: 'error',
+                title: 'Terjadi Kesalahan',
+                html: `
+                    <div class="text-left">
+                        <p class="text-gray-700 mb-3">{{ session('error') }}</p>
+
+                        @if(session('error_detail'))
+                        <div class="bg-red-50 rounded-lg p-3 mb-3 border border-red-200">
+                            <p class="text-xs font-semibold text-red-900 mb-1">
+                                <i class="fas fa-info-circle mr-1"></i>Detail Teknis:
+                            </p>
+                            <p class="text-xs text-red-800">{{ session('error_detail') }}</p>
+                        </div>
+                        @endif
+
+                        @if(session('error_location'))
+                        <p class="text-xs text-red-600 mb-2">
+                            <i class="fas fa-map-marker-alt mr-1"></i>
+                            <strong>Lokasi:</strong> {{ session('error_location') }}
+                        </p>
+                        @endif
+
+                        @if(session('error_solution'))
+                        <div class="bg-green-50 rounded-lg p-3 border border-green-200">
+                            <p class="text-xs font-semibold text-green-900 mb-1">
+                                <i class="fas fa-lightbulb mr-1"></i>Cara Mengatasi:
+                            </p>
+                            <p class="text-xs text-green-800">{{ session('error_solution') }}</p>
+                        </div>
+                        @endif
+
+                        @if(session('error_code'))
+                        <p class="text-xs text-gray-500 mt-2">
+                            Error Code: {{ session('error_code') }}
+                        </p>
+                        @endif
+                    </div>
+                `,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#dc2626',
+                allowOutsideClick: false
+            });
             @endif
 
             @if(session('info'))

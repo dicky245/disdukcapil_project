@@ -12,10 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Update aktelahir table
-        Schema::table('aktelahir', function (Blueprint $table) {
+        // Update akte_lahir table (nama table yang benar)
+        Schema::table('akte_lahir', function (Blueprint $table) {
             // Tambah field nik jika belum ada
-            if (!Schema::hasColumn('aktelahir', 'nik')) {
+            if (!Schema::hasColumn('akte_lahir', 'nik')) {
                 $table->text('nik')->nullable()->after('nama');
             }
         });
@@ -62,8 +62,8 @@ return new class extends Migration
     public function down(): void
     {
         // Rollback changes
-        Schema::table('aktelahir', function (Blueprint $table) {
-            if (Schema::hasColumn('aktelahir', 'nik')) {
+        Schema::table('akte_lahir', function (Blueprint $table) {
+            if (Schema::hasColumn('akte_lahir', 'nik')) {
                 $table->dropColumn('nik');
             }
         });
