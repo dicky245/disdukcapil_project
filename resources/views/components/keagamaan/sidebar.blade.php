@@ -40,7 +40,7 @@
             <p class="sidebar-text px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Akun</p>
         </div>
 
-        <form method="POST" action="{{ route('logout') }}" class="inline">
+        <form method="POST" action="{{ route('logout') }}" class="inline" onsubmit="handleLogout(event)">
             @csrf
             <button type="submit" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50">
                 <i class="fas fa-sign-out-alt w-5"></i>
@@ -61,5 +61,25 @@
             sidebar.classList.toggle('collapsed');
             mainContent.classList.toggle('expanded');
         });
+    }
+
+    // Logout Handler with SweetAlert
+    function handleLogout(event) {
+        event.preventDefault();
+        const form = event.target.closest('form');
+
+        SwalHelper.confirm(
+            'Konfirmasi Logout',
+            'Apakah Anda yakin ingin keluar dari sistem? Session Anda akan diakhiri.',
+            function() {
+                // Show loading before logout
+                SwalHelper.loading('Memproses logout...');
+
+                // Submit form after short delay to show loading
+                setTimeout(function() {
+                    form.submit();
+                }, 500);
+            }
+        );
     }
 </script>

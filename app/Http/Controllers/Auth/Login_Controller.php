@@ -68,20 +68,24 @@ class Login_Controller extends Controller
             ])->onlyInput('username');
         }
 
-        // Login user untuk non-admin
+        // Login user
         Auth::login($user);
         $request->session()->regenerate();
 
         Log::info('Login successful for: ' . $user->username . ' (ID: ' . $user->id . ')');
 
-        // Redirect berdasarkan role
+        // Redirect berdasarkan role dengan notifikasi sukses
         if ($user->hasRole('Admin')) {
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.dashboard')
+                ->with('success', 'Selamat datang kembali, ' . $user->name . '. Anda berhasil login sebagai Admin.');
         } elseif ($user->hasRole('Keagamaan')) {
-            return redirect()->route('keagamaan.dashboard');
+            return redirect()->route('keagamaan.dashboard')
+                ->with('success', 'Selamat datang kembali, ' . $user->name . '. Anda berhasil login sebagai Petugas Keagamaan.');
         }
 
-        return redirect()->route('home');
+        // Fallback (seharusnya tidak terjadi karena semua user harus punya role)
+        return redirect()->route('admin.dashboard')
+            ->with('info', 'Selamat datang, ' . $user->name . '.');
     }
 
     /**
@@ -174,14 +178,28 @@ class Login_Controller extends Controller
     }
 
     /**
-     * Proses logout
+     * Proses logout dengan notifikasi
      */
     public function proses_logout(Request $request)
     {
+        // Ambil nama user sebelum logout untuk notifikasi
+        $userName = auth()->user()->name ?? 'Pengguna';
+
+        // Logout user
         Auth::logout();
+
+        // Invalidate session
         $request->session()->invalidate();
+
+        // Regenerate CSRF token
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Anda telah logout.');
+        // Flush all session data
+        $request->session()->flush();
+
+        Log::info('User logged out', ['name' => $userName]);
+
+        return redirect()->route('login')
+            ->with('success', 'Terima kasih, ' . $userName . '. Anda telah berhasil logout dari sistem.');
     }
 }

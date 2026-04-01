@@ -102,7 +102,7 @@ class RegisterController extends Controller
             ]);
 
             return redirect()->route('admin.login')
-                ->with('success', 'Registrasi berhasil! Silakan login dengan akun admin Anda.');
+                ->with('success', 'Registrasi berhasil! Akun admin telah berhasil dibuat. Username: ' . $admin->username . '. Silakan login untuk melanjutkan.');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -153,7 +153,7 @@ class RegisterController extends Controller
                 ]);
 
                 return redirect()->route('admin.dashboard')
-                    ->with('success', 'Selamat datang, ' . $user->name);
+                    ->with('success', 'Login berhasil! Selamat datang, ' . $user->name . '. Verifikasi pertanyaan keamanan telah berhasil.');
             } else {
                 // Jawaban salah
                 Log::warning('Security question verification failed', [

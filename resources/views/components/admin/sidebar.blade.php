@@ -146,10 +146,16 @@
         const form = event.target.closest('form');
 
         SwalHelper.confirm(
-            'Keluar dari Akun',
-            'Apakah Anda yakin ingin keluar dari sistem?',
+            'Konfirmasi Logout',
+            'Apakah Anda yakin ingin keluar dari sistem? Session Anda akan diakhiri.',
             function() {
-                form.submit();
+                // Show loading before logout
+                SwalHelper.loading('Memproses logout...');
+
+                // Submit form after short delay to show loading
+                setTimeout(function() {
+                    form.submit();
+                }, 500);
             }
         );
     }

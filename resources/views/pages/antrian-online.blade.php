@@ -1008,7 +1008,7 @@
     function showKtpOcrWarning(message) {
         ktpOcrError.classList.remove('hidden');
         const warningElement = document.getElementById('ktpOcrErrorMessage');
-        warningElement.innerHTML = '<span class="text-yellow-600 font-semibold">⚠️ ' + message.replace(/\n/g, '<br>') + '</span><br><span class="text-gray-500">OCR tetap akan diproses, tapi hasil mungkin tidak optimal.</span>';
+        warningElement.innerHTML = '<span class="text-yellow-600 font-semibold"><i class="fas fa-exclamation-triangle mr-1"></i>' + message.replace(/\n/g, '<br>') + '</span><br><span class="text-gray-500">OCR tetap akan diproses, tapi hasil mungkin tidak optimal.</span>';
     }
 
     // Process KTP Extraction (Auto-trigger on upload)

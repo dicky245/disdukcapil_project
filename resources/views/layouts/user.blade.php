@@ -6,6 +6,9 @@
     <title>{{ $page_title ?? 'Disdukcapil Kabupaten Toba' }}</title>
     <meta name="description" content="{{ $page_description ?? 'Layanan Kependudukan dan Pencatatan Sipil Kabupaten Toba' }}">
 
+    <!-- User Authenticated Meta Tag -->
+    <meta name="user-authenticated" content="{{ auth()->check() ? 'true' : 'false' }}">
+
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="{{ asset('images/logo_toba.jpeg') }}">
 
@@ -360,6 +363,11 @@
     {{-- Scripts --}}
     @stack('scripts')
 
+    {{-- Auto-Logout System --}}
+    @if(auth()->check())
+        <script src="{{ asset('js/auto-logout.js') }}"></script>
+    @endif
+
     <script>
         // Scroll Reveal Animation
         function reveal() {
@@ -583,6 +591,25 @@
                 Swal.close();
             }
         };
+
+        // Show SweetAlert for session messages on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                SwalHelper.success('{{ session('success') }}');
+            @endif
+
+            @if(session('error'))
+                SwalHelper.error('{{ session('error') }}');
+            @endif
+
+            @if(session('info'))
+                SwalHelper.info('{{ session('info') }}');
+            @endif
+
+            @if(session('warning'))
+                SwalHelper.warning('{{ session('warning') }}');
+            @endif
+        });
     </script>
 </body>
 </html>

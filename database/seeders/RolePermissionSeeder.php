@@ -93,7 +93,7 @@ class RolePermissionSeeder extends Seeder
 
             $this->command->info('');
             $this->command->info('========================================');
-            $this->command->info('✓ Role & Permission Berhasil Dibuat!');
+            $this->command->info('Role & Permission Berhasil Dibuat!');
             $this->command->info('========================================');
             $this->command->info('');
             $this->command->info('ROLE YANG DIBUAT:');

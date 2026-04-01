@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasEncryptedNIK;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class LahirMati extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasEncryptedNIK;
 
     protected $table = 'lahir_mati';
 
@@ -32,6 +33,19 @@ class LahirMati extends Model
     protected $hidden = [
         'deleted_at',
     ];
+
+    /**
+     * Override getNikFields untuk menentukan field NIK yang di-encrypt
+     *
+     * @return array
+     */
+    public function getNikFields(): array
+    {
+        return [
+            'nik_ayah',
+            'nik_ibu',
+        ];
+    }
 
     /**
      * Indicates if the IDs are auto-incrementing.
@@ -58,5 +72,15 @@ class LahirMati extends Model
                 $model->id = (string) Str::uuid();
             }
         });
+    }
+
+    /**
+     * Relasi dengan layanan
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function layanan()
+    {
+        return $this->belongsTo(Layanan_Model::class, 'layanan_id', 'layanan_id');
     }
 }
