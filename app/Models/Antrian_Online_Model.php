@@ -14,7 +14,9 @@ class Antrian_Online_Model extends Model
 
     protected $table = 'antrian_online';
     protected $primaryKey = 'antrian_online_id';
-    public $timestamps = true;
+
+    public $incrementing = true; // ✅ auto increment
+    protected $keyType = 'int';  // ✅ integer
 
     protected $fillable = [
         'nomor_antrian',
@@ -25,44 +27,11 @@ class Antrian_Online_Model extends Model
         'status_antrian',
     ];
 
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * The "type" of the auto-incrementing ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
-
-    /**
-     * Boot function from Laravel.
-     */
-    protected static function boot()
-    {
-        parent::boot();
-        self::creating(function ($model) {
-            if (empty($model->antrian_online_id)) {
-                $model->antrian_online_id = (string) Str::uuid();
-            }
-        });
-    }
-
-    /**
-     * Relasi ke layanan
-     */
     public function layanan(): BelongsTo
     {
         return $this->belongsTo(Layanan_Model::class, 'layanan_id', 'layanan_id');
     }
 
-    /**
-     * Relasi ke lacak berkas
-     */
     public function lacak_berkas(): HasMany
     {
         return $this->hasMany(Lacak_Berkas_Model::class, 'antrian_online_id', 'antrian_online_id');

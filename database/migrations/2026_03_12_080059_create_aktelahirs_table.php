@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('aktelahir', function (Blueprint $table) {
+        Schema::create('aktelahirs', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->foreignId('layanan_id')->constrained(
                 table: 'layanan',
                 column: 'layanan_id'
@@ -25,6 +26,8 @@ return new class extends Migration
             $table->string('ktp_orangtua');
             $table->string('fotokopi_kk');
             $table->string('identitas_saksi');
+            $table->string('alasan_penolakan')->nullable();
+            $table->enum('status',['Dokumen Diterima', 'Verifikasi Data','Proses Cetak', 'Siap Pengambilan','Tolak'])->default('Dokumen Diterima');
             $table->timestamps();
         });
     }
@@ -34,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('aktelahir');
+        Schema::dropIfExists('aktelahirs');
     }
 };

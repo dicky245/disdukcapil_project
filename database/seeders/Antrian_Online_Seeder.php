@@ -6,6 +6,7 @@ use App\Models\Antrian_Online_Model;
 use App\Models\Lacak_Berkas_Model;
 use App\Models\Layanan_Model;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class Antrian_Online_Seeder extends Seeder
 {
@@ -21,7 +22,6 @@ class Antrian_Online_Seeder extends Seeder
             return;
         }
 
-        // Buat beberapa data antrian dummy untuk testing
         $antrian_data = [
             [
                 'nomor_antrian' => 'ABC-001-001',

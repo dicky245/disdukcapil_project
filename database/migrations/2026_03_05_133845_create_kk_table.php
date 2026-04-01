@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('kk', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->foreignId('layanan_id')->constrained(
                 table: 'layanan',
                 column: 'layanan_id'
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->string('surat_keterangan_pengganti');
             $table->string('salinan_kepres');
             $table->string('izin_tinggal_asing')->nullable();
+            $table->string('alasan_penolakan')->nullable();
             $table->enum('status',['Dokumen Diterima', 'Verifikasi Data','Proses Cetak', 'Siap Pengambilan','Tolak'])->default('Dokumen Diterima');
             $table->softDeletes();
             $table->timestamps();

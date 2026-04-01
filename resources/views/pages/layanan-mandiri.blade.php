@@ -27,11 +27,18 @@
         'color'=> 'blue',
         'id'=>'akte_kelahiran', 
         'fields'=>[
-<<<<<<< HEAD
-        ['name'=>'tes', 'label'=>'tes','type'=>'text']
+            ['name' => 'layanan_id', 'value' => '2', 'type' => 'hidden'],
+            ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi', 'placeholder' => 'Masukkan Nomor Reqistrasi', 'type' => 'text'],
+            ['name' => 'nama', 'label' => 'Nama Kepala Keluarga', 'placeholder' => 'Masukkan Nama Kepala Keluarga','type' => 'text'],
+            ['name' => 'alamat', 'label' => 'Alamat', 'placeholder' => 'Masukkan Alamat','type' => 'textarea'],
+            ['name' => 'fotokopi_buku_nikah','label'=>'Foto Buku Nikah Orang Tua', 'type'=>'file'],
+            ['name' => 'surat_bidan','label'=>'Surat Keterangan dari Bidan', 'type'=>'file'],
+            ['name' => 'ktp_orangtua','label'=>'Foto KTP Orang Tua', 'type'=>'file'],
+            ['name' => 'fotokopi_kk','label'=>'Foto Kartu Keluarga', 'type'=>'file'],
+            ['name' => 'identitas_saksi','label'=>'Identitas Saksi', 'placeholder' => 'Masukkan Data Identitas Saksi', 'type'=>'text'],
         ]
     ],
-    3 => [ // Akte Kematian
+        3 => [ // Akte Kematian
         'icon' => 'fa-user-times',
         'color' => 'blue',
         'id' => 'akte_kematian',
@@ -68,45 +75,8 @@
             ['name' => 'surat_keterangan_lahir_mati', 'label' => 'Surat Keterangan Lahir Mati', 'type' => 'file'],
             ['name' => 'ktp_ayah', 'label' => 'KTP Ayah', 'type' => 'file'],
             ['name' => 'ktp_ibu', 'label' => 'KTP Ibu', 'type' => 'file'],
-=======
-            ['name' => 'layanan_id', 'value' => '2', 'type' => 'hidden'],
-            ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi', 'placeholder' => 'Masukkan Nomor Reqistrasi', 'type' => 'text'],
-            ['name' => 'nama', 'label' => 'Nama Kepala Keluarga', 'placeholder' => 'Masukkan Nama Kepala Keluarga','type' => 'text'],
-            ['name' => 'alamat', 'label' => 'Alamat', 'placeholder' => 'Masukkan Alamat','type' => 'textarea'],
-            ['name' => 'fotokopi_buku_nikah','label'=>'Foto Buku Nikah Orang Tua', 'type'=>'file'],
-            ['name' => 'surat_bidan','label'=>'Surat Keterangan dari Bidan', 'type'=>'file'],
-            ['name' => 'ktp_orangtua','label'=>'Foto KTP Orang Tua', 'type'=>'file'],
-            ['name' => 'fotokopi_kk','label'=>'Foto Kartu Keluarga', 'type'=>'file'],
-            ['name' => 'identitas_saksi','label'=>'Identitas Saksi', 'placeholder' => 'Masukkan Data Identitas Saksi', 'type'=>'text'],
->>>>>>> 7d40513c353fa7162c4c073a09a61bc333a184f2
         ]
     ],
-        'Penerbitan Akte Kematian' => [
-            'icon' => 'fa-user-times',
-            'color' => 'orange',
-            'id' => 'akta-kematian',
-            'fields' => [
-                ['name' => 'nama_almarhum', 'label' => 'Nama Lengkap Almarhum', 'type' => 'text', 'placeholder' => 'Sesuai KTP'],
-                ['name' => 'tgl_meninggal', 'label' => 'Tanggal Meninggal', 'type' => 'date'],
-                ['name' => 'tempat_meninggal', 'label' => 'Tempat Meninggal', 'type' => 'text', 'placeholder' => 'Rumah sakit/lokasi'],
-                ['name' => 'sebab_meninggal', 'label' => 'Sebab Meninggal', 'type' => 'textarea', 'placeholder' => 'Jelaskan penyebab'],
-                ['name' => 'nik_pelapor', 'label' => 'NIK Pelapor', 'type' => 'text', 'placeholder' => '16 digit NIK'],
-                ['name' => 'hubungan_pelapor', 'label' => 'Hubungan dengan Almarhum', 'type' => 'select', 'options' => ['Ayah', 'Ibu', 'Suami', 'Istri', 'Anak', 'Lainnya']],
-            ]
-        ],
-        'Penerbitan Akte Lahir Mati' => [
-            'icon' => 'fa-exclamation-triangle',
-            'color' => 'red',
-            'id' => 'lahir-mati',
-            'fields' => [
-                ['name' => 'nama_bayi', 'label' => 'Nama Bayi', 'type' => 'text', 'placeholder' => 'Nama lengkap bayi'],
-                ['name' => 'tgl_lahir', 'label' => 'Tanggal Lahir', 'type' => 'datetime-local'],
-                ['name' => 'nama_ayah', 'label' => 'Nama Ayah', 'type' => 'text', 'placeholder' => 'Nama lengkap ayah'],
-                ['name' => 'nama_ibu', 'label' => 'Nama Ibu', 'type' => 'text', 'placeholder' => 'Nama lengkap ibu'],
-                ['name' => 'nik_ayah', 'label' => 'NIK Ayah', 'type' => 'text', 'placeholder' => '16 digit NIK ayah'],
-                ['name' => 'keterangan', 'label' => 'Keterangan', 'type' => 'textarea', 'placeholder' => 'Keterangan tambahan'],
-            ]
-        ],
         5 => [
             'icon' => 'fa-ring',
             'color' => 'blue',
@@ -143,17 +113,17 @@
     </div>
 
     {{-- Hero Section --}}
-    <section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-800 text-white py-20">
+    <section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-800 text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium mb-6">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium mb-4">
                     <i class="fas fa-rocket"></i>
                     Layanan Mandiri
                 </div>
-                <h1 class="text-4xl md:text-5xl font-extrabold mb-6">
+                <h1 class="text-3xl md:text-4xl font-extrabold mb-4">
                     Pilih Jenis Layanan
                 </h1>
-                <p class="text-lg text-blue-100 mb-8">
+                <p class="text-base text-blue-100 mb-6">
                     Pilih jenis layanan yang Anda butuhkan dan isi form pendaftaran secara online.
                 </p>
             </div>
@@ -168,7 +138,7 @@
 
     {{-- Services Section --}}
     <section class="py-12 bg-gray-50 -mt-6 relative z-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             
             {{-- Info Box (Sekarang di Atas Grid) --}}
             <div class="mb-8 bg-blue-50 border border-blue-200 rounded-2xl p-5 reveal shadow-sm">
@@ -287,62 +257,19 @@
                 </div>
             </div>
             @if ($errors->any())
-                <div class="bg-red-100 border border-red-300 text-red-700 p-4 rounded mb-4">
-                    <ul>
+                <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl animate-pulse">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+                        <span class="text-red-800 font-bold text-sm">Terjadi Kesalahan Validasi:</span>
+                    </div>
+                    <ul class="list-disc list-inside text-xs text-red-600 space-y-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
                 </div>
-                @endif
+            @endif
             <div class="p-6" id="modalBody">
-                {{-- Auto-fill dari Antrian Online --}}
-                <div id="antrianOnlineSection" class="mb-6">
-                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-5 border border-green-200">
-                        <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-ticket-alt text-xl text-white"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-gray-800 mb-2">Isi Form Otomatis dari Antrian Online</h4>
-                                <p class="text-sm text-gray-600 mb-3">Sudah punya nomor antrian online? Masukkan nomor antrian untuk mengisi form secara otomatis.</p>
-
-                                <div class="flex gap-3">
-                                    <input type="text" id="nomorAntrianInput"
-                                           placeholder="Contoh: ABC-123-456"
-                                           class="flex-1 px-4 py-3 border-2 border-green-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-base uppercase">
-                                    <button type="button" onclick="fetchAntrianData()"
-                                            class="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all shadow-lg">
-                                        <i class="fas fa-download mr-2"></i>
-                                        Ambil Data
-                                    </button>
-                                </div>
-
-                                <div id="antrianLoading" class="hidden mt-3">
-                                    <div class="flex items-center gap-2 text-green-600">
-                                        <i class="fas fa-spinner fa-spin"></i>
-                                        <span class="text-sm font-medium">Mengambil data antrian...</span>
-                                    </div>
-                                </div>
-
-                                <div id="antrianSuccess" class="hidden mt-3">
-                                    <div class="flex items-center gap-2 text-green-600">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span class="text-sm font-medium">Data antrian berhasil diambil!</span>
-                                    </div>
-                                </div>
-
-                                <div id="antrianError" class="hidden mt-3">
-                                    <div class="flex items-center gap-2 text-red-600">
-                                        <i class="fas fa-exclamation-circle"></i>
-                                        <span class="text-sm" id="antrianErrorMessage"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <form id="serviceForm" method="POST" enctype="multipart/form-data" class="space-y-5">
                     @csrf
                     <div id="formFields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
@@ -390,10 +317,6 @@
     }
     window.addEventListener('scroll', reveal);
     window.addEventListener('load', reveal);
-
-    let currentServiceId = null;
-
-    // Modal logic
     function openServiceForm(serviceId, serviceName, serviceColor, fields) {
         const modal = document.getElementById('serviceModal');
         const formFields = document.getElementById('formFields');
@@ -401,25 +324,22 @@
         const modalSubtitle = document.getElementById('modalSubtitle');
         const modalIcon = document.getElementById('modalIcon');
         const form = document.getElementById('serviceForm');
-        const antrianOnlineSection = document.getElementById('antrianOnlineSection');
-
-        // Simpan service ID
-        currentServiceId = serviceId;
 
         modalTitle.textContent = serviceName;
         modalSubtitle.textContent = 'Formulir pengajuan online';
         modalIcon.className = `w-12 h-12 rounded-xl flex items-center justify-center bg-${serviceColor}-100`;
         modalIcon.innerHTML = `<i class="fas ${getIconById(serviceId)} text-2xl text-${serviceColor}-600"></i>`;
 
-        // Show antrian online section untuk semua layanan
-        if (antrianOnlineSection) {
-            antrianOnlineSection.classList.remove('hidden');
-            resetAntrianForm();
-        }
-
         if(serviceId === 'kk'){
             form.action = "{{ route('kk.store') }}";
+        } else if(serviceId === 'akte_kelahiran'){
+            form.action = "{{ route('aktelahir.store') }}"
+        } else if(serviceId === 'akte_kematian'){
+            form.action = "{{ route('akte-kematian.store')}}"
+        } else if(serviceId === 'lahir_mati'){
+            form.action = "{{ route('lahir-mati.store')}}"
         }
+
         formFields.innerHTML = fields.length > 0 ? fields.map(field => {
             if(field.type === 'hidden'){
                 return `<input type="hidden" name="${field.name}" value="${field.value}">`;
@@ -448,9 +368,34 @@
     function renderInput(field) {
         const req = field.required !== false ? 'required' : '';
         const baseClass = "w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition";
-        
         if(field.type === 'textarea') return `<textarea name="${field.name}" ${req} placeholder="${field.placeholder}" class="${baseClass} h-24 resize-none"></textarea>`;
         if(field.type === 'select') return `<select name="${field.name}" ${req} class="${baseClass}"><option value="">Pilih...</option>${field.options.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`;
+        if(field.type === 'file') {
+            return `
+                <div class="relative group">
+                    <label class="flex flex-col items-center justify-center w-full px-4 py-4 border-2 border-dashed border-gray-300 rounded-2xl bg-gray-50 hover:bg-blue-50 hover:border-blue-400 transition-all cursor-pointer">
+                        <div class="flex flex-col items-center justify-center text-center">
+                            <i class="fas fa-file-pdf text-2xl text-gray-400 group-hover:text-blue-500 mb-2"></i>
+                            <p class="text-sm font-bold text-gray-700 group-hover:text-blue-600 transition-colors">
+                                Pilih File Anda
+                            </p>
+                            <p class="text-[10px] text-gray-400 mt-1 font-semibold tracking-wider uppercase italic">
+                                Format Dokumen: PDF
+                            </p>
+                        </div>
+                        <input type="file" 
+                            name="${field.name}" 
+                            ${req} 
+                            accept=".pdf" 
+                            class="hidden" 
+                            onchange="handleFileSelect(this, '${field.name}')">
+                    </label>
+                    <div id="name-${field.name}" class="mt-2 px-2 text-[11px] text-blue-600 font-medium truncate hidden italic">
+                        <i class="fas fa-check-circle mr-1"></i> <span class="file-label"></span>
+                    </div>
+                </div>
+            `;
+        }
         return `<input type="${field.type}" name="${field.name}" ${req} placeholder="${field.placeholder || ''}" class="${baseClass}">`;
     }
 
@@ -463,7 +408,16 @@
         document.getElementById('serviceModal').classList.add('hidden');
         document.body.style.overflow = 'auto';
     }
-
+    function handleFileSelect(input, fieldName) {
+        const displayDiv = document.getElementById(`name-${fieldName}`);
+        const nameLabel = displayDiv.querySelector('.file-label');
+        if (input.files && input.files[0]) {
+            nameLabel.textContent = "File terpilih: " + input.files[0].name;
+            displayDiv.classList.remove('hidden');
+        } else {
+            displayDiv.classList.add('hidden');
+        }
+    }
     function handleSubmission(name) {
         Swal.fire({ title: 'Memproses...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
         setTimeout(() => {
@@ -475,159 +429,6 @@
             }).then(() => closeModal());
         }, 1500);
     }
-
-    // ========== ANTRIAN ONLINE AUTO-FILL FUNCTIONS ==========
-
-    // Fetch data dari antrian online
-    async function fetchAntrianData() {
-        const nomorAntrianInput = document.getElementById('nomorAntrianInput');
-        const nomorAntrian = nomorAntrianInput.value.trim().toUpperCase();
-
-        // Validate nomor antrian
-        if (!nomorAntrian) {
-            showAntrianError('Masukkan nomor antrian');
-            return;
-        }
-
-        // Format: ABC-123-456
-        const antrianPattern = /^[A-Z]{3}-\d{3}-\d{3}$/;
-        if (!antrianPattern.test(nomorAntrian)) {
-            showAntrianError('Format nomor antrian tidak valid. Contoh: ABC-123-456');
-            return;
-        }
-
-        // Show loading
-        showAntrianLoading();
-        hideAntrianError();
-
-        try {
-            const response = await fetch(`/antrian-online/get-data/${nomorAntrian}`, {
-                method: 'GET',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
-                }
-            });
-
-            const result = await response.json();
-
-            if (result.success && result.data) {
-                // Auto-fill form dengan data antrian
-                autoFillFormFromAntrian(result.data);
-
-                // Show success
-                showAntrianSuccess();
-            } else {
-                showAntrianError(result.message || 'Antrian tidak ditemukan');
-            }
-
-        } catch (error) {
-            console.error('Error fetching antrian data:', error);
-            showAntrianError('Terjadi kesalahan saat mengambil data antrian');
-        } finally {
-            hideAntrianLoading();
-        }
-    }
-
-    // Auto-fill form dari data antrian online
-    function autoFillFormFromAntrian(data) {
-        // Fill nama_lengkap field
-        if (data.nama_lengkap) {
-            const namaInput = document.querySelector('input[name="nama"]');
-            if (!namaInput) {
-                namaInput = document.querySelector('input[name="nama_lengkap"]');
-            }
-            if (!namaInput) {
-                namaInput = document.querySelector('input[name="nama_kepala_keluarga"]');
-            }
-            if (!namaInput) {
-                namaInput = document.querySelector('input[name="nama_almarhum"]');
-            }
-            if (!namaInput) {
-                namaInput = document.querySelector('input[name="nama_ayah"]');
-            }
-            if (!namaInput) {
-                namaInput = document.querySelector('input[name="nama_ibu"]');
-            }
-
-            if (namaInput) {
-                namaInput.value = data.nama_lengkap;
-                namaInput.dispatchEvent(new Event('input', { bubbles: true }));
-                namaInput.dispatchEvent(new Event('change', { bubbles: true }));
-
-                // Add visual indicator
-                namaInput.classList.add('border-green-500', 'bg-green-50');
-                setTimeout(() => {
-                    namaInput.classList.remove('border-green-500', 'bg-green-50');
-                }, 3000);
-            }
-        }
-
-        // Fill alamat field
-        if (data.alamat) {
-            const alamatInput = document.querySelector('textarea[name="alamat"]');
-            if (alamatInput) {
-                alamatInput.value = data.alamat;
-                alamatInput.dispatchEvent(new Event('input', { bubbles: true }));
-                alamatInput.dispatchEvent(new Event('change', { bubbles: true }));
-
-                alamatInput.classList.add('border-green-500', 'bg-green-50');
-                setTimeout(() => {
-                    alamatInput.classList.remove('border-green-500', 'bg-green-50');
-                }, 3000);
-            }
-        }
-    }
-
-    // Show antrian loading
-    function showAntrianLoading() {
-        const loading = document.getElementById('antrianLoading');
-        if (loading) loading.classList.remove('hidden');
-    }
-
-    // Hide antrian loading
-    function hideAntrianLoading() {
-        const loading = document.getElementById('antrianLoading');
-        if (loading) loading.classList.add('hidden');
-    }
-
-    // Show antrian success
-    function showAntrianSuccess() {
-        const success = document.getElementById('antrianSuccess');
-        if (success) {
-            success.classList.remove('hidden');
-            setTimeout(() => success.classList.add('hidden'), 5000);
-        }
-    }
-
-    // Show antrian error
-    function showAntrianError(message) {
-        const error = document.getElementById('antrianError');
-        const errorMessage = document.getElementById('antrianErrorMessage');
-
-        if (error && errorMessage) {
-            errorMessage.textContent = message;
-            error.classList.remove('hidden');
-            setTimeout(() => error.classList.add('hidden'), 5000);
-        }
-    }
-
-    // Hide antrian error
-    function hideAntrianError() {
-        const error = document.getElementById('antrianError');
-        if (error) error.classList.add('hidden');
-    }
-
-    // Reset antrian form
-    function resetAntrianForm() {
-        const nomorAntrianInput = document.getElementById('nomorAntrianInput');
-        const success = document.getElementById('antrianSuccess');
-        const error = document.getElementById('antrianError');
-
-        if (nomorAntrianInput) nomorAntrianInput.value = '';
-        if (success) success.classList.add('hidden');
-        if (error) error.classList.add('hidden');
-    }
-
 </script>
 @endpush
 @endsection
