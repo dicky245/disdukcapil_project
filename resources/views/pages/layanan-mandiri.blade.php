@@ -27,6 +27,48 @@
         'color'=> 'blue',
         'id'=>'akte_kelahiran', 
         'fields'=>[
+<<<<<<< HEAD
+        ['name'=>'tes', 'label'=>'tes','type'=>'text']
+        ]
+    ],
+    3 => [ // Akte Kematian
+        'icon' => 'fa-user-times',
+        'color' => 'blue',
+        'id' => 'akte_kematian',
+        'fields' => [
+            ['name' => 'layanan_id', 'value' => '3', 'type' => 'hidden'],
+            ['name' => 'nama_almarhum', 'label' => 'Nama Lengkap Almarhum', 'type' => 'text', 'placeholder' => 'Sesuai KTP'],
+            ['name' => 'nik_almarhum', 'label' => 'NIK Almarhum', 'type' => 'nik', 'placeholder' => '16 digit NIK'],
+            ['name' => 'tgl_meninggal', 'label' => 'Tanggal Meninggal', 'type' => 'date'],
+            ['name' => 'tempat_meninggal', 'label' => 'Tempat Meninggal', 'type' => 'text', 'placeholder' => 'Rumah sakit/lokasi'],
+            ['name' => 'sebab_meninggal', 'label' => 'Sebab Meninggal', 'type' => 'textarea', 'placeholder' => 'Jelaskan penyebab kematian'],
+            ['name' => 'nik_pelapor', 'label' => 'NIK Pelapor', 'type' => 'nik', 'placeholder' => '16 digit NIK'],
+            ['name' => 'nama_pelapor', 'label' => 'Nama Pelapor', 'type' => 'text', 'placeholder' => 'Nama lengkap pelapor'],
+            ['name' => 'hubungan_pelapor', 'label' => 'Hubungan dengan Almarhum', 'type' => 'select', 'options' => ['Ayah', 'Ibu', 'Suami', 'Istri', 'Anak', 'Saudara Kandung', 'Lainnya']],
+            ['name' => 'surat_keterangan_kematian', 'label' => 'Surat Keterangan Kematian (RS/Kelurahan)', 'type' => 'file'],
+            ['name' => 'ktp_almarhum', 'label' => 'KTP Almarhum', 'type' => 'file'],
+            ['name' => 'kartu_keluarga', 'label' => 'Kartu Keluarga', 'type' => 'file'],
+        ]
+    ],
+    4 => [ // Lahir Mati
+        'icon' => 'fa-exclamation-triangle',
+        'color' => 'blue',
+        'id' => 'lahir_mati',
+        'fields' => [
+            ['name' => 'layanan_id', 'value' => '4', 'type' => 'hidden'],
+            ['name' => 'nama_bayi', 'label' => 'Nama Bayi', 'type' => 'text', 'placeholder' => 'Nama lengkap bayi'],
+            ['name' => 'jenis_kelamin', 'label' => 'Jenis Kelamin', 'type' => 'select', 'options' => ['Laki-laki', 'Perempuan']],
+            ['name' => 'tgl_lahir', 'label' => 'Tanggal & Waktu Lahir', 'type' => 'datetime-local'],
+            ['name' => 'tempat_lahir', 'label' => 'Tempat Lahir', 'type' => 'text', 'placeholder' => 'Nama RS/Klinik/Rumah'],
+            ['name' => 'nama_ayah', 'label' => 'Nama Ayah', 'type' => 'text', 'placeholder' => 'Nama lengkap ayah'],
+            ['name' => 'nik_ayah', 'label' => 'NIK Ayah', 'type' => 'nik', 'placeholder' => '16 digit NIK ayah'],
+            ['name' => 'nama_ibu', 'label' => 'Nama Ibu', 'type' => 'text', 'placeholder' => 'Nama lengkap ibu'],
+            ['name' => 'nik_ibu', 'label' => 'NIK Ibu', 'type' => 'nik', 'placeholder' => '16 digit NIK ibu'],
+            ['name' => 'keterangan', 'label' => 'Keterangan', 'type' => 'textarea', 'placeholder' => 'Keterangan tambahan'],
+            ['name' => 'surat_keterangan_lahir_mati', 'label' => 'Surat Keterangan Lahir Mati', 'type' => 'file'],
+            ['name' => 'ktp_ayah', 'label' => 'KTP Ayah', 'type' => 'file'],
+            ['name' => 'ktp_ibu', 'label' => 'KTP Ibu', 'type' => 'file'],
+=======
             ['name' => 'layanan_id', 'value' => '2', 'type' => 'hidden'],
             ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi', 'placeholder' => 'Masukkan Nomor Reqistrasi', 'type' => 'text'],
             ['name' => 'nama', 'label' => 'Nama Kepala Keluarga', 'placeholder' => 'Masukkan Nama Kepala Keluarga','type' => 'text'],
@@ -36,6 +78,7 @@
             ['name' => 'ktp_orangtua','label'=>'Foto KTP Orang Tua', 'type'=>'file'],
             ['name' => 'fotokopi_kk','label'=>'Foto Kartu Keluarga', 'type'=>'file'],
             ['name' => 'identitas_saksi','label'=>'Identitas Saksi', 'placeholder' => 'Masukkan Data Identitas Saksi', 'type'=>'text'],
+>>>>>>> 7d40513c353fa7162c4c073a09a61bc333a184f2
         ]
     ],
         'Penerbitan Akte Kematian' => [
