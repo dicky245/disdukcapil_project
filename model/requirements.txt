@@ -1,0 +1,24 @@
+# OCR Extraction System untuk KTP Indonesia
+# Engine: PaddleOCR (Transfer Learning)
+
+# Core OCR Engine
+paddlepaddle>=3.0.0
+paddleocr>=2.7.0
+
+# Image Processing
+opencv-python>=4.8.0
+Pillow>=10.0.0
+numpy>=1.24.0
+imgaug>=0.4.0
+
+# Deep Learning Framework (optional - PaddleOCR sudah include)
+# torch>=2.0.0
+# torchvision>=0.15.0
+
+# Evaluation Metrics
+jiwer>=3.0.0
+Levenshtein>=0.21.0
+
+# Utilities
+tqdm>=4.66.0
+pyyaml>=6.0

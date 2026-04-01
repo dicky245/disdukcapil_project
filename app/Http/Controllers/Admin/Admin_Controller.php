@@ -301,13 +301,13 @@ class Admin_Controller extends Controller
    /**
      * Terima dokumen (langkah pertama)
      */
-    public function Terima_Dokumen($id)
+    public function Terima_Dokumen($uuid)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $antrian = Antrian_Online_Model::find($id);
+        $antrian = Antrian_Online_Model::where('antrian_online_id', $uuid)->first();
 
         if (!$antrian) {
             return response()->json([
@@ -350,13 +350,13 @@ class Admin_Controller extends Controller
     /**
      * Mulai verifikasi data
      */
-    public function Verifikasi_Data($id)
+    public function Verifikasi_Data($uuid)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $antrian = Antrian_Online_Model::find($id);
+        $antrian = Antrian_Online_Model::where('antrian_online_id', $uuid)->first();
 
         if (!$antrian) {
             return response()->json([
@@ -399,13 +399,13 @@ class Admin_Controller extends Controller
     /**
      * Proses cetak dokumen
      */
-    public function Proses_Cetak($id)
+    public function Proses_Cetak($uuid)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $antrian = Antrian_Online_Model::find($id);
+        $antrian = Antrian_Online_Model::where('antrian_online_id', $uuid)->first();
 
         if (!$antrian) {
             return response()->json([
@@ -448,13 +448,13 @@ class Admin_Controller extends Controller
     /**
      * Siap diambil
      */
-    public function Siap_Pengambilan($id)
+    public function Siap_Pengambilan($uuid)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $antrian = Antrian_Online_Model::find($id);
+        $antrian = Antrian_Online_Model::where('antrian_online_id', $uuid)->first();
 
         if (!$antrian) {
             return response()->json([
@@ -497,7 +497,7 @@ class Admin_Controller extends Controller
     /**
      * Update berkas antrian
      */
-    public function Update_Berkas(Request $request, $id)
+    public function Update_Berkas(Request $request, $uuid)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
@@ -509,7 +509,7 @@ class Admin_Controller extends Controller
             'alasan_penolakan' => 'required_if:status,Ditolak|string|nullable',
         ]);
 
-        $antrian = Antrian_Online_Model::find($id);
+        $antrian = Antrian_Online_Model::where('antrian_online_id', $uuid)->first();
 
         if (!$antrian) {
             return response()->json([
@@ -562,13 +562,21 @@ class Admin_Controller extends Controller
     /**
      * Get riwayat lacak berkas
      */
-    public function Get_Riwayat_Berkas($id)
+    public function Get_Riwayat_Berkas($uuid)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $riwayat_berkas = Lacak_Berkas_Model::where('antrian_online_id', $id)
+        $antrian = Antrian_Online_Model::where('antrian_online_id', $uuid)->first();
+        if (!$antrian) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Antrian tidak ditemukan',
+            ], 404);
+        }
+
+        $riwayat_berkas = Lacak_Berkas_Model::where('antrian_online_id', $antrian->antrian_online_id)
             ->orderBy('created_at', 'asc')
             ->get();
 
@@ -583,13 +591,13 @@ class Admin_Controller extends Controller
     /**
      * Hapus antrian
      */
-    public function Hapus_Antrian($id)
+    public function Hapus_Antrian($uuid)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $antrian = Antrian_Online_Model::find($id);
+        $antrian = Antrian_Online_Model::where('antrian_online_id', $uuid)->first();
 
         if (!$antrian) {
             return response()->json([
@@ -599,7 +607,7 @@ class Admin_Controller extends Controller
         }
 
         // Hapus semua riwayat lacak berkas terkait
-        Lacak_Berkas_Model::where('antrian_online_id', $id)->delete();
+        Lacak_Berkas_Model::where('antrian_online_id', $antrian->antrian_online_id)->delete();
 
         // Hapus antrian
         $antrian->delete();

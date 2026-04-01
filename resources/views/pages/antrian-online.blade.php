@@ -88,8 +88,208 @@
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Ambil Nomor Antrian</h2>
                 <p class="text-gray-600 mt-3 max-w-2xl mx-auto">
-                    Lengkapi data diri dan pilih layanan untuk mendapatkan nomor antrian
+                    Upload KTP Anda untuk mengisi data secara otomatis, atau lengkapi secara manual
                 </p>
+            </div>
+
+            {{-- OCR KTP Upload Section --}}
+            <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl shadow-lg p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800">Upload KTP untuk Isi Data Otomatis</h3>
+                        <p class="text-sm text-gray-600">Upload foto KTP dan sistem akan mengisi data secara otomatis</p>
+                    </div>
+                </div>
+
+                <div id="ktpUploadArea" class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-purple-500 hover:bg-purple-50 transition-all">
+                    <div id="ktpUploadContent">
+                        <div class="mb-3">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-700 mb-1">Klik atau Drag & Drop KTP</h4>
+                        <p class="text-gray-500 text-sm mb-2">Format: PNG, JPG, JPEG (Max 5MB)</p>
+                        <div class="flex items-center justify-center gap-2 text-xs text-gray-400">
+                            <i class="fas fa-lock"></i>
+                            Data Anda aman dan tidak disimpan
+                        </div>
+
+                        {{-- Tips untuk Upload KTP yang Baik --}}
+                        <div class="mt-4 p-3 bg-blue-50 rounded-lg text-left">
+                            <div class="flex items-center gap-2 mb-2">
+                                <i class="fas fa-lightbulb text-yellow-500 text-sm"></i>
+                                <span class="font-semibold text-gray-700 text-sm">Tips untuk Hasil Terbaik:</span>
+                            </div>
+                            <ul class="text-xs text-gray-600 space-y-1">
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                    <span>Pastikan KTP terbaca jelas dan tidak blur</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                    <span>Gunakan pencahayaan yang cukup dan hindari glare</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                    <span>Posisikan KTP dalam frame secara penuh</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                    <span>Orientasi KTP horizontal (landscape)</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fas fa-check text-green-500 mt-0.5"></i>
+                                    <span>Resolusi minimal 720p (disarankan 1080p)</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {{-- Template Visual --}}
+                        <div class="mt-3 p-3 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border-2 border-purple-200">
+                            <div class="flex items-center justify-center gap-3 mb-2">
+                                <div class="relative">
+                                    {{-- Frame KTP Template --}}
+                                    <div class="w-32 h-20 border-2 border-dashed border-purple-400 rounded-lg flex items-center justify-center bg-white relative">
+                                        <div class="absolute top-1 left-1 w-2 h-2 border-t-2 border-l-2 border-purple-500"></div>
+                                        <div class="absolute top-1 right-1 w-2 h-2 border-t-2 border-r-2 border-purple-500"></div>
+                                        <div class="absolute bottom-1 left-1 w-2 h-2 border-b-2 border-l-2 border-purple-500"></div>
+                                        <div class="absolute bottom-1 right-1 w-2 h-2 border-b-2 border-r-2 border-purple-500"></div>
+                                        <i class="fas fa-id-card text-purple-400 text-2xl"></i>
+                                    </div>
+                                    <div class="absolute -right-2 -bottom-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-check text-white text-xs"></i>
+                                    </div>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-xs font-semibold text-gray-700">Contoh Posisi KTP yang Benar</p>
+                                    <p class="text-xs text-gray-500">KTP terlihat penuh dan jelas</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Quality Indicator --}}
+                        <div class="mt-3 flex items-center justify-center gap-4 text-xs">
+                            <div class="flex items-center gap-1">
+                                <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                                <span class="text-gray-600">Jelas</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+                                <span class="text-gray-600">Terang</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <span class="w-3 h-3 bg-purple-500 rounded-full"></span>
+                                <span class="text-gray-600">Penuh</span>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="file" id="ktpInput" accept="image/png,image/jpeg,image/jpg" class="hidden">
+                </div>
+
+                {{-- Preview Image - Enhanced Comparison --}}
+                <div id="ktpPreviewContainer" class="hidden mt-4">
+                    <div class="mb-3 flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+                        <i class="fas fa-magic text-purple-600"></i>
+                        <span class="text-sm font-semibold text-gray-700">Image Enhancement Applied (CamScanner-like)</span>
+                        <span class="ml-auto text-xs text-gray-500">Auto-contrast, sharpen, denoise</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-3">
+                        {{-- Original Image --}}
+                        <div>
+                            <div class="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
+                                <i class="fas fa-image text-blue-500"></i>
+                                Original
+                            </div>
+                            <div class="relative">
+                                <img id="ktpPreviewImage" src="" alt="Original KTP" class="w-full h-40 object-contain rounded-lg border-2 border-gray-300 bg-gray-50">
+                                <div class="absolute bottom-1 right-1 px-2 py-1 bg-gray-800 bg-opacity-70 text-white text-xs rounded">
+                                    Original
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Enhanced Image --}}
+                        <div>
+                            <div class="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
+                                <i class="fas fa-wand-magic-sparkles text-purple-500"></i>
+                                Enhanced
+                                <span class="ml-auto text-xs text-green-600 font-semibold">✓ Better</span>
+                            </div>
+                            <div class="relative">
+                                <img id="ktpEnhancedImage" src="" alt="Enhanced KTP" class="w-full h-40 object-contain rounded-lg border-2 border-purple-400 bg-gray-50">
+                                <div class="absolute bottom-1 right-1 px-2 py-1 bg-purple-600 bg-opacity-90 text-white text-xs rounded flex items-center gap-1">
+                                    <i class="fas fa-sparkles"></i>
+                                    Enhanced
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Enhancement Info --}}
+                    <div class="mb-3 p-2 bg-purple-50 rounded-lg text-xs text-gray-600">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="font-semibold">Enhancement Applied:</span>
+                            <span class="px-2 py-0.5 bg-purple-200 rounded-full text-purple-800">Auto-rotate</span>
+                            <span class="px-2 py-0.5 bg-purple-200 rounded-full text-purple-800">CLAHE</span>
+                            <span class="px-2 py-0.5 bg-purple-200 rounded-full text-purple-800">Sharpen</span>
+                            <span class="px-2 py-0.5 bg-purple-200 rounded-full text-purple-800">Denoise</span>
+                            <span class="px-2 py-0.5 bg-purple-200 rounded-full text-purple-800">Threshold</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <button id="ktpRemoveImage" class="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition flex items-center gap-2">
+                            <i class="fas fa-trash"></i>
+                            <span class="text-sm font-semibold">Hapus & Upload Ulang</span>
+                        </button>
+                        <div class="text-xs text-gray-500">
+                            <i class="fas fa-info-circle"></i>
+                            Enhanced image digunakan untuk OCR
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Scan Button --}}
+
+                {{-- Loading State --}}
+                <div id="ktpOcrLoading" class="hidden mt-4 text-center">
+                    <div class="inline-flex items-center gap-3 px-6 py-3 bg-blue-100 text-blue-700 rounded-xl">
+                        <svg class="animate-spin h-5 w-5 text-blue-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="font-semibold">Sedang memproses KTP...</span>
+                    </div>
+                </div>
+
+                {{-- OCR Result --}}
+                <div id="ktpOcrResult" class="hidden mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-check text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-gray-800 text-sm">Data Berhasil Diekstrak!</h4>
+                            <p class="text-xs text-gray-600">Data telah diisi otomatis. Silakan review.</p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- OCR Error --}}
+                <div id="ktpOcrError" class="hidden mt-4 p-4 bg-red-50 rounded-xl border-2 border-red-200">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-gray-800 text-sm">Gagal Mengekstrak Data</h4>
+                            <p id="ktpOcrErrorMessage" class="text-xs text-gray-600">Pastikan foto KTP jelas dan coba lagi.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="bg-white rounded-2xl shadow-lg p-8">
@@ -352,6 +552,26 @@
 
 @push('styles')
 <style>
+    /* ============================================
+       OCR KTP Upload Styles
+       ============================================ */
+
+    #ktpUploadArea {
+        min-height: 150px;
+        transition: all 0.3s ease;
+    }
+
+    #ktpUploadArea.dragover {
+        border-color: #9333EA !important;
+        background-color: #FAF5FF !important;
+        transform: scale(1.02);
+    }
+
+    #ktpUploadArea:hover {
+        border-color: #9333EA !important;
+        background-color: #FAF5FF !important;
+    }
+
     /* Ticket Animation */
     .ticket-wrapper {
         animation: ticketAppear 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -663,6 +883,235 @@
 
 @push('scripts')
 <script>
+
+    // ============================================
+    // OCR KTP FUNCTIONALITY
+    // ============================================
+
+    let selectedKtpFile = null;
+
+    // DOM Elements untuk OCR
+    const ktpUploadArea = document.getElementById('ktpUploadArea');
+    const ktpInput = document.getElementById('ktpInput');
+    const ktpPreviewContainer = document.getElementById('ktpPreviewContainer');
+    const ktpPreviewImage = document.getElementById('ktpPreviewImage');
+    const ktpRemoveImageBtn = document.getElementById('ktpRemoveImage');
+    const ktpOcrLoading = document.getElementById('ktpOcrLoading');
+    const ktpOcrResult = document.getElementById('ktpOcrResult');
+    const ktpOcrError = document.getElementById('ktpOcrError');
+
+    // Upload Area Click Handler
+    ktpUploadArea.addEventListener('click', () => {
+        ktpInput.click();
+    });
+
+    // File Input Change Handler
+    ktpInput.addEventListener('change', (e) => {
+        handleKtpFileSelect(e.target.files[0]);
+    });
+
+    // Drag & Drop Handlers
+    ktpUploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        ktpUploadArea.classList.add('dragover');
+    });
+
+    ktpUploadArea.addEventListener('dragleave', () => {
+        ktpUploadArea.classList.remove('dragover');
+    });
+
+    ktpUploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        ktpUploadArea.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file && file.type.startsWith('image/')) {
+            handleKtpFileSelect(file);
+        }
+    });
+
+    // Handle File Selection - AUTO EXTRACT
+    function handleKtpFileSelect(file) {
+        if (!file) return;
+
+        // Validate file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            showKtpOcrError('Ukuran file terlalu besar. Maksimal 5MB.');
+            return;
+        }
+
+        // Validate file type
+        if (!file.type.match('image.*')) {
+            showKtpOcrError('File harus berupa gambar (PNG, JPG, JPEG).');
+            return;
+        }
+
+        selectedKtpFile = file;
+
+        // Show preview dan quality check
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            ktpPreviewImage.src = e.target.result;
+
+            // Quality check setelah image load
+            const img = new Image();
+            img.onload = function() {
+                const qualityIssues = checkImageQuality(img);
+
+                if (qualityIssues.length > 0) {
+                    // Show quality warning
+                    const warningMessage = 'Peringatan Kualitas:\n' + qualityIssues.join('\n');
+                    showKtpOcrWarning(warningMessage);
+                }
+
+                ktpPreviewContainer.classList.remove('hidden');
+                ktpUploadArea.classList.add('hidden');
+
+                // AUTO-EXTRACT: Langsung prosses OCR setelah file dipilih
+                processKtpExtraction(file);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        // Hide previous messages
+        ktpOcrResult.classList.add('hidden');
+        ktpOcrError.classList.add('hidden');
+    }
+
+    // Check Image Quality
+    function checkImageQuality(img) {
+        const issues = [];
+        const width = img.width;
+        const height = img.height;
+        const minResolution = 720; // minimal 720p width
+
+        // Check resolution
+        if (width < minResolution) {
+            issues.push(`• Resolusi rendah (${width}px). Disarankan minimal ${minResolution}px`);
+        }
+
+        // Check aspect ratio (KTP biasanya landscape)
+        const aspectRatio = width / height;
+        if (aspectRatio < 1.2) {
+            issues.push('• Orientasi KTP sebaiknya horizontal (landscape)');
+        }
+
+        // Check if too narrow (portrait orientation)
+        if (height > width) {
+            issues.push('• KTP dalam posisi portrait. Putar ke horizontal untuk hasil terbaik');
+        }
+
+        return issues;
+    }
+
+    // Show OCR Warning
+    function showKtpOcrWarning(message) {
+        ktpOcrError.classList.remove('hidden');
+        const warningElement = document.getElementById('ktpOcrErrorMessage');
+        warningElement.innerHTML = '<span class="text-yellow-600 font-semibold">⚠️ ' + message.replace(/\n/g, '<br>') + '</span><br><span class="text-gray-500">OCR tetap akan diproses, tapi hasil mungkin tidak optimal.</span>';
+    }
+
+    // Process KTP Extraction (Auto-trigger on upload)
+    async function processKtpExtraction(file) {
+        // Show loading
+        ktpOcrLoading.classList.remove('hidden');
+        ktpOcrResult.classList.add('hidden');
+        ktpOcrError.classList.add('hidden');
+
+        try {
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('ktp_image', file);
+
+            // Send to OCR API
+            const response = await fetch('/api/ocr/extract-ktp', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            });
+
+            const result = await response.json();
+
+            // Hide loading
+            ktpOcrLoading.classList.add('hidden');
+
+            if (result.success && result.data) {
+                // Display enhanced image if available
+                if (result.enhanced_image) {
+                    const enhancedImg = document.getElementById('ktpEnhancedImage');
+                    if (enhancedImg) {
+                        enhancedImg.src = result.enhanced_image;
+                    }
+                }
+
+                // Auto-fill form
+                if (result.data.nama) {
+                    document.getElementById('nama_lengkap').value = result.data.nama;
+                }
+                if (result.data.alamat) {
+                    document.getElementById('alamat').value = result.data.alamat;
+                }
+                if (result.data.tanggal_lahir) {
+                    // Convert DD-MM-YYYY to YYYY-MM-DD for date input
+                    const dateParts = result.data.tanggal_lahir.split('-');
+                    if (dateParts.length === 3) {
+                        document.getElementById('tanggal_lahir').value = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+                    }
+                }
+
+                // Show success
+                ktpOcrResult.classList.remove('hidden');
+
+                // Scroll to form
+                setTimeout(() => {
+                    document.getElementById('formSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 500);
+
+                // Show success notification
+                if (result.confidence && result.confidence > 0.5) {
+                    const confidence = Math.round(result.confidence * 100);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Data Berhasil Diekstrak!',
+                        text: `Akurasi: ${confidence}% - Silakan review data`,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                }
+            } else {
+                // Show error
+                showKtpOcrError(result.message || 'Gagal mengekstrak data. Silakan isi secara manual.');
+            }
+
+        } catch (error) {
+            console.error('OCR Error:', error);
+            ktpOcrLoading.classList.add('hidden');
+
+            showKtpOcrError('Terjadi kesalahan sistem. Silakan isi data secara manual.');
+        }
+    }
+
+    // Remove Image Handler
+    ktpRemoveImageBtn.addEventListener('click', () => {
+        selectedKtpFile = null;
+        ktpInput.value = '';
+        ktpPreviewContainer.classList.add('hidden');
+        ktpUploadArea.classList.remove('hidden');
+        ktpOcrResult.classList.add('hidden');
+        ktpOcrError.classList.add('hidden');
+    });
+
+    // Show OCR Error
+    function showKtpOcrError(message) {
+        document.getElementById('ktpOcrErrorMessage').textContent = message;
+        ktpOcrError.classList.remove('hidden');
+    }
+
+    // ============================================
+    // END OCR KTP FUNCTIONALITY
+    // ============================================
 
     // Load Statistics on Page Load
     function loadStatistics() {

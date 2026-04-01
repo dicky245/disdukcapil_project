@@ -10,6 +10,7 @@ use App\Http\Controllers\KartKeluargaController;
 use App\Http\Controllers\AkteKematianController;
 use App\Http\Controllers\LahirMatiController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\KTPOCRController;
 use App\Models\Layanan_Model;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,12 @@ Route::get('/api/layanan', function() {
         'data' => $data_layanan,
     ]);
 })->name('api.layanan');
+
+// OCR KTP Routes (API)
+Route::prefix('api/ocr')->group(function () {
+    Route::post('/extract-ktp', [KTPOCRController::class, 'extract'])->name('api.ocr.extract-ktp');
+    Route::get('/health', [KTPOCRController::class, 'healthCheck'])->name('api.ocr.health');
+});
 
 // Antrian Online (Public)
 Route::prefix('antrian-online')->group(function () {
@@ -97,7 +104,7 @@ Route::prefix('admin')->group(function () {
     Route::post('/register', [RegisterController::class, 'register'])->name('admin.register.submit');
 
     // Verifikasi Pertanyaan Keamanan
-    Route::get('/verify/{user}', [Login_Controller::class, 'showVerifyQuestion'])->name('admin.verify.question');
+    Route::get('/verify/{uuid}', [Login_Controller::class, 'showVerifyQuestion'])->name('admin.verify.question');
     Route::post('/verify', [RegisterController::class, 'verifySecurityQuestion'])->name('admin.verify.submit');
 
     // Admin Dashboard & Pages (membutuhkan auth)
@@ -118,13 +125,13 @@ Route::prefix('admin')->group(function () {
         Route::prefix('antrian-online')->group(function () {
             Route::get('/', [Admin_Controller::class, 'antrian_online'])->name('admin.antrian-online');
             Route::get('/data', [Admin_Controller::class, 'Get_Data_Antrian'])->name('admin.antrian-online.data');
-            Route::post('/terima/{id}', [Admin_Controller::class, 'Terima_Dokumen'])->name('admin.antrian-online.terima');
-            Route::post('/verifikasi/{id}', [Admin_Controller::class, 'Verifikasi_Data'])->name('admin.antrian-online.verifikasi');
-            Route::post('/cetak/{id}', [Admin_Controller::class, 'Proses_Cetak'])->name('admin.antrian-online.cetak');
-            Route::post('/selesai/{id}', [Admin_Controller::class, 'Siap_Pengambilan'])->name('admin.antrian-online.selesai');
-            Route::post('/update-berkas/{id}', [Admin_Controller::class, 'Update_Berkas'])->name('admin.antrian-online.update-berkas');
-            Route::get('/riwayat/{id}', [Admin_Controller::class, 'Get_Riwayat_Berkas'])->name('admin.antrian-online.riwayat');
-            Route::delete('/{id}', [Admin_Controller::class, 'Hapus_Antrian'])->name('admin.antrian-online.hapus');
+            Route::post('/terima/{uuid}', [Admin_Controller::class, 'Terima_Dokumen'])->name('admin.antrian-online.terima');
+            Route::post('/verifikasi/{uuid}', [Admin_Controller::class, 'Verifikasi_Data'])->name('admin.antrian-online.verifikasi');
+            Route::post('/cetak/{uuid}', [Admin_Controller::class, 'Proses_Cetak'])->name('admin.antrian-online.cetak');
+            Route::post('/selesai/{uuid}', [Admin_Controller::class, 'Siap_Pengambilan'])->name('admin.antrian-online.selesai');
+            Route::post('/update-berkas/{uuid}', [Admin_Controller::class, 'Update_Berkas'])->name('admin.antrian-online.update-berkas');
+            Route::get('/riwayat/{uuid}', [Admin_Controller::class, 'Get_Riwayat_Berkas'])->name('admin.antrian-online.riwayat');
+            Route::delete('/{uuid}', [Admin_Controller::class, 'Hapus_Antrian'])->name('admin.antrian-online.hapus');
         });
 
         Route::get('/tracking-berkas', [Admin_Controller::class, 'tracking_berkas'])->name('admin.tracking-berkas');
@@ -134,23 +141,23 @@ Route::prefix('admin')->group(function () {
         // Kartu Keluarga
         Route::prefix('penerbitan-kk')->group(function () {
             Route::get('/', [KartKeluargaController::class, 'daftar_kk'])->name('admin.penerbitan-kk');
-            Route::get('/detail/{id}',[KartKeluargaController::class, 'detail'])->name('admin.detail');
-            Route::post('/{id}/status',[KartKeluargaController::class, 'updateStatus'])->name('admin.status');
+            Route::get('/detail/{uuid}',[KartKeluargaController::class, 'detail'])->name('admin.kk.detail');
+            Route::post('/{uuid}/status',[KartKeluargaController::class, 'updateStatus'])->name('admin.kk.status');
         }); 
         Route::get('/penerbitan-akte-lahir', [Admin_Controller::class, 'penerbitan_akte_lahir'])->name('admin.penerbitan-akte-lahir');
 
         // Penerbitan Akte Kematian
         Route::prefix('penerbitan-akte-kematian')->group(function () {
             Route::get('/', [AkteKematianController::class, 'daftar'])->name('admin.penerbitan-akte-kematian');
-            Route::get('/detail/{id}', [AkteKematianController::class, 'detail'])->name('admin.akte-kematian.detail');
-            Route::post('/{id}/status', [AkteKematianController::class, 'updateStatus'])->name('admin.akte-kematian.status');
+            Route::get('/detail/{uuid}', [AkteKematianController::class, 'detail'])->name('admin.akte-kematian.detail');
+            Route::post('/{uuid}/status', [AkteKematianController::class, 'updateStatus'])->name('admin.akte-kematian.status');
         });
 
         // Penerbitan Lahir Mati
         Route::prefix('penerbitan-lahir-mati')->group(function () {
             Route::get('/', [LahirMatiController::class, 'daftar'])->name('admin.penerbitan-lahir-mati');
-            Route::get('/detail/{id}', [LahirMatiController::class, 'detail'])->name('admin.lahir-mati.detail');
-            Route::post('/{id}/status', [LahirMatiController::class, 'updateStatus'])->name('admin.lahir-mati.status');
+            Route::get('/detail/{uuid}', [LahirMatiController::class, 'detail'])->name('admin.lahir-mati.detail');
+            Route::post('/{uuid}/status', [LahirMatiController::class, 'updateStatus'])->name('admin.lahir-mati.status');
         });
 
         Route::get('/penerbitan-pernikahan', [Admin_Controller::class, 'penerbitan_pernikahan'])->name('admin.penerbitan-pernikahan');
@@ -183,8 +190,8 @@ Route::prefix('keagamaan')->middleware(['auth'])->group(function () {
     // API Routes untuk Keagamaan
     Route::get('/api/data-keagamaan', [Keagamaan_Controller::class, 'get_data_keagamaan'])->name('keagamaan.api.data_keagamaan');
     Route::post('/api/tambah-keagamaan', [Keagamaan_Controller::class, 'tambah_keagamaan'])->name('keagamaan.api.tambah_keagamaan');
-    Route::post('/api/update-keagamaan/{id}', [Keagamaan_Controller::class, 'update_keagamaan'])->name('keagamaan.api.update_keagamaan');
-    Route::delete('/api/hapus-keagamaan/{id}', [Keagamaan_Controller::class, 'hapus_keagamaan'])->name('keagamaan.api.hapus_keagamaan');
+    Route::post('/api/update-keagamaan/{uuid}', [Keagamaan_Controller::class, 'update_keagamaan'])->name('keagamaan.api.update_keagamaan');
+    Route::delete('/api/hapus-keagamaan/{uuid}', [Keagamaan_Controller::class, 'hapus_keagamaan'])->name('keagamaan.api.hapus_keagamaan');
     Route::get('/api/jenis-keagamaan', [Keagamaan_Controller::class, 'get_jenis_keagamaan'])->name('keagamaan.api.jenis_keagamaan');
 
     Route::post('/proses-request-pernikahan', [Keagamaan_Controller::class, 'proses_request_pernikahan'])->name('keagamaan.proses_request_pernikahan');

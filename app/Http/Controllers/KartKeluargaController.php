@@ -62,13 +62,13 @@ class KartKeluargaController extends Controller
             'datakk','jumlahkk','menungguVerifikasi','dalamProses','selesai'
         ));
     }
-    public function detail($id){
-        $berkas = KartuKeluarga::findOrFail($id);
+    public function detail($uuid){
+        $berkas = KartuKeluarga::where('id', $uuid)->firstOrFail();
         return view('admin.penerbitan_kk_detail', compact('berkas'));
     }
-    public function updateStatus(Request $request, $id)
+    public function updateStatus(Request $request, $uuid)
     {
-        $kk = KartuKeluarga::findOrFail($id);
+        $kk = KartuKeluarga::where('id', $uuid)->firstOrFail();
         $kk->status = $request->status;
         $kk->save();
         return redirect()->back()->with('success','Status berhasil diperbarui');

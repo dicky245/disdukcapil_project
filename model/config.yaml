@@ -1,0 +1,67 @@
+# Konfigurasi OCR KTP Indonesia
+# Project: Ekstraksi Nama, Alamat, Tanggal Lahir
+
+project:
+  name: "ktp_ocr_extraction"
+  version: "1.0.0"
+  description: "OCR system untuk Indonesian KTP dengan transfer learning"
+
+dataset:
+  train_path: "./dataset/Train"
+  test_path: "./dataset/Test"
+  labels_file: "./dataset/labels.json"
+  augmentation_factor: 15  # Kalikan dataset dengan 15x
+
+data_augmentation:
+  enable: true
+  techniques:
+    - rotation: [-5, 5]  # derajat
+    - brightness: [0.7, 1.3]
+    - contrast: [0.8, 1.2]
+    - gaussian_noise: [0, 25]
+    - gaussian_blur: [0, 1.5]
+    - motion_blur: [0, 3]
+    - perspective_transform: true
+
+ocr:
+  engine: "paddleocr"
+  lang: "id"  # Bahasa Indonesia
+  use_gpu: false  # Set true jika ada CUDA
+  det_model_dir: null  # Gunakan default pre-trained
+  rec_model_dir: null  # Gunakan default pre-trained
+
+fields:
+  - name: "nik"
+    pattern: "\\d{16}"
+    description: "16 digit Nomor Induk Kependudukan"
+
+  - name: "nama"
+    keywords: ["Nama", "NAMA"]
+    position_hint: "after_label"
+    max_words: 4
+
+  - name: "tanggal_lahir"
+    keywords: ["Tgl Lahir", "TGL LAHIR", "Tgl. Lahir"]
+    pattern: "\\d{2}-\\d{2}-\\d{4}"
+    description: "Format DD-MM-YYYY"
+
+  - name: "alamat"
+    keywords: ["Alamat", "ALAMAT"]
+    position_hint: "multi_line"
+    min_words: 3
+    max_lines: 3
+
+evaluation:
+  metrics:
+    - cer  # Character Error Rate
+    - wer  # Word Error Rate
+    - field_accuracy  # Accuracy per field
+
+  cer_threshold: 0.15  # 15% error rate masih acceptable
+  wer_threshold: 0.25  # 25% word error acceptable
+
+output:
+  results_dir: "./results"
+  models_dir: "./models"
+  logs_dir: "./logs"
+  augmented_dir: "./dataset/augmented"

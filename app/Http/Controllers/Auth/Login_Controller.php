@@ -153,9 +153,9 @@ class Login_Controller extends Controller
     /**
      * Tampilkan halaman verifikasi pertanyaan keamanan
      */
-    public function showVerifyQuestion($userId)
+    public function showVerifyQuestion($uuid)
     {
-        $user = User::find($userId);
+        $user = User::where('id', $uuid)->first();
 
         if (!$user) {
             return redirect()->route('admin.login')

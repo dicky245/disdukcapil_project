@@ -73,18 +73,18 @@ class LahirMatiController extends Controller
     /**
      * Tampilkan detail permohonan
      */
-    public function detail($id)
+    public function detail($uuid)
     {
-        $berkas = LahirMati::findOrFail($id);
+        $berkas = LahirMati::where('id', $uuid)->firstOrFail();
         return view('admin.penerbitan_lahir_mati_detail', compact('berkas'));
     }
 
     /**
      * Update status permohonan
      */
-    public function updateStatus(Request $request, $id)
+    public function updateStatus(Request $request, $uuid)
     {
-        $lahirMati = LahirMati::findOrFail($id);
+        $lahirMati = LahirMati::where('id', $uuid)->firstOrFail();
         $lahirMati->status = $request->status;
         $lahirMati->save();
         return redirect()->back()->with('success', 'Status berhasil diperbarui');

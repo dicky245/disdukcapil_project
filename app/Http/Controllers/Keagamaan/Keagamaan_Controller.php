@@ -175,7 +175,7 @@ class Keagamaan_Controller extends Controller
     /**
      * Update data keagamaan
      */
-    public function update_keagamaan(Request $request, $id)
+    public function update_keagamaan(Request $request, $uuid)
     {
         if (!Auth::user()->hasRole('Keagamaan')) {
             abort(403, 'Anda tidak memiliki akses.');
@@ -189,7 +189,7 @@ class Keagamaan_Controller extends Controller
             'status' => 'required|string|in:Pending,Proses,Selesai,Ditolak',
         ]);
 
-        $keagamaan = Keagamaan_Model::find($id);
+        $keagamaan = Keagamaan_Model::where('keagamaan_id', $uuid)->first();
 
         if (!$keagamaan) {
             return response()->json([
@@ -257,13 +257,13 @@ class Keagamaan_Controller extends Controller
     /**
      * Hapus data keagamaan
      */
-    public function hapus_keagamaan($id)
+    public function hapus_keagamaan($uuid)
     {
         if (!Auth::user()->hasRole('Keagamaan')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $keagamaan = Keagamaan_Model::find($id);
+        $keagamaan = Keagamaan_Model::where('keagamaan_id', $uuid)->first();
 
         if (!$keagamaan) {
             return response()->json([
