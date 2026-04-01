@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('antrian_online', function (Blueprint $table) {
-            $table->id('antrian_online_id');
+            // Gunakan CHAR(36) secara eksplisit untuk UUID
+            $table->char('antrian_online_id', 36)->primary();
             $table->string('nomor_antrian', 20)->unique();
             $table->string('nama_lengkap', 100);
             $table->text('alamat')->nullable();

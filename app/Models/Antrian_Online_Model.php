@@ -17,6 +17,7 @@ class Antrian_Online_Model extends Model
     public $timestamps = true;
 
     protected $fillable = [
+        'antrian_online_id',
         'nomor_antrian',
         'nama_lengkap',
         'alamat',
