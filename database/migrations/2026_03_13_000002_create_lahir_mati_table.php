@@ -19,9 +19,15 @@ return new class extends Migration
             $table->datetime('tgl_lahir');
             $table->string('tempat_lahir');
             $table->string('nama_ayah');
-            $table->string('nik_ayah');
+
+            // NIK ayah (encrypted, gunakan TEXT type)
+            $table->text('nik_ayah')->nullable();
+
             $table->string('nama_ibu');
-            $table->string('nik_ibu');
+
+            // NIK ibu (encrypted, gunakan TEXT type)
+            $table->text('nik_ibu')->nullable();
+
             $table->text('keterangan')->nullable();
             $table->string('surat_keterangan_lahir_mati')->nullable();
             $table->string('ktp_ayah')->nullable();
@@ -29,6 +35,10 @@ return new class extends Migration
             $table->enum('status', ['Dokumen Diterima', 'Verifikasi Data', 'Proses Cetak', 'Siap Pengambilan', 'Tolak'])->default('Dokumen Diterima');
             $table->softDeletes();
             $table->timestamps();
+
+            // Index untuk NIK fields
+            $table->index('nik_ayah');
+            $table->index('nik_ibu');
         });
     }
 

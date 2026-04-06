@@ -4,6 +4,12 @@
 @php
     use App\Models\Layanan_Model;
     $data_layanan = Layanan_Model::all();
+
+    $jam_kerja = $jam_kerja ?? [
+        'senin_kamis' => '08.00 - 16.00 WIB',
+        'jumat' => '08.00 - 14.00 WIB',
+        'sabtu_minggu' => 'Tutup',
+    ];
 @endphp
 
 <main class="pt-0">
@@ -33,7 +39,7 @@
                 <h1 class="text-4xl md:text-5xl font-extrabold mb-6">
                     Ambil Nomor Antrian dari Rumah
                 </h1>
-                <p class="text-lg text-blue-100 mb-8">
+                <p class="text-lg text-green-100 mb-8">
                     Tidak perlu datang lebih awal untuk antri. Ambil nomor antrian secara online dan datang sesuai jadwal.
                 </p>
             </div>
@@ -46,13 +52,63 @@
         </div>
     </section>
 
+    {{-- Jam Operasional Layanan --}}
+    <section class="py-8 bg-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-100">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-clock text-white text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h3 class="text-lg font-bold text-gray-800 mb-3">Jam Operasional Layanan</h3>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="bg-white rounded-lg p-4 shadow-sm">
+                                <div class="flex items-center mb-2">
+                                    <i class="fas fa-calendar-day text-green-600 mr-2"></i>
+                                    <span class="font-semibold text-gray-800">Senin - Kamis</span>
+                                </div>
+                                <p class="text-lg font-bold text-green-600">{{ $jam_kerja['senin_kamis'] }}</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 shadow-sm">
+                                <div class="flex items-center mb-2">
+                                    <i class="fas fa-calendar-day text-yellow-600 mr-2"></i>
+                                    <span class="font-semibold text-gray-800">Jumat</span>
+                                </div>
+                                <p class="text-lg font-bold text-yellow-600">{{ $jam_kerja['jumat'] }}</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 shadow-sm">
+                                <div class="flex items-center mb-2">
+                                    <i class="fas fa-calendar-times text-red-600 mr-2"></i>
+                                    <span class="font-semibold text-gray-800">Sabtu - Minggu</span>
+                                </div>
+                                <p class="text-lg font-bold text-red-600">{{ $jam_kerja['sabtu_minggu'] }}</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <div class="flex items-start gap-2">
+                                <i class="fas fa-exclamation-triangle text-yellow-600 mt-1"></i>
+                                <div>
+                                    <p class="font-semibold text-yellow-800">Penting:</p>
+                                    <p class="text-sm text-yellow-700">Antrian online hanya dapat dibuat pada jam operasional. Di luar jam kerja, sistem tidak akan menerima permohonan antrian baru.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- Queue Stats --}}
     <section class="py-12 bg-gray-50 -mt-8 relative z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-4 gap-6">
                 <div class="bg-white rounded-2xl shadow-lg p-6 text-center stat-card">
                     <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-users text-3xl text-blue-600"></i>
+                        <i class="fas fa-users text-3xl text-green-600"></i>
                     </div>
                     <p class="text-4xl font-bold text-gray-800 mb-1" id="totalToday">-</p>
                     <p class="text-gray-600">Total Hari Ini</p>
@@ -66,7 +122,7 @@
                 </div>
                 <div class="bg-white rounded-2xl shadow-lg p-6 text-center stat-card">
                     <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-spinner text-3xl text-blue-600"></i>
+                        <i class="fas fa-spinner text-3xl text-green-600"></i>
                     </div>
                     <p class="text-4xl font-bold text-gray-800 mb-1" id="processingToday">-</p>
                     <p class="text-gray-600">Sedang Diproses</p>
@@ -88,212 +144,11 @@
             <div class="text-center mb-12">
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Ambil Nomor Antrian</h2>
                 <p class="text-gray-600 mt-3 max-w-2xl mx-auto">
-                    Upload KTP Anda untuk mengisi data secara otomatis, atau lengkapi secara manual
+                    Lengkapi data diri Anda untuk mengambil nomor antrian
                 </p>
             </div>
 
-            {{-- OCR KTP Upload Section --}}
-            <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl shadow-lg p-6 mb-6">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-800">Upload KTP untuk Isi Data Otomatis</h3>
-                        <p class="text-sm text-gray-600">Upload foto KTP dan sistem akan mengisi data secara otomatis</p>
-                    </div>
-                </div>
-
-                <div id="ktpUploadArea" class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-purple-500 hover:bg-purple-50 transition-all">
-                    <div id="ktpUploadContent">
-                        <div class="mb-3">
-                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
-                        </div>
-                        <h4 class="font-semibold text-gray-700 mb-1">Klik atau Drag & Drop KTP</h4>
-                        <p class="text-gray-500 text-sm mb-2">Format: PNG, JPG, JPEG (Max 5MB)</p>
-                        <div class="flex items-center justify-center gap-2 text-xs text-gray-400">
-                            <i class="fas fa-lock"></i>
-                            Data Anda aman dan tidak disimpan
-                        </div>
-
-                        {{-- Tips untuk Upload KTP yang Baik --}}
-                        <div class="mt-4 p-3 bg-blue-50 rounded-lg text-left">
-                            <div class="flex items-center gap-2 mb-2">
-                                <i class="fas fa-lightbulb text-yellow-500 text-sm"></i>
-                                <span class="font-semibold text-gray-700 text-sm">Tips untuk Hasil Terbaik:</span>
-                            </div>
-                            <ul class="text-xs text-gray-600 space-y-1">
-                                <li class="flex items-start gap-2">
-                                    <i class="fas fa-check text-green-500 mt-0.5"></i>
-                                    <span>Pastikan KTP terbaca jelas dan tidak blur</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fas fa-check text-green-500 mt-0.5"></i>
-                                    <span>Gunakan pencahayaan yang cukup dan hindari glare</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fas fa-check text-green-500 mt-0.5"></i>
-                                    <span>Posisikan KTP dalam frame secara penuh</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fas fa-check text-green-500 mt-0.5"></i>
-                                    <span>Orientasi KTP horizontal (landscape)</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fas fa-check text-green-500 mt-0.5"></i>
-                                    <span>Resolusi minimal 720p (disarankan 1080p)</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        {{-- Template Visual --}}
-                        <div class="mt-3 p-3 bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg border-2 border-purple-200">
-                            <div class="flex items-center justify-center gap-3 mb-2">
-                                <div class="relative">
-                                    {{-- Frame KTP Template --}}
-                                    <div class="w-32 h-20 border-2 border-dashed border-purple-400 rounded-lg flex items-center justify-center bg-white relative">
-                                        <div class="absolute top-1 left-1 w-2 h-2 border-t-2 border-l-2 border-purple-500"></div>
-                                        <div class="absolute top-1 right-1 w-2 h-2 border-t-2 border-r-2 border-purple-500"></div>
-                                        <div class="absolute bottom-1 left-1 w-2 h-2 border-b-2 border-l-2 border-purple-500"></div>
-                                        <div class="absolute bottom-1 right-1 w-2 h-2 border-b-2 border-r-2 border-purple-500"></div>
-                                        <i class="fas fa-id-card text-purple-400 text-2xl"></i>
-                                    </div>
-                                    <div class="absolute -right-2 -bottom-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                                        <i class="fas fa-check text-white text-xs"></i>
-                                    </div>
-                                </div>
-                                <div class="text-left">
-                                    <p class="text-xs font-semibold text-gray-700">Contoh Posisi KTP yang Benar</p>
-                                    <p class="text-xs text-gray-500">KTP terlihat penuh dan jelas</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Quality Indicator --}}
-                        <div class="mt-3 flex items-center justify-center gap-4 text-xs">
-                            <div class="flex items-center gap-1">
-                                <span class="w-3 h-3 bg-green-500 rounded-full"></span>
-                                <span class="text-gray-600">Jelas</span>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
-                                <span class="text-gray-600">Terang</span>
-                            </div>
-                            <div class="flex items-center gap-1">
-                                <span class="w-3 h-3 bg-purple-500 rounded-full"></span>
-                                <span class="text-gray-600">Penuh</span>
-                            </div>
-                        </div>
-                    </div>
-                    <input type="file" id="ktpInput" accept="image/png,image/jpeg,image/jpg" class="hidden">
-                </div>
-
-                {{-- Preview Image - Enhanced Comparison --}}
-                <div id="ktpPreviewContainer" class="hidden mt-4">
-                    <div class="mb-3 flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
-                        <i class="fas fa-magic text-purple-600"></i>
-                        <span class="text-sm font-semibold text-gray-700">Image Enhancement Applied (CamScanner-like)</span>
-                        <span class="ml-auto text-xs text-gray-500">Auto-contrast, sharpen, denoise</span>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4 mb-3">
-                        {{-- Original Image --}}
-                        <div>
-                            <div class="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
-                                <i class="fas fa-image text-blue-500"></i>
-                                Original
-                            </div>
-                            <div class="relative">
-                                <img id="ktpPreviewImage" src="" alt="Original KTP" class="w-full h-40 object-contain rounded-lg border-2 border-gray-300 bg-gray-50">
-                                <div class="absolute bottom-1 right-1 px-2 py-1 bg-gray-800 bg-opacity-70 text-white text-xs rounded">
-                                    Original
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Enhanced Image --}}
-                        <div>
-                            <div class="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
-                                <i class="fas fa-wand-magic-sparkles text-purple-500"></i>
-                                Enhanced
-                                <span class="ml-auto text-xs text-green-600 font-semibold">✓ Better</span>
-                            </div>
-                            <div class="relative">
-                                <img id="ktpEnhancedImage" src="" alt="Enhanced KTP" class="w-full h-40 object-contain rounded-lg border-2 border-purple-400 bg-gray-50">
-                                <div class="absolute bottom-1 right-1 px-2 py-1 bg-purple-600 bg-opacity-90 text-white text-xs rounded flex items-center gap-1">
-                                    <i class="fas fa-sparkles"></i>
-                                    Enhanced
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Enhancement Info --}}
-                    <div class="mb-3 p-2 bg-purple-50 rounded-lg text-xs text-gray-600">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span class="font-semibold">Enhancement Applied:</span>
-                            <span class="px-2 py-0.5 bg-purple-200 rounded-full text-purple-800">Auto-rotate</span>
-                            <span class="px-2 py-0.5 bg-purple-200 rounded-full text-purple-800">CLAHE</span>
-                            <span class="px-2 py-0.5 bg-purple-200 rounded-full text-purple-800">Sharpen</span>
-                            <span class="px-2 py-0.5 bg-purple-200 rounded-full text-purple-800">Denoise</span>
-                            <span class="px-2 py-0.5 bg-purple-200 rounded-full text-purple-800">Threshold</span>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-between">
-                        <button id="ktpRemoveImage" class="px-4 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition flex items-center gap-2">
-                            <i class="fas fa-trash"></i>
-                            <span class="text-sm font-semibold">Hapus & Upload Ulang</span>
-                        </button>
-                        <div class="text-xs text-gray-500">
-                            <i class="fas fa-info-circle"></i>
-                            Enhanced image digunakan untuk OCR
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Scan Button --}}
-
-                {{-- Loading State --}}
-                <div id="ktpOcrLoading" class="hidden mt-4 text-center">
-                    <div class="inline-flex items-center gap-3 px-6 py-3 bg-blue-100 text-blue-700 rounded-xl">
-                        <svg class="animate-spin h-5 w-5 text-blue-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span class="font-semibold">Sedang memproses KTP...</span>
-                    </div>
-                </div>
-
-                {{-- OCR Result --}}
-                <div id="ktpOcrResult" class="hidden mt-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-200">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-check text-sm"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-bold text-gray-800 text-sm">Data Berhasil Diekstrak!</h4>
-                            <p class="text-xs text-gray-600">Data telah diisi otomatis. Silakan review.</p>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- OCR Error --}}
-                <div id="ktpOcrError" class="hidden mt-4 p-4 bg-red-50 rounded-xl border-2 border-red-200">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-exclamation-triangle text-sm"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-bold text-gray-800 text-sm">Gagal Mengekstrak Data</h4>
-                            <p id="ktpOcrErrorMessage" class="text-xs text-gray-600">Pastikan foto KTP jelas dan coba lagi.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="bg-white rounded-2xl shadow-lg p-8">
-
                 <form id="antrianForm" class="space-y-6">
                     @csrf
 
@@ -342,7 +197,7 @@
                         <p id="layananError" class="text-red-500 text-sm mt-2 hidden">Pilih jenis layanan</p>
                     </div>
 
-                    <button type="submit" id="submitBtn" class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg">
+                    <button type="submit" id="submitBtn" class="w-full py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all shadow-lg">
                         <i class="fas fa-ticket-alt mr-2"></i>
                         Ambil Nomor Antrian
                     </button>
@@ -359,7 +214,7 @@
 
             <div class="bg-white rounded-2xl shadow-2xl overflow-hidden ticket-wrapper">
                 <!-- Header Tiket -->
-                <div class="bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-700 text-white p-8 text-center relative overflow-hidden">
+                <div class="bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 text-white p-8 text-center relative overflow-hidden">
                     <!-- Animated Background -->
                     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
 
@@ -368,7 +223,7 @@
                             <i class="fas fa-ticket-alt text-5xl"></i>
                         </div>
                         <h3 class="text-3xl font-bold mb-2">Nomor Antrian Anda</h3>
-                        <p class="text-blue-100">Simpan nomor ini untuk mengecek status</p>
+                        <p class="text-green-100">Simpan nomor ini untuk mengecek status</p>
                     </div>
                 </div>
 
@@ -376,10 +231,10 @@
                 <div class="p-8 text-center relative">
                     <!-- Nomor Antrian dengan Counter Animation -->
                     <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 mb-6 relative overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-cyan-600/5 animate-pulse-slow"></div>
+                        <div class="absolute inset-0 bg-gradient-to-r from-green-600/5 to-emerald-600/5 animate-pulse-slow"></div>
                         <div class="relative z-10">
                             <p class="text-sm text-gray-500 mb-2 font-medium">NOMOR ANTRIAN</p>
-                            <div class="text-7xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-4 counter-animate" id="ticketNumber">ABC-123</div>
+                            <div class="text-7xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4 counter-animate" id="ticketNumber">ABC-123</div>
                             <div class="flex items-center justify-center gap-2 text-sm text-gray-500">
                                 <i class="fas fa-clock"></i>
                                 <span id="ticketTime">-</span>
@@ -389,9 +244,9 @@
 
                     <!-- Info Grid -->
                     <div class="grid grid-cols-2 gap-4 text-left mb-6">
-                        <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-100 info-card">
+                        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100 info-card">
                             <div class="flex items-center gap-2 mb-2">
-                                <i class="fas fa-user text-blue-600"></i>
+                                <i class="fas fa-user text-green-600"></i>
                                 <p class="text-xs font-semibold text-gray-500 uppercase">Nama</p>
                             </div>
                             <p class="font-bold text-gray-800 text-lg" id="ticketName">-</p>
@@ -411,7 +266,7 @@
                             <i class="fas fa-print mr-2"></i>
                             Cetak Tiket
                         </button>
-                        <button onclick="resetForm()" class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg action-btn no-print">
+                        <button onclick="resetForm()" class="flex-1 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all shadow-lg action-btn no-print">
                             <i class="fas fa-plus mr-2"></i>
                             Ambil Lagi
                         </button>
@@ -419,7 +274,7 @@
                 </div>
 
                 <!-- Decorative Elements -->
-                <div class="absolute top-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+                <div class="absolute top-0 left-0 w-32 h-32 bg-green-500/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
                 <div class="absolute bottom-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full translate-x-1/2 translate-y-1/2"></div>
             </div>
         </div>
@@ -433,7 +288,7 @@
                 <p class="text-gray-600 mt-3">Cari nomor antrian Anda dengan memasukkan nama atau nomor antrian</p>
             </div>
 
-            <div class="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl shadow-lg p-8 border border-gray-100">
+            <div class="bg-gradient-to-br from-gray-50 to-emerald-50 rounded-2xl shadow-lg p-8 border border-gray-100">
                 <div class="grid md:grid-cols-3 gap-4 mb-6">
                     <div class="md:col-span-2">
                         <input type="text" id="searchInput" placeholder="Masukkan nama atau nomor antrian"
@@ -448,7 +303,7 @@
                         </select>
                     </div>
                 </div>
-                <button onclick="searchAntrian()" class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg">
+                <button onclick="searchAntrian()" class="w-full py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all shadow-lg">
                     <i class="fas fa-search mr-2"></i>
                     Cari Antrian
                 </button>
@@ -467,7 +322,7 @@
                 <p class="text-gray-600 mt-3">Masukkan nomor antrian atau nama lengkap untuk melacak status berkas</p>
             </div>
 
-            <div class="bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl shadow-lg p-8 border border-gray-100">
+            <div class="bg-gradient-to-br from-gray-50 to-emerald-50 rounded-2xl shadow-lg p-8 border border-gray-100">
                 <div class="grid md:grid-cols-3 gap-4 mb-6">
                     <div class="md:col-span-2">
                         <div class="relative">
@@ -485,7 +340,7 @@
                         </select>
                     </div>
                 </div>
-                <button onclick="lacakBerkas()" class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg">
+                <button onclick="lacakBerkas()" class="w-full py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all shadow-lg">
                     <i class="fas fa-search mr-2"></i>
                     Lacak Status
                 </button>
@@ -495,7 +350,7 @@
             <div id="lacakResult" class="hidden mt-8">
                 <div class="bg-white rounded-2xl shadow-xl overflow-hidden lacak-card">
                     <!-- Header dengan Gradient -->
-                    <div class="bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-700 text-white p-6 relative overflow-hidden">
+                    <div class="bg-gradient-to-r from-green-600 via-emerald-600 to-green-700 text-white p-6 relative overflow-hidden">
                         <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer"></div>
                         <div class="relative z-10 flex items-center justify-between">
                             <div>
@@ -528,7 +383,7 @@
                     <!-- Timeline Riwayat dengan Animated Progress Line -->
                     <div class="p-6">
                         <h4 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
-                            <i class="fas fa-history text-blue-600"></i>
+                            <i class="fas fa-history text-green-600"></i>
                             Riwayat Status
                         </h4>
                         <div id="lacakTimeline" class="relative">
@@ -538,7 +393,7 @@
 
                     <!-- Print Button untuk Hasil Lacak -->
                     <div class="px-6 pb-6 no-print">
-                        <button onclick="printLacakResult()" class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg">
+                        <button onclick="printLacakResult()" class="w-full py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all shadow-lg">
                             <i class="fas fa-print mr-2"></i>
                             Cetak Status Berkas
                         </button>
@@ -552,26 +407,6 @@
 
 @push('styles')
 <style>
-    /* ============================================
-       OCR KTP Upload Styles
-       ============================================ */
-
-    #ktpUploadArea {
-        min-height: 150px;
-        transition: all 0.3s ease;
-    }
-
-    #ktpUploadArea.dragover {
-        border-color: #9333EA !important;
-        background-color: #FAF5FF !important;
-        transform: scale(1.02);
-    }
-
-    #ktpUploadArea:hover {
-        border-color: #9333EA !important;
-        background-color: #FAF5FF !important;
-    }
-
     /* Ticket Animation */
     .ticket-wrapper {
         animation: ticketAppear 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -841,7 +676,7 @@
         }
 
         .bg-gradient-to-r {
-            background: #0052CC !important;
+            background: #28A745 !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -875,7 +710,7 @@
         .text-transparent {
             background-clip: border-box !important;
             -webkit-background-clip: border-box !important;
-            color: #0052CC !important;
+            color: #28A745 !important;
         }
     }
 </style>
@@ -883,251 +718,7 @@
 
 @push('scripts')
 <script>
-
-    // ============================================
-    // OCR KTP FUNCTIONALITY
-    // ============================================
-
-    let selectedKtpFile = null;
-
-    // DOM Elements untuk OCR
-    const ktpUploadArea = document.getElementById('ktpUploadArea');
-    const ktpInput = document.getElementById('ktpInput');
-    const ktpPreviewContainer = document.getElementById('ktpPreviewContainer');
-    const ktpPreviewImage = document.getElementById('ktpPreviewImage');
-    const ktpRemoveImageBtn = document.getElementById('ktpRemoveImage');
-    const ktpOcrLoading = document.getElementById('ktpOcrLoading');
-    const ktpOcrResult = document.getElementById('ktpOcrResult');
-    const ktpOcrError = document.getElementById('ktpOcrError');
-
-    // Upload Area Click Handler
-    ktpUploadArea.addEventListener('click', () => {
-        ktpInput.click();
-    });
-
-    // File Input Change Handler
-    ktpInput.addEventListener('change', (e) => {
-        handleKtpFileSelect(e.target.files[0]);
-    });
-
-    // Drag & Drop Handlers
-    ktpUploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        ktpUploadArea.classList.add('dragover');
-    });
-
-    ktpUploadArea.addEventListener('dragleave', () => {
-        ktpUploadArea.classList.remove('dragover');
-    });
-
-    ktpUploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        ktpUploadArea.classList.remove('dragover');
-        const file = e.dataTransfer.files[0];
-        if (file && file.type.startsWith('image/')) {
-            handleKtpFileSelect(file);
-        }
-    });
-
-    // Handle File Selection - AUTO EXTRACT
-    function handleKtpFileSelect(file) {
-        if (!file) return;
-
-        // Validate file size (5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            showKtpOcrError('Ukuran file terlalu besar. Maksimal 5MB.');
-            return;
-        }
-
-        // Validate file type
-        if (!file.type.match('image.*')) {
-            showKtpOcrError('File harus berupa gambar (PNG, JPG, JPEG).');
-            return;
-        }
-
-        selectedKtpFile = file;
-
-        // Show preview dan quality check
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            ktpPreviewImage.src = e.target.result;
-
-            // Quality check setelah image load
-            const img = new Image();
-            img.onload = function() {
-                const qualityIssues = checkImageQuality(img);
-
-                if (qualityIssues.length > 0) {
-                    // Show quality warning
-                    const warningMessage = 'Peringatan Kualitas:\n' + qualityIssues.join('\n');
-                    showKtpOcrWarning(warningMessage);
-                }
-
-                ktpPreviewContainer.classList.remove('hidden');
-                ktpUploadArea.classList.add('hidden');
-
-                // AUTO-EXTRACT: Langsung prosses OCR setelah file dipilih
-                processKtpExtraction(file);
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-
-        // Hide previous messages
-        ktpOcrResult.classList.add('hidden');
-        ktpOcrError.classList.add('hidden');
-    }
-
-    // Check Image Quality
-    function checkImageQuality(img) {
-        const issues = [];
-        const width = img.width;
-        const height = img.height;
-        const minResolution = 720; // minimal 720p width
-
-        // Check resolution
-        if (width < minResolution) {
-            issues.push(`• Resolusi rendah (${width}px). Disarankan minimal ${minResolution}px`);
-        }
-
-        // Check aspect ratio (KTP biasanya landscape)
-        const aspectRatio = width / height;
-        if (aspectRatio < 1.2) {
-            issues.push('• Orientasi KTP sebaiknya horizontal (landscape)');
-        }
-
-        // Check if too narrow (portrait orientation)
-        if (height > width) {
-            issues.push('• KTP dalam posisi portrait. Putar ke horizontal untuk hasil terbaik');
-        }
-
-        return issues;
-    }
-
-    // Show OCR Warning
-    function showKtpOcrWarning(message) {
-        ktpOcrError.classList.remove('hidden');
-        const warningElement = document.getElementById('ktpOcrErrorMessage');
-        warningElement.innerHTML = '<span class="text-yellow-600 font-semibold"><i class="fas fa-exclamation-triangle mr-1"></i>' + message.replace(/\n/g, '<br>') + '</span><br><span class="text-gray-500">OCR tetap akan diproses, tapi hasil mungkin tidak optimal.</span>';
-    }
-
-    // Process KTP Extraction (Auto-trigger on upload)
-    async function processKtpExtraction(file) {
-        // Show loading
-        ktpOcrLoading.classList.remove('hidden');
-        ktpOcrResult.classList.add('hidden');
-        ktpOcrError.classList.add('hidden');
-
-        try {
-            // Prepare form data
-            const formData = new FormData();
-            formData.append('ktp_image', file);
-
-            // Send to OCR API
-            const response = await fetch('/api/ocr/extract-ktp', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            });
-
-            const result = await response.json();
-
-            // Hide loading
-            ktpOcrLoading.classList.add('hidden');
-
-            if (result.success && result.data) {
-                // Display enhanced image if available
-                if (result.enhanced_image) {
-                    const enhancedImg = document.getElementById('ktpEnhancedImage');
-                    if (enhancedImg) {
-                        enhancedImg.src = result.enhanced_image;
-                    }
-                }
-
-                // Auto-fill form
-                if (result.data.nama) {
-                    document.getElementById('nama_lengkap').value = result.data.nama;
-                }
-                if (result.data.alamat) {
-                    document.getElementById('alamat').value = result.data.alamat;
-                }
-                if (result.data.tanggal_lahir) {
-                    // Convert DD-MM-YYYY to YYYY-MM-DD for date input
-                    const dateParts = result.data.tanggal_lahir.split('-');
-                    if (dateParts.length === 3) {
-                        document.getElementById('tanggal_lahir').value = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
-                    }
-                }
-
-                // Show success
-                ktpOcrResult.classList.remove('hidden');
-
-                // Scroll to form
-                setTimeout(() => {
-                    document.getElementById('formSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 500);
-
-                // Show success notification
-                if (result.confidence && result.confidence > 0.5) {
-                    const confidence = Math.round(result.confidence * 100);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Data Berhasil Diekstrak!',
-                        text: `Akurasi: ${confidence}% - Silakan review data`,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                }
-            } else {
-                // Show error
-                showKtpOcrError(result.message || 'Gagal mengekstrak data. Silakan isi secara manual.');
-            }
-
-        } catch (error) {
-            console.error('OCR Error:', error);
-            ktpOcrLoading.classList.add('hidden');
-
-            showKtpOcrError('Terjadi kesalahan sistem. Silakan isi data secara manual.');
-        }
-    }
-
-    // Remove Image Handler
-    ktpRemoveImageBtn.addEventListener('click', () => {
-        selectedKtpFile = null;
-        ktpInput.value = '';
-        ktpPreviewContainer.classList.add('hidden');
-        ktpUploadArea.classList.remove('hidden');
-        ktpOcrResult.classList.add('hidden');
-        ktpOcrError.classList.add('hidden');
-    });
-
-    // Show OCR Error
-    function showKtpOcrError(message) {
-        document.getElementById('ktpOcrErrorMessage').textContent = message;
-        ktpOcrError.classList.remove('hidden');
-    }
-
-    // ============================================
-    // END OCR KTP FUNCTIONALITY
-    // ============================================
-
     // Load Statistics on Page Load
-    function loadStatistics() {
-        fetch('{{ route('antrian.statistik') }}')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    animateCounter('totalToday', data.data.total_antrian);
-                    animateCounter('waitingToday', data.data.antrian_menunggu);
-                    animateCounter('processingToday', data.data.antrian_diproses);
-                    animateCounter('completedToday', data.data.antrian_selesai);
-                }
-            })
-            .catch(err => console.error('Gagal memuat statistik:', err));
-    }
-
     function loadStatistics() {
         fetch('{{ route('antrian.statistik') }}')
             .then(response => response.json())
@@ -1174,7 +765,7 @@
                 icon: 'warning',
                 title: 'Data Belum Lengkap',
                 text: 'Nama lengkap harus diisi',
-                confirmButtonColor: '#0052CC',
+                confirmButtonColor: '#28A745',
                 confirmButtonText: 'OK'
             });
             document.getElementById('nama_lengkap').focus();
@@ -1186,7 +777,7 @@
                 icon: 'warning',
                 title: 'Layanan Belum Dipilih',
                 text: 'Silakan pilih jenis layanan terlebih dahulu',
-                confirmButtonColor: '#0052CC',
+                confirmButtonColor: '#28A745',
                 confirmButtonText: 'OK'
             });
             document.getElementById('layanan_id').focus();
@@ -1245,7 +836,7 @@
                     icon: 'success',
                     title: 'Berhasil!',
                     html: `Nomor antrian <strong>${data.data.nomor_antrian}</strong> telah dibuat!<br><small class="text-gray-500">Silakan simpan nomor ini</small>`,
-                    confirmButtonColor: '#0052CC',
+                    confirmButtonColor: '#28A745',
                     confirmButtonText: 'OK',
                     timer: 3000,
                     timerProgressBar: true
@@ -1257,7 +848,7 @@
                     icon: 'error',
                     title: 'Gagal',
                     text: data.message || 'Terjadi kesalahan saat mengambil antrian',
-                    confirmButtonColor: '#0052CC',
+                    confirmButtonColor: '#28A745',
                     confirmButtonText: 'OK'
                 });
             }
@@ -1268,7 +859,7 @@
                 icon: 'error',
                 title: 'Koneksi Error',
                 text: 'Gagal mengambil antrian. Pastikan koneksi server tersedia.',
-                confirmButtonColor: '#0052CC',
+                confirmButtonColor: '#28A745',
                 confirmButtonText: 'OK'
             });
         })
@@ -1281,7 +872,7 @@
     // Confetti Animation
     function createConfetti() {
         const container = document.getElementById('confetti-container');
-        const colors = ['#0052CC', '#00B8D9', '#36B37E', '#FFAB00', '#FF5630', '#6554C0'];
+        const colors = ['#28A745', '#22c55e', '#36B37E', '#FFAB00', '#FF5630', '#6554C0'];
 
         for (let i = 0; i < 50; i++) {
             const confetti = document.createElement('div');
@@ -1303,23 +894,17 @@
             text: 'Tiket akan dicetak dalam format yang rapi',
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#0052CC',
+            confirmButtonColor: '#28A745',
             cancelButtonColor: '#64748b',
             confirmButtonText: 'Cetak',
             cancelButtonText: 'Batal',
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                // Simpan konten asli
-                const ticketNumber = document.getElementById('ticketNumber').textContent;
-                const ticketName = document.getElementById('ticketName').textContent;
-                const ticketService = document.getElementById('ticketService').textContent;
-                const ticketTime = document.getElementById('ticketTime').textContent;
+                // Buat window print khusus
+                const printWindow = window.open('', '_blank', 'width=800,height=600');
 
-        // Buat window print khusus
-        const printWindow = window.open('', '_blank', 'width=800,height=600');
-
-        printWindow.document.write(`
+                printWindow.document.write(`
             <!DOCTYPE html>
             <html>
             <head>
@@ -1354,20 +939,20 @@
             <body class="bg-gray-100 min-h-screen flex items-center justify-center">
                 <div class="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-md mx-auto">
                     <!-- Header Tiket -->
-                    <div class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-8 text-center">
+                    <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-8 text-center">
                         <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-ticket-alt text-5xl"></i>
                         </div>
                         <h3 class="text-3xl font-bold mb-2">Nomor Antrian</h3>
-                        <p class="text-blue-100 text-sm">Disdukcapil Kabupaten Toba</p>
+                        <p class="text-green-100 text-sm">Disdukcapil Kabupaten Toba</p>
                     </div>
 
                     <!-- Body Tiket -->
                     <div class="p-8 text-center">
                         <!-- Nomor Antrian -->
-                        <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 mb-6 border-2 border-blue-200">
+                        <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 mb-6 border-2 border-green-200">
                             <p class="text-sm text-gray-500 mb-2 font-bold uppercase tracking-wider">NOMOR ANTRIAN</p>
-                            <div class="text-6xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-4">
+                            <div class="text-6xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
                                 ${document.getElementById('ticketNumber').textContent}
                             </div>
                             <div class="flex items-center justify-center gap-2 text-sm text-gray-600">
@@ -1378,7 +963,7 @@
 
                         <!-- Info Grid -->
                         <div class="grid grid-cols-2 gap-4 text-left mb-6">
-                            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-4 border border-blue-100">
+                            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100">
                                 <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Nama</p>
                                 <p class="font-bold text-gray-800 text-lg">${document.getElementById('ticketName').textContent}</p>
                             </div>
@@ -1406,7 +991,7 @@
 
                         <!-- Print Button (No Print) -->
                         <div class="mt-6 no-print">
-                            <button onclick="window.print()" class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg">
+                            <button onclick="window.print()" class="w-full py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all shadow-lg">
                                 <i class="fas fa-print mr-2"></i>
                                 Cetak Sekarang
                             </button>
@@ -1442,7 +1027,7 @@
             text: 'Nomor antrian saat ini akan hilang. Apakah Anda yakin?',
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#0052CC',
+            confirmButtonColor: '#28A745',
             cancelButtonColor: '#64748b',
             confirmButtonText: 'Ya, Ambil Lagi',
             cancelButtonText: 'Batal',
@@ -1478,7 +1063,7 @@
                 icon: 'warning',
                 title: 'Input Kosong',
                 text: 'Masukkan nama atau nomor antrian terlebih dahulu',
-                confirmButtonColor: '#0052CC',
+                confirmButtonColor: '#28A745',
                 confirmButtonText: 'OK'
             });
             return;
@@ -1536,7 +1121,7 @@
                     icon: 'error',
                     title: 'Koneksi Error',
                     text: 'Gagal mencari data. Pastikan koneksi tersedia.',
-                    confirmButtonColor: '#0052CC',
+                    confirmButtonColor: '#28A745',
                     confirmButtonText: 'OK'
                 });
             });
@@ -1546,7 +1131,7 @@
         const html = results.map((antrian, index) => {
             const statusColors = {
                 'Menunggu': 'bg-amber-100 text-amber-700 border-amber-200',
-                'Dokumen Diterima': 'bg-blue-100 text-blue-700 border-blue-200',
+                'Dokumen Diterima': 'bg-green-100 text-green-700 border-green-200',
                 'Verifikasi Data': 'bg-indigo-100 text-indigo-700 border-indigo-200',
                 'Proses Cetak': 'bg-purple-100 text-purple-700 border-purple-200',
                 'Siap Pengambilan': 'bg-emerald-100 text-emerald-700 border-emerald-200',
@@ -1566,13 +1151,13 @@
             const icon = statusIcons[antrian.status_antrian] || 'fa-info-circle';
 
             return `
-                <div class="search-result-card bg-white border-2 border-gray-100 rounded-xl p-5 flex justify-between items-center shadow-md hover:shadow-xl transition-all duration-300 hover:border-blue-200 cursor-pointer" style="animation-delay: ${index * 0.1}s" onclick='showAntrianDetail(${JSON.stringify(antrian)})'>
+                <div class="search-result-card bg-white border-2 border-gray-100 rounded-xl p-5 flex justify-between items-center shadow-md hover:shadow-xl transition-all duration-300 hover:border-green-200 cursor-pointer" style="animation-delay: ${index * 0.1}s" onclick='showAntrianDetail(${JSON.stringify(antrian)})'>
                     <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                        <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
                             ${antrian.nomor_antrian.substring(0, 2)}
                         </div>
                         <div>
-                            <p class="font-bold text-blue-600 text-lg">${antrian.nomor_antrian}</p>
+                            <p class="font-bold text-green-600 text-lg">${antrian.nomor_antrian}</p>
                             <p class="text-gray-800 font-semibold">${antrian.nama_lengkap}</p>
                             <p class="text-xs text-gray-500 uppercase tracking-wide font-medium">
                                 <i class="fas fa-file-alt mr-1"></i>
@@ -1643,7 +1228,7 @@
                 </div>
             `,
             icon: 'info',
-            confirmButtonColor: '#0052CC',
+            confirmButtonColor: '#28A745',
             confirmButtonText: 'Tutup',
             showCloseButton: true
         });
@@ -1659,7 +1244,7 @@
                 icon: 'warning',
                 title: 'Input Kosong',
                 text: 'Masukkan nomor antrian atau nama lengkap terlebih dahulu',
-                confirmButtonColor: '#0052CC',
+                confirmButtonColor: '#28A745',
                 confirmButtonText: 'OK'
             });
             return;
@@ -1715,7 +1300,7 @@
                         icon: 'error',
                         title: 'Data Tidak Ditemukan',
                         text: data.message || 'Data antrian tidak ditemukan. Silakan periksa kembali nomor antrian atau nama Anda.',
-                        confirmButtonColor: '#0052CC',
+                        confirmButtonColor: '#28A745',
                         confirmButtonText: 'OK'
                     });
                     document.getElementById('lacakResult').classList.add('hidden');
@@ -1728,7 +1313,7 @@
                     icon: 'error',
                     title: 'Koneksi Error',
                     text: 'Gagal mencari data. Pastikan koneksi tersedia.',
-                    confirmButtonColor: '#0052CC',
+                    confirmButtonColor: '#28A745',
                     confirmButtonText: 'OK'
                 });
             })
@@ -1750,7 +1335,7 @@
         const timeline = document.getElementById('lacakTimeline');
         if (data.riwayat && data.riwayat.length > 0) {
             let timelineHTML = '<div class="relative">';
-            timelineHTML += '<div class="absolute left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-cyan-500 rounded-full timeline-progress"></div>';
+            timelineHTML += '<div class="absolute left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-green-500 to-emerald-500 rounded-full timeline-progress"></div>';
 
             data.riwayat.forEach((item, index) => {
                 const isLast = index === data.riwayat.length - 1;
@@ -1769,7 +1354,7 @@
                 timelineHTML += `
                     <div class="timeline-item relative pl-12 ${!isLast ? 'pb-8' : ''}" style="animation-delay: ${index * 0.15}s">
                         <div class="absolute left-0 ${dotSize} ${dotColor} ${glowClass} rounded-full border-4 border-white shadow-lg transform transition-transform hover:scale-110"></div>
-                        <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-4 border border-gray-200 hover:shadow-md transition-all">
+                        <div class="bg-gradient-to-r from-gray-50 to-emerald-50 rounded-xl p-4 border border-gray-200 hover:shadow-md transition-all">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-2 mb-2">
@@ -1812,7 +1397,7 @@
     function getStatusColor(status) {
         switch(status) {
             case 'Menunggu': return '!text-amber-700 !bg-amber-500/30';
-            case 'Dokumen Diterima': return '!text-blue-700 !bg-blue-500/30';
+            case 'Dokumen Diterima': return '!text-green-700 !bg-green-500/30';
             case 'Verifikasi Data': return '!text-indigo-700 !bg-indigo-500/30';
             case 'Proses Cetak': return '!text-purple-700 !bg-purple-500/30';
             case 'Siap Pengambilan': return '!text-emerald-700 !bg-emerald-500/30';
@@ -1825,7 +1410,7 @@
     function getTimelineDotColor(status) {
         switch(status) {
             case 'Menunggu': return 'bg-amber-500';
-            case 'Dokumen Diterima': return 'bg-blue-500';
+            case 'Dokumen Diterima': return 'bg-green-500';
             case 'Verifikasi Data': return 'bg-indigo-500';
             case 'Proses Cetak': return 'bg-purple-500';
             case 'Siap Pengambilan': return 'bg-emerald-500';
@@ -1851,7 +1436,7 @@
     function getTimelineIconColor(status) {
         switch(status) {
             case 'Menunggu': return 'text-amber-600';
-            case 'Dokumen Diterima': return 'text-blue-600';
+            case 'Dokumen Diterima': return 'text-green-600';
             case 'Verifikasi Data': return 'text-indigo-600';
             case 'Proses Cetak': return 'text-purple-600';
             case 'Siap Pengambilan': return 'text-emerald-600';
@@ -1868,7 +1453,7 @@
             text: 'Status berkas akan dicetak lengkap dengan riwayat',
             icon: 'question',
             showCancelButton: true,
-            confirmButtonColor: '#0052CC',
+            confirmButtonColor: '#28A745',
             cancelButtonColor: '#64748b',
             confirmButtonText: 'Cetak',
             cancelButtonText: 'Batal',
@@ -1925,14 +1510,14 @@
                         top: 0;
                         bottom: 0;
                         width: 2px;
-                        background: linear-gradient(to bottom, #0052CC, #00B8D9);
+                        background: linear-gradient(to bottom, #28A745, #22c55e);
                     }
                 </style>
             </head>
             <body class="bg-gray-50">
                 <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
                     <!-- Header -->
-                    <div class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-6">
+                    <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6">
                         <div class="flex items-center justify-between mb-4">
                             <div class="flex items-center gap-3">
                                 <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
@@ -1960,7 +1545,7 @@
                     <!-- Timeline Section -->
                     <div class="p-6">
                         <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
-                            <i class="fas fa-history text-blue-600"></i>
+                            <i class="fas fa-history text-green-600"></i>
                             Riwayat Status
                         </h3>
                         <div class="relative">
@@ -1970,12 +1555,12 @@
                     </div>
 
                     <!-- Footer Info -->
-                    <div class="bg-blue-50 border-t border-blue-100 p-6">
+                    <div class="bg-green-50 border-t border-green-100 p-6">
                         <div class="flex items-start gap-3">
-                            <i class="fas fa-info-circle text-blue-600 mt-1"></i>
+                            <i class="fas fa-info-circle text-green-600 mt-1"></i>
                             <div>
-                                <p class="font-bold text-blue-800 text-sm mb-1">Informasi:</p>
-                                <ul class="text-xs text-blue-700 space-y-1">
+                                <p class="font-bold text-green-800 text-sm mb-1">Informasi:</p>
+                                <ul class="text-xs text-green-700 space-y-1">
                                     <li>• Cetak dokumen ini sebagai bukti status berkas</li>
                                     <li>• Pantau terus status berkas Anda secara berkala</li>
                                     <li>• Hubungi loket jika ada pertanyaan</li>
@@ -1998,7 +1583,7 @@
 
                     <!-- Print Button (No Print) -->
                     <div class="p-6 no-print bg-gray-50">
-                        <button onclick="window.print()" class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg">
+                        <button onclick="window.print()" class="w-full py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all shadow-lg">
                             <i class="fas fa-print mr-2"></i>
                             Cetak Sekarang
                         </button>
@@ -2038,6 +1623,11 @@
         if (e.key === 'Enter') {
             searchAntrian();
         }
+    });
+
+    // Load statistics on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadStatistics();
     });
 </script>
 @endpush

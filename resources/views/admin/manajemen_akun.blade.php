@@ -73,7 +73,7 @@
             <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
         </div>
         <button onclick="openAddModal()"
-            class="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg flex items-center gap-2">
+            class="w-full md:w-auto px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg hover:shadow-xl hover:from-emerald-600 hover:to-green-700 transition-all transform hover:scale-105 border-2 border-emerald-300 flex items-center gap-2">
             <i class="fas fa-plus"></i> Tambah Akun
         </button>
     </div>
@@ -229,7 +229,7 @@
                 {{-- Buttons --}}
                 <div class="flex items-center gap-3 pt-4 border-t border-gray-100">
                     <button type="submit"
-                        class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg">
+                        class="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl font-bold hover:from-emerald-600 hover:to-green-700 transition-all shadow-lg hover:shadow-xl border-2 border-emerald-300">
                         <i class="fas fa-save mr-2"></i> Simpan
                     </button>
                     <button type="button" onclick="closeModal()"
@@ -334,22 +334,12 @@
                 if (!accountId) {
                     if (!password) {
                         e.preventDefault();
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Password Wajib Diisi!',
-                            text: 'Silakan masukkan password minimal 6 karakter untuk akun baru.',
-                            confirmButtonColor: '#0052CC'
-                        });
+                        SwalHelper.modalWarning('Password Wajib Diisi!', 'Silakan masukkan password minimal 6 karakter untuk akun baru.');
                         return false;
                     }
                     if (password.length < 6) {
                         e.preventDefault();
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Password Terlalu Pendek!',
-                            text: 'Password minimal 6 karakter.',
-                            confirmButtonColor: '#0052CC'
-                        });
+                        SwalHelper.modalWarning('Password Terlalu Pendek!', 'Password minimal 6 karakter.');
                         return false;
                     }
                 }
@@ -362,12 +352,7 @@
                 if (passwordValue || passwordConfirmValue) {
                     if (passwordValue !== passwordConfirmValue) {
                         e.preventDefault();
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Password Tidak Cocok!',
-                            text: 'Password dan konfirmasi password harus sama.',
-                            confirmButtonColor: '#0052CC'
-                        });
+                        SwalHelper.modalWarning('Password Tidak Cocok!', 'Password dan konfirmasi password harus sama.');
                         return false;
                     }
                 }
@@ -377,32 +362,15 @@
 
     // SweetAlert2 Pop-up Handlers
     @if(session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: "{{ session('success') }}",
-            confirmButtonColor: '#0052CC',
-            timer: 3000,
-            timerProgressBar: true
-        });
+        SwalHelper.modalSuccess('Berhasil!', "{{ session('success') }}");
     @endif
 
     @if(session('error'))
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal!',
-            text: "{{ session('error') }}",
-            confirmButtonColor: '#0052CC'
-        });
+        SwalHelper.modalError('Gagal!', "{{ session('error') }}");
     @endif
 
     @if ($errors->any())
-        Swal.fire({
-            icon: 'warning',
-            title: 'Perhatian!',
-            text: "{{ $errors->first() }}",
-            confirmButtonColor: '#0052CC'
-        });
+        SwalHelper.modalWarning('Perhatian!', "{{ $errors->first() }}");
     @endif
 </script>
 @endpush

@@ -147,6 +147,70 @@
                 <p class="text-gray-600">Masuk ke dashboard admin</p>
             </div>
 
+            <!-- Notification for Already Logged In Users -->
+            @if(auth()->check())
+                <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-6 mb-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user-check text-3xl text-amber-600"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-amber-800 mb-2">
+                            Anda Sudah Login!
+                        </h3>
+                        <p class="text-sm text-amber-700 mb-4">
+                            Anda sedang login sebagai <strong>{{ auth()->user()->name }}</strong>
+                            <br>dengan role <strong>{{ auth()->user()->roles->first()->name ?? 'User' }}</strong>
+                        </p>
+
+                        <div class="flex flex-col gap-3">
+                            @if(auth()->user()->hasRole('Admin'))
+                                <a href="{{ route('admin.dashboard') }}"
+                                   class="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-cyan-700 transition-all flex items-center justify-center gap-2">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    Ke Dashboard Admin
+                                </a>
+                            @elseif(auth()->user()->hasRole('Keagamaan'))
+                                <a href="{{ route('keagamaan.dashboard') }}"
+                                   class="w-full py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-xl font-bold hover:from-teal-700 hover:to-emerald-700 transition-all flex items-center justify-center gap-2">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    Ke Dashboard Keagamaan
+                                </a>
+                            @endif
+
+                            <form method="POST" action="{{ route('logout') }}" id="alreadyLoggedInLogoutForm">
+                                @csrf
+                                <button type="button" onclick="handleAlreadyLoggedInLogout()"
+                                        class="w-full py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-all flex items-center justify-center gap-2">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Logout dari Akun Ini
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function handleAlreadyLoggedInLogout() {
+                        SwalHelper.customConfirm({
+                            title: 'Konfirmasi Logout',
+                            message: 'Anda akan keluar dari akun: <strong>{{ auth()->user()->name }}</strong>',
+                            subMessage: 'Session Anda akan diakhiri.',
+                            iconClass: 'fas fa-sign-out-alt',
+                            iconColor: '#ef4444',
+                            confirmText: 'Ya, Logout',
+                            confirmColor: '#ef4444',
+                            loadingTitle: 'Memproses Logout',
+                            loadingMessage: 'Sedang mengakhiri session...',
+                            onConfirm: () => {
+                                setTimeout(function() {
+                                    document.getElementById('alreadyLoggedInLogoutForm').submit();
+                                }, 1000);
+                            }
+                        });
+                    }
+                </script>
+            @endif
+
             <!-- Info Messages -->
             @if (session('info'))
                 <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-xl mb-4">
@@ -221,7 +285,7 @@
                 </div>
 
                 <!-- Login Button -->
-                <button type="submit" class="w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-cyan-700 transition-all transform hover:scale-[1.02] shadow-lg btn-ripple flex items-center justify-center gap-2">
+                <button type="submit" class="w-full py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold text-lg hover:from-green-700 hover:to-green-800 transition-all transform hover:scale-[1.02] shadow-lg btn-ripple flex items-center justify-center gap-2">
                     <i class="fas fa-sign-in-alt"></i>
                     Masuk
                 </button>
@@ -242,7 +306,7 @@
                             <i class="fas fa-info-circle mr-2"></i>
                             Belum ada admin terdaftar
                         </p>
-                        <a href="{{ route('admin.register') }}" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition-all transform hover:scale-[1.02] shadow-lg">
+                        <a href="{{ route('admin.register') }}" class="ml-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg hover:shadow-xl hover:from-emerald-600 hover:to-green-700 transition-all transform hover:scale-105 border-2 border-emerald-300 inline-flex items-center gap-2">
                             <i class="fas fa-user-plus"></i>
                             Daftar Admin Pertama
                         </a>
@@ -265,6 +329,9 @@
         </div>
     </div>
 
+    <!-- Load SweetAlert Helper Global -->
+    <script src="{{ asset('js/sweetalert-helper.js') }}"></script>
+
     <script>
         // Toggle Password Visibility
         function togglePassword() {
@@ -282,160 +349,6 @@
             }
         }
 
-        // SweetAlert Helper Functions
-        window.SwalHelper = {
-            // Success Toast
-            success: function(message) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer);
-                        toast.addEventListener('mouseleave', Swal.resumeTimer);
-                    }
-                });
-                Toast.fire({
-                    icon: 'success',
-                    title: message
-                });
-            },
-
-            // Error Toast
-            error: function(message) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer);
-                        toast.addEventListener('mouseleave', Swal.resumeTimer);
-                    }
-                });
-                Toast.fire({
-                    icon: 'error',
-                    title: message
-                });
-            },
-
-            // Info Toast
-            info: function(message) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer);
-                        toast.addEventListener('mouseleave', Swal.resumeTimer);
-                    }
-                });
-                Toast.fire({
-                    icon: 'info',
-                    title: message
-                });
-            },
-
-            // Warning Toast
-            warning: function(message) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer);
-                        toast.addEventListener('mouseleave', Swal.resumeTimer);
-                    }
-                });
-                Toast.fire({
-                    icon: 'warning',
-                    title: message
-                });
-            },
-
-            // Confirm Dialog
-            confirm: function(title, text, callback) {
-                Swal.fire({
-                    title: title,
-                    text: text,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#0052CC',
-                    cancelButtonColor: '#64748b',
-                    confirmButtonText: 'Ya, lanjutkan',
-                    cancelButtonText: 'Batal',
-                    showClass: {
-                        popup: 'swal2-show',
-                        backdrop: 'swal2-backdrop-show',
-                        icon: 'swal2-icon-show'
-                    },
-                    hideClass: {
-                        popup: 'swal2-hide',
-                        backdrop: 'swal2-backdrop-hide',
-                        icon: 'swal2-icon-show'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed && callback) {
-                        callback();
-                    }
-                });
-            },
-
-            // Delete Confirm
-            deleteConfirm: function(title, text, callback) {
-                Swal.fire({
-                    title: title,
-                    text: text,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#ef4444',
-                    cancelButtonColor: '#64748b',
-                    confirmButtonText: 'Ya, hapus',
-                    cancelButtonText: 'Batal',
-                    showClass: {
-                        popup: 'swal2-show',
-                        backdrop: 'swal2-backdrop-show',
-                        icon: 'swal2-icon-show'
-                    },
-                    hideClass: {
-                        popup: 'swal2-hide',
-                        backdrop: 'swal2-backdrop-hide',
-                        icon: 'swal2-icon-show'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed && callback) {
-                        callback();
-                    }
-                });
-            },
-
-            // Loading
-            loading: function(message = 'Memuat...') {
-                Swal.fire({
-                    title: message,
-                    html: '<div class="swal2-loader"></div>',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    showConfirmButton: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-            },
-
-            // Close Loading
-            close: function() {
-                Swal.close();
-            }
-        };
-
         // Auto-hide flash messages after 5 seconds
         document.addEventListener('DOMContentLoaded', function() {
             const flashMessages = document.querySelectorAll('.bg-blue-50, .bg-green-50, .bg-yellow-50, .bg-red-50');
@@ -449,25 +362,25 @@
                 }, 5000);
             });
 
-            // Show SweetAlert for session messages
+            // Show SweetAlert for session messages menggunakan helper global
             @if(session('success'))
-                SwalHelper.success('{{ session('success') }}');
+                SwalHelper.toastSuccess('{{ session('success') }}');
             @endif
 
             @if(session('error'))
-                SwalHelper.error('{{ session('error') }}');
+                SwalHelper.toastError('{{ session('error') }}');
             @endif
 
             @if(session('info'))
-                SwalHelper.info('{{ session('info') }}');
+                SwalHelper.toastInfo('{{ session('info') }}');
             @endif
 
             @if(session('warning'))
-                SwalHelper.warning('{{ session('warning') }}');
+                SwalHelper.toastWarning('{{ session('warning') }}');
             @endif
         });
 
-        // Enhanced form submission with loading
+        // Enhanced form submission dengan loading
         document.querySelector('form').addEventListener('submit', function(e) {
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;

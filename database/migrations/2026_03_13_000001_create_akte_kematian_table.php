@@ -15,11 +15,14 @@ return new class extends Migration
                 column: 'layanan_id'
             )->onDelete('cascade');
             $table->string('nama_almarhum');
-            $table->string('nik_almarhum')->nullable();
+
+            // NIK fields (encrypted, gunakan TEXT type)
+            $table->text('nik_almarhum')->nullable();
+            $table->text('nik_pelapor')->nullable();
+
             $table->date('tgl_meninggal');
             $table->string('tempat_meninggal');
             $table->text('sebab_meninggal')->nullable();
-            $table->string('nik_pelapor');
             $table->string('nama_pelapor');
             $table->string('hubungan_pelapor');
             $table->string('surat_keterangan_kematian')->nullable();
@@ -28,6 +31,10 @@ return new class extends Migration
             $table->enum('status', ['Dokumen Diterima', 'Verifikasi Data', 'Proses Cetak', 'Siap Pengambilan', 'Tolak'])->default('Dokumen Diterima');
             $table->softDeletes();
             $table->timestamps();
+
+            // Index untuk NIK fields
+            $table->index('nik_almarhum');
+            $table->index('nik_pelapor');
         });
     }
 

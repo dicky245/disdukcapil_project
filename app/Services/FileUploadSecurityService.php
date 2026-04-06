@@ -221,7 +221,7 @@ class FileUploadSecurityService
      * @param  string|null  $path
      * @return array
      */
-    public function storeSecurely(UploadedFile $file, string $disk = 'secure_uploads', ?string $path = null): array
+    public function storeSecurely(UploadedFile $file, string $disk = 'secure', ?string $path = null): array
     {
         // Validate file
         $validation = $this->validateFile($file);
@@ -284,7 +284,7 @@ class FileUploadSecurityService
      * @param  string  $disk
      * @return bool
      */
-    public function deleteSecurely(string $path, string $disk = 'secure_uploads'): bool
+    public function deleteSecurely(string $path, string $disk = 'secure'): bool
     {
         try {
             Storage::disk($disk)->delete($path);
@@ -312,7 +312,7 @@ class FileUploadSecurityService
      * @param  string  $disk
      * @return string|null
      */
-    public function getFileUrl(string $path, string $disk = 'secure_uploads'): ?string
+    public function getFileUrl(string $path, string $disk = 'secure'): ?string
     {
         // Only allow public URLs for public disk
         if ($disk === 'public') {
@@ -330,7 +330,7 @@ class FileUploadSecurityService
      * @param  string  $disk
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|null
      */
-    public function serveSecurely(string $path, string $disk = 'secure_uploads')
+    public function serveSecurely(string $path, string $disk = 'secure')
     {
         try {
             $fullPath = Storage::disk($disk)->path($path);
@@ -433,7 +433,7 @@ class FileUploadSecurityService
      * @param  string  $disk
      * @return array|null
      */
-    public function getFileInfo(string $path, string $disk = 'secure_uploads'): ?array
+    public function getFileInfo(string $path, string $disk = 'secure'): ?array
     {
         try {
             $fullPath = Storage::disk($disk)->path($path);

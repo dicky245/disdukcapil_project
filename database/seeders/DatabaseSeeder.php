@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             SecurityQuestionSeeder::class,
             Jenis_Keagamaan_Seeder::class,
-            LayananSeeder::class,
+            Layanan_Seeder::class,
             Antrian_Online_Seeder::class,
             Status_Lacak_Berkas_Seeder::class,
         ]);

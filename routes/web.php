@@ -11,7 +11,7 @@ use App\Http\Controllers\KartKeluargaController;
 use App\Http\Controllers\AkteKematianController;
 use App\Http\Controllers\LahirMatiController;
 use App\Http\Controllers\PageController;
-use App\Http\Controllers\KTPOCRController;
+use App\Http\Controllers\SecureFileController;
 use App\Models\Layanan_Model;
 use Illuminate\Support\Facades\Route;
 
@@ -33,20 +33,16 @@ Route::get('/api/layanan', function() {
     ]);
 })->name('api.layanan');
 
-// OCR KTP Routes (API)
-Route::prefix('api/ocr')->group(function () {
-    Route::post('/extract-ktp', [KTPOCRController::class, 'extract'])->name('api.ocr.extract-ktp');
-    Route::get('/health', [KTPOCRController::class, 'healthCheck'])->name('api.ocr.health');
-});
-
 // Antrian Online (Public)
 Route::prefix('antrian-online')->group(function () {
     Route::get('/', [Antrian_Online_Controller::class, 'Tampil_Antrian'])->name('antrian-online');
     Route::post('/', [Antrian_Online_Controller::class, 'Tambah_Antrian'])->name('antrian.store');
     Route::get('/cari', [Antrian_Online_Controller::class, 'Cari_Antrian'])->name('antrian.search');
-    Route::get('/detail/{nomor_antrian}', [Antrian_Online_Controller::class, 'Get_Detail_Antrian'])->name('antrian.detail');
+    Route::post('/cari', [Antrian_Online_Controller::class, 'Cari_Antrian_Post'])->name('antrian-online.cari');
+    Route::get('/detail/{nomor_antrian}', [Antrian_Online_Controller::class, 'Get_Detail_Antrian'])->name('antrian-online.detail');
     Route::get('/statistik', [Antrian_Online_Controller::class, 'Get_Statistik_Antrian'])->name('antrian.statistik');
     Route::get('/lacak', [Antrian_Online_Controller::class, 'Lacak_Berkas'])->name('antrian.lacak');
+    Route::post('/lacak', [Antrian_Online_Controller::class, 'Lacak_Berkas_Post'])->name('antrian-online.lacak');
     Route::get('/get-data/{nomor_antrian}', [Antrian_Online_Controller::class, 'Get_Data_Antrian'])->name('antrian.get-data');
 });
 
@@ -81,6 +77,17 @@ Route::get('/tracking', [Pengguna_Controller::class, 'tracking'])->name('trackin
 
 /*
 |--------------------------------------------------------------------------
+| SECURE FILE ROUTES (Authenticated file serving)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth'])->prefix('secure-files')->group(function () {
+    Route::get('/{path}', [SecureFileController::class, 'serve'])->name('secure-files.serve')->where('path', '.*');
+    Route::get('/{path}/info', [SecureFileController::class, 'fileInfo'])->name('secure-files.info')->where('path', '.*');
+});
+
+/*
+|--------------------------------------------------------------------------
 | AUTHENTICATION ROUTES
 |--------------------------------------------------------------------------
 */
@@ -88,6 +95,12 @@ Route::get('/tracking', [Pengguna_Controller::class, 'tracking'])->name('trackin
 // Login routes (public access)
 Route::get('login', [Login_Controller::class, 'tampilkan_form_login'])->name('login');
 Route::post('login', [Login_Controller::class, 'proses_login'])->name('login.submit');
+
+// Logout route - POST only untuk form, redirect GET ke home
+Route::get('logout', function() {
+    return redirect('/')->with('info', 'Silakan gunakan tombol logout untuk keluar dari sistem.');
+})->name('logout.get');
+
 Route::post('logout', [Login_Controller::class, 'proses_logout'])->name('logout')->middleware('auth');
 
 /*
@@ -106,7 +119,7 @@ Route::prefix('admin')->group(function () {
     Route::post('/register', [RegisterController::class, 'register'])->name('admin.register.submit');
 
     // Verifikasi Pertanyaan Keamanan
-    Route::get('/verify/{uuid}', [Login_Controller::class, 'showVerifyQuestion'])->name('admin.verify.question');
+    Route::get('/verify/{user_id}', [Login_Controller::class, 'showVerifyQuestion'])->name('admin.verify.question');
     Route::post('/verify', [RegisterController::class, 'verifySecurityQuestion'])->name('admin.verify.submit');
 
     // Admin Dashboard & Pages (membutuhkan auth)

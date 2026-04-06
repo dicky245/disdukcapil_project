@@ -25,7 +25,7 @@
     2 => [
         'icon' => 'fa-baby',
         'color'=> 'blue',
-        'id'=>'akte_kelahiran', 
+        'id'=>'akte_kelahiran',
         'fields'=>[
             ['name' => 'layanan_id', 'value' => '2', 'type' => 'hidden'],
             ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi', 'placeholder' => 'Masukkan Nomor Reqistrasi', 'type' => 'text'],
@@ -55,6 +55,8 @@
             ['name' => 'surat_keterangan_kematian', 'label' => 'Surat Keterangan Kematian (RS/Kelurahan)', 'type' => 'file'],
             ['name' => 'ktp_almarhum', 'label' => 'KTP Almarhum', 'type' => 'file'],
             ['name' => 'kartu_keluarga', 'label' => 'Kartu Keluarga', 'type' => 'file'],
+            ['name' => 'ktp_pelapor', 'label' => 'KTP Pelapor', 'type' => 'file'],
+            ['name' => 'surat_keterangan_rs', 'label' => 'Surat Keterangan RS (jika meninggal di RS)', 'type' => 'file'],
         ]
     ],
     4 => [ // Lahir Mati
