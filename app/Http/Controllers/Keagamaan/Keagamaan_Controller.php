@@ -68,7 +68,7 @@ class Keagamaan_Controller extends Controller
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        return view('keagamaan.sinkronisasi_dukcapil');
+        return view('keagamaan.sinkronisasi-dukcapil');
     }
 
     /**
@@ -88,20 +88,28 @@ class Keagamaan_Controller extends Controller
      */
     public function lacak_berkas()
     {
+        // Validasi Akses Role Keagamaan
         if (!Auth::user()->hasRole('Keagamaan')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        // 1. Ambil ID terakhir dari setiap antrian agar tidak duplikat
+        // 1. Ambil ID terakhir dari setiap antrian agar tidak duplikat (History Terkini)
         $latestLacakIds = Lacak_Berkas_Model::selectRaw('MAX(lacak_berkas_id) as id')
             ->groupBy('antrian_online_id')
             ->pluck('id');
 
-        // 2. Filter hanya untuk layanan yang mengandung kata "Pernikahan"
+        // 2. Filter data berdasarkan skema tabel yang Anda miliki
         $berkas = Lacak_Berkas_Model::with(['antrian_online.layanan', 'antrian_online.user'])
             ->whereIn('lacak_berkas_id', $latestLacakIds)
-            ->whereNotNull('detail_form')
+
+            /* PENYESUAIAN: 
+           Karena di migration Anda tidak ada 'detail_form', 
+           kita gunakan 'keterangan' atau hapus baris ini jika tidak ingin memfilter kolom kosong.
+        */
+            ->whereNotNull('keterangan')
+
             ->whereHas('antrian_online.layanan', function ($query) {
+                // Memastikan hanya layanan terkait "Pernikahan" yang muncul untuk user Keagamaan
                 $query->where('nama_layanan', 'like', '%Pernikahan%');
             })
             ->latest()

@@ -88,6 +88,7 @@ class AkteKematianController extends Controller
         $kematian->save();
         return redirect()->back()->with('success', 'Status berhasil diperbarui');
     }
+}
 
     /**
      *

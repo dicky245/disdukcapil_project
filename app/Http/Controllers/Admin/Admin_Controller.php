@@ -160,6 +160,7 @@ class Admin_Controller extends Controller
             'agama'    => 'required',
             'alamat'   => 'required',
             'password' => 'nullable|required_if:accountId,null|min:6|confirmed',
+            'status'   => 'nullable|in:aktif,non-aktif', // Tambahkan validasi status
         ]);
 
         DB::beginTransaction();
@@ -170,34 +171,28 @@ class Admin_Controller extends Controller
                 'username' => $request->username,
             ];
 
-            // Hanya update password jika diisi
             if ($request->filled('password')) {
                 $userData['password'] = Hash::make($request->password);
             }
 
             $user = User::updateOrCreate(['id' => $request->accountId], $userData);
-
-            // PENTING: Hubungkan user dengan role 'Keagamaan' di tabel model_has_roles (Spatie)
-            // Ini yang membuat user muncul di tabel daftar akun saat di-filter
             $user->syncRoles(['Keagamaan']);
 
             // 2. Simpan/Update ke tabel 'keagamaan' (Detail Profil)
-            // Status selalu 'aktif' secara default
+            // Kita gunakan data dari request, jika kosong (saat tambah baru) default-nya 'aktif'
             $user->detail_keagamaan()->updateOrCreate(
                 ['user_id' => $user->id],
                 [
                     'jenis_keagamaan_id' => $request->agama,
                     'alamat'             => $request->alamat,
-                    'status'             => 'aktif', // Selalu aktif secara default
+                    'status'             => $request->status ?? 'aktif', // AMBIL DARI FORM
                 ]
             );
 
             DB::commit();
-            // Mengirim session success untuk memicu pop-up SweetAlert2 di View
             return redirect()->back()->with('success', 'Akun Keagamaan Berhasil Disimpan!');
         } catch (\Exception $e) {
             DB::rollback();
-            // Mengirim session error untuk memicu pop-up SweetAlert2 di View
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }

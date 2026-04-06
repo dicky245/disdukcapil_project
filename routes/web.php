@@ -176,7 +176,7 @@ Route::prefix('admin')->group(function () {
 Route::prefix('keagamaan')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', [Keagamaan_Controller::class, 'dashboard'])->name('keagamaan.dashboard');
     Route::get('/antrian-kalender', [Keagamaan_Controller::class, 'antrian_kalender'])->name('keagamaan.antrian_kalender');
-    Route::get('/sinkronisasi-dukcapil', [Keagamaan_Controller::class, 'sinkronisasi_dukcapil'])->name('keagamaan.sinkronisasi_dukcapil');
+    Route::get('/sinkronisasi-dukcapil', [Keagamaan_Controller::class, 'sinkronisasi_dukcapil'])->name('keagamaan.sinkronisasi-dukcapil');
     Route::get('/manajemen-dokumen', [Keagamaan_Controller::class, 'manajemen_dokumen'])->name('keagamaan.manajemen_dokumen');
     Route::get('/lacak-berkas', [Keagamaan_Controller::class, 'lacak_berkas'])->name('keagamaan.lacak_berkas');
 

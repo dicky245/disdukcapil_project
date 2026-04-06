@@ -90,3 +90,4 @@ class LahirMatiController extends Controller
         return redirect()->back()->with('success', 'Status berhasil diperbarui');
     }
 
+}
