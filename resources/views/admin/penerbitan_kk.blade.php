@@ -115,7 +115,6 @@
         </table>
     </div>
 </div>
-@endsection
 @push('scripts')
 <script>
 document.querySelectorAll('.btn-status').forEach(btn => {
