@@ -317,7 +317,7 @@ class Admin_Controller extends Controller
         ]);
     }
 
-   /**
+    /**
      * Terima dokumen (langkah pertama)
      */
     public function Terima_Dokumen($uuid)
@@ -674,12 +674,12 @@ class Admin_Controller extends Controller
         $endDate = now()->endOfDay();
 
         $antrianData = Antrian_Online_Model::select(
-                DB::raw('DATE(created_at) as date'),
-                DB::raw('COUNT(*) as total'),
-                DB::raw('SUM(CASE WHEN status_antrian = "Menunggu" THEN 1 ELSE 0 END) as menunggu'),
-                DB::raw('SUM(CASE WHEN status_antrian IN ("Dokumen Diterima", "Verifikasi Data", "Proses Cetak") THEN 1 ELSE 0 END) as proses'),
-                DB::raw('SUM(CASE WHEN status_antrian = "Siap Pengambilan" THEN 1 ELSE 0 END) as selesai')
-            )
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('COUNT(*) as total'),
+            DB::raw('SUM(CASE WHEN status_antrian = "Menunggu" THEN 1 ELSE 0 END) as menunggu'),
+            DB::raw('SUM(CASE WHEN status_antrian IN ("Dokumen Diterima", "Verifikasi Data", "Proses Cetak") THEN 1 ELSE 0 END) as proses'),
+            DB::raw('SUM(CASE WHEN status_antrian = "Siap Pengambilan" THEN 1 ELSE 0 END) as selesai')
+        )
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('date')
             ->orderBy('date')
@@ -710,5 +710,5 @@ class Admin_Controller extends Controller
                 'selesai' => $dataSelesai,
             ],
         ]);
-    }    
+    }
 }
