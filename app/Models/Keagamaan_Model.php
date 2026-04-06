@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Keagamaan_Model extends Model
 {
@@ -13,12 +14,39 @@ class Keagamaan_Model extends Model
     protected $table = 'keagamaan';
     protected $primaryKey = 'keagamaan_id';
     protected $fillable = [
-        'user_id',            // Penting!
+        'user_id',
         'jenis_keagamaan_id',
         'alamat',
         'phone',
         'status',
     ];
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * The "type" of the auto-incrementing ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * Boot function from Laravel.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        self::creating(function ($model) {
+            if (empty($model->keagamaan_id)) {
+                $model->keagamaan_id = (string) Str::uuid();
+            }
+        });
+    }
 
     public function user(): BelongsTo
     {

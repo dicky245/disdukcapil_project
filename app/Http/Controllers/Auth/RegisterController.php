@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\SecurityQuestion;
 use App\Models\User;
+use App\Exceptions\DatabaseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -21,9 +22,8 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         // Cek apakah sudah ada user dengan role Admin
-        $adminExists = User::whereHas('roles', function($query) {
-            $query->where('name', 'Admin');
-        })->exists();
+        $adminRole = Role::where('name', 'Admin')->first();
+        $adminExists = $adminRole && $adminRole->users()->exists();
 
         // Jika sudah ada admin, redirect ke login
         if ($adminExists) {
@@ -43,9 +43,8 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         // Cek apakah sudah ada user dengan role Admin
-        $adminExists = User::whereHas('roles', function($query) {
-            $query->where('name', 'Admin');
-        })->exists();
+        $adminRole = Role::where('name', 'Admin')->first();
+        $adminExists = $adminRole && $adminRole->users()->exists();
 
         // Jika sudah ada admin, kembalikan error
         if ($adminExists) {
@@ -54,7 +53,7 @@ class RegisterController extends Controller
         }
 
         // Validasi input
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:8|confirmed',
@@ -76,18 +75,15 @@ class RegisterController extends Controller
         try {
             DB::beginTransaction();
 
-            // Buat role Admin jika belum ada
-            $adminRole = Role::firstOrCreate(['name' => 'Admin']);
-
             // Enkripsi jawaban pertanyaan keamanan
-            $encryptedAnswer = Crypt::encrypt($request->security_answer);
+            $encryptedAnswer = Crypt::encrypt($validated['security_answer']);
 
             // Buat user admin baru
             $admin = User::create([
-                'name' => $request->name,
-                'username' => $request->username,
-                'password' => Hash::make($request->password),
-                'security_question_id' => $request->security_question_id,
+                'name' => $validated['name'],
+                'username' => $validated['username'],
+                'password' => Hash::make($validated['password']),
+                'security_question_id' => $validated['security_question_id'],
                 'security_question_answer' => $encryptedAnswer,
             ]);
 
@@ -102,19 +98,29 @@ class RegisterController extends Controller
             ]);
 
             return redirect()->route('admin.login')
-                ->with('success', 'Registrasi berhasil! Silakan login dengan akun admin Anda.');
+                ->with('success', 'Registrasi berhasil! Akun admin telah berhasil dibuat. Username: ' . $admin->username . '. Silakan login untuk melanjutkan.');
 
         } catch (\Exception $e) {
             DB::rollBack();
 
+            // Format error untuk user
+            $errorInfo = DatabaseException::formatForUser($e);
+
             Log::error('Admin registration failed', [
+                'error_code' => $errorInfo['error_code'],
                 'error' => $e->getMessage(),
+                'location' => $errorInfo['location'],
                 'trace' => $e->getTraceAsString(),
             ]);
 
             return redirect()->back()
                 ->withInput()
-                ->withErrors(['error' => 'Terjadi kesalahan saat registrasi. Silakan coba lagi.']);
+                ->withErrors(['registration_error' => $errorInfo['user_message']])
+                ->with('error', $errorInfo['user_message'])
+                ->with('error_detail', $errorInfo['technical_detail'])
+                ->with('error_location', $errorInfo['location'])
+                ->with('error_solution', $errorInfo['solution'])
+                ->with('error_code', $errorInfo['error_code']);
         }
     }
 
@@ -153,7 +159,7 @@ class RegisterController extends Controller
                 ]);
 
                 return redirect()->route('admin.dashboard')
-                    ->with('success', 'Selamat datang, ' . $user->name);
+                    ->with('success', 'Login berhasil! Selamat datang, ' . $user->name . '. Verifikasi pertanyaan keamanan telah berhasil.');
             } else {
                 // Jawaban salah
                 Log::warning('Security question verification failed', [

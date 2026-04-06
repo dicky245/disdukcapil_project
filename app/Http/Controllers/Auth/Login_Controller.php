@@ -16,15 +16,15 @@ class Login_Controller extends Controller
      */
     public function tampilkan_form_login()
     {
-        if (Auth::check()) {
-            return redirect()->route('home');
-        }
+        // Jika user sudah login, tetap tampilkan halaman login dengan notifikasi
+        // Jangan redirect agar user bisa memilih untuk logout atau melanjutkan ke dashboard
 
         // Cek apakah belum ada admin - jika belum, tampilkan pesan untuk registrasi
         $adminExists = User::whereHas('roles', function($query) {
             $query->where('name', 'Admin');
         })->exists();
 
+        // Gunakan response() untuk menambahkan headers
         return response()
             ->view('auth.login', [
                 'isAdmin' => false,
@@ -68,20 +68,24 @@ class Login_Controller extends Controller
             ])->onlyInput('username');
         }
 
-        // Login user untuk non-admin
+        // Login user
         Auth::login($user);
         $request->session()->regenerate();
 
         Log::info('Login successful for: ' . $user->username . ' (ID: ' . $user->id . ')');
 
-        // Redirect berdasarkan role
+        // Redirect berdasarkan role dengan notifikasi sukses
         if ($user->hasRole('Admin')) {
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.dashboard')
+                ->with('success', 'Selamat datang kembali, ' . $user->name . '. Anda berhasil login sebagai Admin.');
         } elseif ($user->hasRole('Keagamaan')) {
-            return redirect()->route('keagamaan.dashboard');
+            return redirect()->route('keagamaan.dashboard')
+                ->with('success', 'Selamat datang kembali, ' . $user->name . '. Anda berhasil login sebagai Petugas Keagamaan.');
         }
 
-        return redirect()->route('home');
+        // Fallback (seharusnya tidak terjadi karena semua user harus punya role)
+        return redirect()->route('admin.dashboard')
+            ->with('info', 'Selamat datang, ' . $user->name . '.');
     }
 
     /**
@@ -89,9 +93,8 @@ class Login_Controller extends Controller
      */
     public function adminLoginForm()
     {
-        if (Auth::check()) {
-            return redirect()->route('admin.dashboard');
-        }
+        // Jika user sudah login, tetap tampilkan halaman login dengan notifikasi
+        // Jangan redirect agar user bisa memilih untuk logout atau melanjutkan ke dashboard
 
         // Cek apakah belum ada admin
         $adminExists = User::whereHas('roles', function($query) {
@@ -104,10 +107,15 @@ class Login_Controller extends Controller
                 ->with('info', 'Silakan lakukan registrasi admin pertama kali.');
         }
 
-        return view('auth.login', [
-            'isAdmin' => true,
-            'adminExists' => $adminExists
-        ]);
+        // Gunakan response() untuk menambahkan headers
+        return response()
+            ->view('auth.login', [
+                'isAdmin' => true,
+                'adminExists' => $adminExists
+            ])
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', 'Sat, 01 Jan 2000 00:00:00 GMT');
     }
 
     /**
@@ -146,16 +154,16 @@ class Login_Controller extends Controller
         }
 
         // Username dan password benar - redirect ke verifikasi pertanyaan keamanan
-        return redirect()->route('admin.verify.question', ['user' => $user->id])
+        return redirect()->route('admin.verify.question', ['user_id' => $user->id])
             ->with('info', 'Username dan password benar. Silakan verifikasi dengan pertanyaan keamanan.');
     }
 
     /**
      * Tampilkan halaman verifikasi pertanyaan keamanan
      */
-    public function showVerifyQuestion($userId)
+    public function showVerifyQuestion($user_id)
     {
-        $user = User::find($userId);
+        $user = User::where('id', $user_id)->first();
 
         if (!$user) {
             return redirect()->route('admin.login')
@@ -174,14 +182,28 @@ class Login_Controller extends Controller
     }
 
     /**
-     * Proses logout
+     * Proses logout dengan notifikasi
      */
     public function proses_logout(Request $request)
     {
+        // Ambil nama user sebelum logout untuk notifikasi
+        $userName = auth()->user()->name ?? 'Pengguna';
+
+        // Logout user
         Auth::logout();
+
+        // Invalidate session
         $request->session()->invalidate();
+
+        // Regenerate CSRF token
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Anda telah logout.');
+        // Flush all session data
+        $request->session()->flush();
+
+        Log::info('User logged out', ['name' => $userName]);
+
+        return redirect()->route('login')
+            ->with('success', 'Terima kasih, ' . $userName . '. Anda telah berhasil logout dari sistem.');
     }
 }

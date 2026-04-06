@@ -8,11 +8,13 @@ use App\Models\Lacak_Berkas_Model;
 use App\Models\Jenis_Keagamaan_Model; // TAMBAHKAN INI
 use App\Models\User;
 use App\Models\Layanan_Model;
+use App\Exceptions\DatabaseException;
 use Illuminate\Http\Request;
 use App\Models\Keagamaan_Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class Admin_Controller extends Controller
 {
@@ -160,7 +162,6 @@ class Admin_Controller extends Controller
             'agama'    => 'required',
             'alamat'   => 'required',
             'password' => 'nullable|required_if:accountId,null|min:6|confirmed',
-            'status'   => 'nullable|in:aktif,non-aktif', // Tambahkan validasi status
         ]);
 
         DB::beginTransaction();
@@ -171,29 +172,52 @@ class Admin_Controller extends Controller
                 'username' => $request->username,
             ];
 
+            // Hanya update password jika diisi
             if ($request->filled('password')) {
                 $userData['password'] = Hash::make($request->password);
             }
 
             $user = User::updateOrCreate(['id' => $request->accountId], $userData);
+
+            // PENTING: Hubungkan user dengan role 'Keagamaan' di tabel model_has_roles (Spatie)
+            // Ini yang membuat user muncul di tabel daftar akun saat di-filter
             $user->syncRoles(['Keagamaan']);
 
             // 2. Simpan/Update ke tabel 'keagamaan' (Detail Profil)
-            // Kita gunakan data dari request, jika kosong (saat tambah baru) default-nya 'aktif'
+            // Status selalu 'aktif' secara default
             $user->detail_keagamaan()->updateOrCreate(
                 ['user_id' => $user->id],
                 [
                     'jenis_keagamaan_id' => $request->agama,
                     'alamat'             => $request->alamat,
-                    'status'             => $request->status ?? 'aktif', // AMBIL DARI FORM
+                    'status'             => 'aktif', // Selalu aktif secara default
                 ]
             );
 
             DB::commit();
+            // Mengirim session success untuk memicu pop-up SweetAlert2 di View
             return redirect()->back()->with('success', 'Akun Keagamaan Berhasil Disimpan!');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+
+            // Format error untuk user
+            $errorInfo = DatabaseException::formatForUser($e);
+
+            Log::error('Admin save account failed', [
+                'error_code' => $errorInfo['error_code'],
+                'error' => $e->getMessage(),
+                'location' => $errorInfo['location'],
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            // Mengirim session error untuk memicu pop-up SweetAlert2 di View
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorInfo['user_message'])
+                ->with('error_detail', $errorInfo['technical_detail'])
+                ->with('error_location', $errorInfo['location'])
+                ->with('error_solution', $errorInfo['solution'])
+                ->with('error_code', $errorInfo['error_code']);
         }
     }
 
@@ -293,16 +317,16 @@ class Admin_Controller extends Controller
         ]);
     }
 
-   /**
+    /**
      * Terima dokumen (langkah pertama)
      */
-    public function Terima_Dokumen($id)
+    public function Terima_Dokumen($uuid)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $antrian = Antrian_Online_Model::find($id);
+        $antrian = Antrian_Online_Model::where('antrian_online_id', $uuid)->first();
 
         if (!$antrian) {
             return response()->json([
@@ -345,13 +369,13 @@ class Admin_Controller extends Controller
     /**
      * Mulai verifikasi data
      */
-    public function Verifikasi_Data($id)
+    public function Verifikasi_Data($uuid)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $antrian = Antrian_Online_Model::find($id);
+        $antrian = Antrian_Online_Model::where('antrian_online_id', $uuid)->first();
 
         if (!$antrian) {
             return response()->json([
@@ -394,13 +418,13 @@ class Admin_Controller extends Controller
     /**
      * Proses cetak dokumen
      */
-    public function Proses_Cetak($id)
+    public function Proses_Cetak($uuid)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $antrian = Antrian_Online_Model::find($id);
+        $antrian = Antrian_Online_Model::where('antrian_online_id', $uuid)->first();
 
         if (!$antrian) {
             return response()->json([
@@ -443,13 +467,13 @@ class Admin_Controller extends Controller
     /**
      * Siap diambil
      */
-    public function Siap_Pengambilan($id)
+    public function Siap_Pengambilan($uuid)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $antrian = Antrian_Online_Model::find($id);
+        $antrian = Antrian_Online_Model::where('antrian_online_id', $uuid)->first();
 
         if (!$antrian) {
             return response()->json([
@@ -492,7 +516,7 @@ class Admin_Controller extends Controller
     /**
      * Update berkas antrian
      */
-    public function Update_Berkas(Request $request, $id)
+    public function Update_Berkas(Request $request, $uuid)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
@@ -504,7 +528,7 @@ class Admin_Controller extends Controller
             'alasan_penolakan' => 'required_if:status,Ditolak|string|nullable',
         ]);
 
-        $antrian = Antrian_Online_Model::find($id);
+        $antrian = Antrian_Online_Model::where('antrian_online_id', $uuid)->first();
 
         if (!$antrian) {
             return response()->json([
@@ -557,13 +581,21 @@ class Admin_Controller extends Controller
     /**
      * Get riwayat lacak berkas
      */
-    public function Get_Riwayat_Berkas($id)
+    public function Get_Riwayat_Berkas($uuid)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $riwayat_berkas = Lacak_Berkas_Model::where('antrian_online_id', $id)
+        $antrian = Antrian_Online_Model::where('antrian_online_id', $uuid)->first();
+        if (!$antrian) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Antrian tidak ditemukan',
+            ], 404);
+        }
+
+        $riwayat_berkas = Lacak_Berkas_Model::where('antrian_online_id', $antrian->antrian_online_id)
             ->orderBy('created_at', 'asc')
             ->get();
 
@@ -578,13 +610,13 @@ class Admin_Controller extends Controller
     /**
      * Hapus antrian
      */
-    public function Hapus_Antrian($id)
+    public function Hapus_Antrian($uuid)
     {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $antrian = Antrian_Online_Model::find($id);
+        $antrian = Antrian_Online_Model::where('antrian_online_id', $uuid)->first();
 
         if (!$antrian) {
             return response()->json([
@@ -594,7 +626,7 @@ class Admin_Controller extends Controller
         }
 
         // Hapus semua riwayat lacak berkas terkait
-        Lacak_Berkas_Model::where('antrian_online_id', $id)->delete();
+        Lacak_Berkas_Model::where('antrian_online_id', $antrian->antrian_online_id)->delete();
 
         // Hapus antrian
         $antrian->delete();
@@ -642,12 +674,12 @@ class Admin_Controller extends Controller
         $endDate = now()->endOfDay();
 
         $antrianData = Antrian_Online_Model::select(
-                DB::raw('DATE(created_at) as date'),
-                DB::raw('COUNT(*) as total'),
-                DB::raw('SUM(CASE WHEN status_antrian = "Menunggu" THEN 1 ELSE 0 END) as menunggu'),
-                DB::raw('SUM(CASE WHEN status_antrian IN ("Dokumen Diterima", "Verifikasi Data", "Proses Cetak") THEN 1 ELSE 0 END) as proses'),
-                DB::raw('SUM(CASE WHEN status_antrian = "Siap Pengambilan" THEN 1 ELSE 0 END) as selesai')
-            )
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('COUNT(*) as total'),
+            DB::raw('SUM(CASE WHEN status_antrian = "Menunggu" THEN 1 ELSE 0 END) as menunggu'),
+            DB::raw('SUM(CASE WHEN status_antrian IN ("Dokumen Diterima", "Verifikasi Data", "Proses Cetak") THEN 1 ELSE 0 END) as proses'),
+            DB::raw('SUM(CASE WHEN status_antrian = "Siap Pengambilan" THEN 1 ELSE 0 END) as selesai')
+        )
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('date')
             ->orderBy('date')
@@ -678,5 +710,5 @@ class Admin_Controller extends Controller
                 'selesai' => $dataSelesai,
             ],
         ]);
-    }    
+    }
 }

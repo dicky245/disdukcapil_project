@@ -72,25 +72,20 @@ class AkteKematianController extends Controller
     /**
      * Tampilkan detail permohonan
      */
-    public function detail($id)
+    public function detail($uuid)
     {
-        $berkas = AkteKematian::findOrFail($id);
+        $berkas = AkteKematian::where('id', $uuid)->firstOrFail();
         return view('admin.penerbitan_akte_kematian_detail', compact('berkas'));
     }
 
     /**
      * Update status permohonan
      */
-    public function updateStatus(Request $request, $id)
+    public function updateStatus(Request $request, $uuid)
     {
-        $kematian = AkteKematian::findOrFail($id);
+        $kematian = AkteKematian::where('id', $uuid)->firstOrFail();
         $kematian->status = $request->status;
         $kematian->save();
         return redirect()->back()->with('success', 'Status berhasil diperbarui');
     }
 }
-
-    /**
-     *
-     * POST /akte-kematian/extract-ktp
-     *

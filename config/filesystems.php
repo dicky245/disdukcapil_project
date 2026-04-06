@@ -60,6 +60,22 @@ return [
             'report' => false,
         ],
 
+        'secure' => [
+            'driver' => 'local',
+            'root' => storage_path('app/secure_uploads'),
+            'visibility' => 'private',
+            'throw' => false,
+            'report' => false,
+        ],
+
+        'temporary' => [
+            'driver' => 'local',
+            'root' => storage_path('app/temporary'),
+            'visibility' => 'private',
+            'throw' => false,
+            'report' => false,
+        ],
+
     ],
 
     /*

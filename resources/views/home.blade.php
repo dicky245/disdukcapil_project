@@ -261,7 +261,7 @@
                 <!-- Logo -->
                 <a href="{{ route('home') }}" class="flex items-center gap-3 hover:scale-105 transition-transform">
                     <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-                        <span class="text-xl">🏛️</span>
+                        <i class="fas fa-landmark text-white text-xl"></i>
                     </div>
                     <div>
                         <span class="text-lg font-bold text-gray-800">Disdukcapil Toba</span>
@@ -357,7 +357,7 @@
             <!-- Background Figures -->
             <div class="hero-bg-left">
                 <div class="hero-figure">
-                    <div class="hero-figure-emoji">👨‍💼</div>
+                    <div class="hero-figure-emoji"><i class="fas fa-user-tie"></i></div>
                     <div class="hero-figure-name">[Nama Bupati Toba]</div>
                     <div class="hero-figure-title">Bupati Kabupaten Toba</div>
                 </div>
@@ -365,7 +365,7 @@
 
             <div class="hero-bg-right">
                 <div class="hero-figure">
-                    <div class="hero-figure-emoji">👩‍💼</div>
+                    <div class="hero-figure-emoji"><i class="fas fa-user"></i></div>
                     <div class="hero-figure-name">[Nama Wakil Bupati Toba]</div>
                     <div class="hero-figure-title">Wakil Bupati Kabupaten Toba</div>
                 </div>
@@ -411,7 +411,7 @@
         <section class="py-16 bg-gray-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 md:p-12 text-white text-center reveal">
-                    <div class="text-4xl mb-4">👋</div>
+                    <div class="text-4xl mb-4"><i class="fas fa-hand-wave"></i></div>
                     <h2 class="text-2xl md:text-3xl font-bold mb-3">Selamat Datang di Portal Disdukcapil</h2>
                     <p class="text-blue-100 text-lg max-w-3xl mx-auto">
                         Kabupaten Toba berkomitmen memberikan pelayanan administrasi kependudukan
@@ -718,7 +718,7 @@
                 <div class="md:col-span-2">
                     <div class="flex items-center gap-3 mb-4">
                         <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
-                            <span class="text-2xl">🏛️</span>
+                            <i class="fas fa-landmark text-white text-2xl"></i>
                         </div>
                         <div>
                             <h3 class="text-xl font-bold">Disdukcapil Toba</h3>

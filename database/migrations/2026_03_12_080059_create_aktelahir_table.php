@@ -11,12 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('aktelahir', function (Blueprint $table) {
-            $table->id();
+        Schema::create('akte_lahir', function (Blueprint $table) {
+            // Gunakan CHAR(36) untuk UUID sesuai dengan AkteLahir model
+            $table->char('id', 36)->primary();
             $table->foreignId('layanan_id')->constrained(
                 table: 'layanan',
                 column: 'layanan_id'
             )->onDelete('cascade');
+
+            // NIK bayi (encrypted, gunakan TEXT type)
+            $table->text('nik')->nullable();
+
             $table->string('nomor_registrasi');
             $table->string('nama');
             $table->string('alamat');
@@ -26,6 +31,9 @@ return new class extends Migration
             $table->string('fotokopi_kk');
             $table->string('identitas_saksi');
             $table->timestamps();
+
+            // Index untuk NIK
+            $table->index('nik');
         });
     }
 
@@ -34,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('aktelahir');
+        Schema::dropIfExists('akte_lahir');
     }
 };

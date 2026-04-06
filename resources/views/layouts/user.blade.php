@@ -6,6 +6,9 @@
     <title>{{ $page_title ?? 'Disdukcapil Kabupaten Toba' }}</title>
     <meta name="description" content="{{ $page_description ?? 'Layanan Kependudukan dan Pencatatan Sipil Kabupaten Toba' }}">
 
+    <!-- User Authenticated Meta Tag -->
+    <meta name="user-authenticated" content="{{ auth()->check() ? 'true' : 'false' }}">
+
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="{{ asset('images/logo_toba.jpeg') }}">
 
@@ -23,6 +26,9 @@
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- SweetAlert Helper -->
+    <script src="{{ asset('js/sweetalert-helper.js') }}"></script>
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -360,6 +366,11 @@
     {{-- Scripts --}}
     @stack('scripts')
 
+    {{-- Auto-Logout System --}}
+    @if(auth()->check())
+        <script src="{{ asset('js/auto-logout.js') }}"></script>
+    @endif
+
     <script>
         // Scroll Reveal Animation
         function reveal() {
@@ -568,12 +579,13 @@
             loading: function(message = 'Memuat...') {
                 Swal.fire({
                     title: message,
-                    html: '<div class="swal2-loader"></div>',
+                    html: '<div class="loading-icon"><i class="fas fa-circle-notch fa-spin"></i></div>',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     showConfirmButton: false,
-                    didOpen: () => {
-                        Swal.showLoading();
+                    customClass: {
+                        popup: 'swal2-modal-popup',
+                        htmlContainer: 'swal2-html-container'
                     }
                 });
             },
@@ -583,6 +595,25 @@
                 Swal.close();
             }
         };
+
+        // Show SweetAlert for session messages on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                SwalHelper.success('{{ session('success') }}');
+            @endif
+
+            @if(session('error'))
+                SwalHelper.error('{{ session('error') }}');
+            @endif
+
+            @if(session('info'))
+                SwalHelper.info('{{ session('info') }}');
+            @endif
+
+            @if(session('warning'))
+                SwalHelper.warning('{{ session('warning') }}');
+            @endif
+        });
     </script>
 </body>
 </html>

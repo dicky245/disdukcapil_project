@@ -23,7 +23,7 @@
                 <i class="fas fa-history"></i>
                 <span>Riwayat</span>
             </button>
-            <button onclick="syncData()" class="px-6 py-3 bg-white text-teal-700 rounded-xl hover:bg-gray-100 transition flex items-center gap-2 font-semibold">
+            <button onclick="syncData()" class="px-6 py-3 bg-white text-green-700 rounded-xl hover:bg-gray-100 transition flex items-center gap-2 font-semibold">
                 <i class="fas fa-sync"></i>
                 <span>Sinkronkan Sekarang</span>
             </button>
@@ -164,7 +164,7 @@
 <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm reveal">
     <div class="flex items-center justify-between mb-6">
         <h3 class="text-lg font-bold text-gray-800">Data Gagal Sinkronisasi</h3>
-        <button class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition text-sm flex items-center gap-2">
+        <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm flex items-center gap-2">
             <i class="fas fa-redo"></i>
             <span>Coba Lagi Semua</span>
         </button>
@@ -239,7 +239,7 @@
                 icon: 'success',
                 title: 'Sinkronisasi Berhasil',
                 text: '45 data baru berhasil disinkronkan',
-                confirmButtonColor: '#0d9488'
+                confirmButtonColor: '#28A745'
             });
         }, 2000);
     }

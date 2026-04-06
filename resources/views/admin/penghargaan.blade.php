@@ -12,7 +12,7 @@
             <h1 class="text-2xl font-bold text-gray-800">Penghargaan</h1>
             <p class="text-gray-600 mt-1">Daftar penghargaan yang telah diraih Disdukcapil Kabupaten Toba</p>
         </div>
-        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
+        <button class="ml-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg hover:shadow-xl hover:from-emerald-600 hover:to-green-700 transition-all transform hover:scale-105 border-2 border-emerald-300 flex items-center gap-2">
             <i class="fas fa-plus"></i>
             <span>Tambah Penghargaan</span>
         </button>

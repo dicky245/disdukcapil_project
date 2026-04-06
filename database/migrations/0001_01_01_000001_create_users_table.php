@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            // Gunakan CHAR(36) untuk UUID sesuai dengan User model
+            $table->char('id', 36)->primary();
             $table->string('name');
             $table->string('username')->unique();
             $table->string('password');
@@ -32,7 +33,8 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
+            // Gunakan CHAR(36) untuk user_id yang merujuk ke UUID users
+            $table->char('user_id', 36)->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');

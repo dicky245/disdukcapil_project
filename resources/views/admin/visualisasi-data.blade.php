@@ -17,7 +17,7 @@
                 <i class="fas fa-filter"></i>
                 <span>Filter</span>
             </button>
-            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
+            <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2">
                 <i class="fas fa-download"></i>
                 <span>Export Laporan</span>
             </button>
@@ -117,7 +117,7 @@
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-bold text-gray-800">Statistik Layanan Bulanan</h3>
             <div class="flex gap-2">
-                <button class="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm">Bulanan</button>
+                <button class="px-3 py-1 bg-green-600 text-white rounded-lg text-sm">Bulanan</button>
                 <button class="px-3 py-1 hover:bg-gray-100 rounded-lg text-sm text-gray-600">Mingguan</button>
             </div>
         </div>

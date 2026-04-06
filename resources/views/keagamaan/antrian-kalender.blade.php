@@ -17,7 +17,7 @@
                 <i class="fas fa-filter"></i>
                 <span>Filter</span>
             </button>
-            <button class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center gap-2">
+            <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2">
                 <i class="fas fa-plus"></i>
                 <span>Tambah Jadwal</span>
             </button>

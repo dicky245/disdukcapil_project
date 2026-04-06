@@ -6,6 +6,7 @@ use App\Models\Antrian_Online_Model;
 use App\Models\Lacak_Berkas_Model;
 use App\Models\Layanan_Model;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class Antrian_Online_Seeder extends Seeder
 {
@@ -51,100 +52,66 @@ class Antrian_Online_Seeder extends Seeder
         ];
 
         foreach ($antrian_data as $data) {
-            // Buat antrian
+            // Generate UUID secara eksplisit
+            $uuid = (string) Str::uuid();
+
+            // Buat antrian dengan UUID yang sudah digenerate
             $antrian = Antrian_Online_Model::create([
+                'antrian_online_id' => $uuid,
                 'nomor_antrian' => $data['nomor_antrian'],
                 'nama_lengkap' => $data['nama_lengkap'],
                 'layanan_id' => $layanan->layanan_id,
                 'status_antrian' => $data['status_antrian'],
             ]);
 
-            // Buat riwayat lacak berkas sesuai status - SINKRON dengan status antrian
-            if ($data['status_antrian'] === 'Menunggu') {
-                Lacak_Berkas_Model::create([
-                    'antrian_online_id' => $antrian->antrian_online_id,
-                    'status' => 'Menunggu',
-                    'tanggal' => date('Y-m-d'),
-                    'keterangan' => 'Antrian berhasil dibuat. Menunggu dokumen diterima oleh admin.',
-                ]);
-            } elseif ($data['status_antrian'] === 'Verifikasi Data') {
-                Lacak_Berkas_Model::create([
-                    'antrian_online_id' => $antrian->antrian_online_id,
-                    'status' => 'Menunggu',
-                    'tanggal' => date('Y-m-d', strtotime('-2 days')),
-                    'keterangan' => 'Antrian berhasil dibuat. Menunggu dokumen diterima oleh admin.',
-                ]);
-                Lacak_Berkas_Model::create([
-                    'antrian_online_id' => $antrian->antrian_online_id,
-                    'status' => 'Dokumen Diterima',
-                    'tanggal' => date('Y-m-d', strtotime('-1 day')),
-                    'keterangan' => 'Dokumen diterima, menunggu verifikasi',
-                ]);
-                Lacak_Berkas_Model::create([
-                    'antrian_online_id' => $antrian->antrian_online_id,
-                    'status' => 'Verifikasi Data',
-                    'tanggal' => date('Y-m-d'),
-                    'keterangan' => 'Data sedang diverifikasi oleh admin',
-                ]);
-            } elseif ($data['status_antrian'] === 'Proses Cetak') {
-                Lacak_Berkas_Model::create([
-                    'antrian_online_id' => $antrian->antrian_online_id,
-                    'status' => 'Menunggu',
-                    'tanggal' => date('Y-m-d', strtotime('-4 days')),
-                    'keterangan' => 'Antrian berhasil dibuat. Menunggu dokumen diterima oleh admin.',
-                ]);
-                Lacak_Berkas_Model::create([
-                    'antrian_online_id' => $antrian->antrian_online_id,
-                    'status' => 'Dokumen Diterima',
-                    'tanggal' => date('Y-m-d', strtotime('-3 days')),
-                    'keterangan' => 'Dokumen diterima, menunggu verifikasi',
-                ]);
-                Lacak_Berkas_Model::create([
-                    'antrian_online_id' => $antrian->antrian_online_id,
-                    'status' => 'Verifikasi Data',
-                    'tanggal' => date('Y-m-d', strtotime('-2 days')),
-                    'keterangan' => 'Data sedang diverifikasi oleh admin',
-                ]);
-                Lacak_Berkas_Model::create([
-                    'antrian_online_id' => $antrian->antrian_online_id,
-                    'status' => 'Proses Cetak',
-                    'tanggal' => date('Y-m-d', strtotime('-1 day')),
-                    'keterangan' => 'Dokumen sedang dalam proses cetak',
-                ]);
-            } elseif ($data['status_antrian'] === 'Siap Pengambilan') {
-                Lacak_Berkas_Model::create([
-                    'antrian_online_id' => $antrian->antrian_online_id,
-                    'status' => 'Menunggu',
-                    'tanggal' => date('Y-m-d', strtotime('-5 days')),
-                    'keterangan' => 'Antrian berhasil dibuat. Menunggu dokumen diterima oleh admin.',
-                ]);
-                Lacak_Berkas_Model::create([
-                    'antrian_online_id' => $antrian->antrian_online_id,
-                    'status' => 'Dokumen Diterima',
-                    'tanggal' => date('Y-m-d', strtotime('-4 days')),
-                    'keterangan' => 'Dokumen diterima, menunggu verifikasi',
-                ]);
-                Lacak_Berkas_Model::create([
-                    'antrian_online_id' => $antrian->antrian_online_id,
-                    'status' => 'Verifikasi Data',
-                    'tanggal' => date('Y-m-d', strtotime('-3 days')),
-                    'keterangan' => 'Data sedang diverifikasi oleh admin',
-                ]);
-                Lacak_Berkas_Model::create([
-                    'antrian_online_id' => $antrian->antrian_online_id,
-                    'status' => 'Proses Cetak',
-                    'tanggal' => date('Y-m-d', strtotime('-2 days')),
-                    'keterangan' => 'Dokumen sedang dalam proses cetak',
-                ]);
-                Lacak_Berkas_Model::create([
-                    'antrian_online_id' => $antrian->antrian_online_id,
-                    'status' => 'Siap Pengambilan',
-                    'tanggal' => date('Y-m-d', strtotime('-1 day')),
-                    'keterangan' => 'Dokumen siap diambil oleh pemohon',
-                ]);
-            }
+            // Buat riwayat lacak berkas sesuai status
+            $this->createLacakBerkas($uuid, $data['status_antrian']);
         }
 
         $this->command->info('✓ Berhasil membuat ' . count($antrian_data) . ' data antrian untuk testing');
+    }
+
+    /**
+     * Create lacak berkas berdasarkan status antrian
+     *
+     * @param  string  $antrianId
+     * @param  string  $status
+     * @return void
+     */
+    private function createLacakBerkas(string $antrianId, string $status): void
+    {
+        $lacakData = match($status) {
+            'Menunggu' => [
+                ['status' => 'Menunggu', 'tanggal' => now(), 'keterangan' => 'Antrian berhasil dibuat. Menunggu dokumen diterima oleh admin.'],
+            ],
+            'Verifikasi Data' => [
+                ['status' => 'Menunggu', 'tanggal' => now()->subDays(2), 'keterangan' => 'Antrian berhasil dibuat. Menunggu dokumen diterima oleh admin.'],
+                ['status' => 'Dokumen Diterima', 'tanggal' => now()->subDay(), 'keterangan' => 'Dokumen diterima, menunggu verifikasi'],
+                ['status' => 'Verifikasi Data', 'tanggal' => now(), 'keterangan' => 'Data sedang diverifikasi oleh admin'],
+            ],
+            'Proses Cetak' => [
+                ['status' => 'Menunggu', 'tanggal' => now()->subDays(4), 'keterangan' => 'Antrian berhasil dibuat. Menunggu dokumen diterima oleh admin.'],
+                ['status' => 'Dokumen Diterima', 'tanggal' => now()->subDays(3), 'keterangan' => 'Dokumen diterima, menunggu verifikasi'],
+                ['status' => 'Verifikasi Data', 'tanggal' => now()->subDays(2), 'keterangan' => 'Data sedang diverifikasi oleh admin'],
+                ['status' => 'Proses Cetak', 'tanggal' => now()->subDay(), 'keterangan' => 'Dokumen sedang dalam proses cetak'],
+            ],
+            'Siap Pengambilan' => [
+                ['status' => 'Menunggu', 'tanggal' => now()->subDays(5), 'keterangan' => 'Antrian berhasil dibuat. Menunggu dokumen diterima oleh admin.'],
+                ['status' => 'Dokumen Diterima', 'tanggal' => now()->subDays(4), 'keterangan' => 'Dokumen diterima, menunggu verifikasi'],
+                ['status' => 'Verifikasi Data', 'tanggal' => now()->subDays(3), 'keterangan' => 'Data sedang diverifikasi oleh admin'],
+                ['status' => 'Proses Cetak', 'tanggal' => now()->subDays(2), 'keterangan' => 'Dokumen sedang dalam proses cetak'],
+                ['status' => 'Siap Pengambilan', 'tanggal' => now()->subDay(), 'keterangan' => 'Dokumen siap diambil oleh pemohon'],
+            ],
+            default => [],
+        };
+
+        foreach ($lacakData as $data) {
+            Lacak_Berkas_Model::create([
+                'antrian_online_id' => $antrianId,
+                'status' => $data['status'],
+                'tanggal' => $data['tanggal']->format('Y-m-d'),
+                'keterangan' => $data['keterangan'],
+            ]);
+        }
     }
 }

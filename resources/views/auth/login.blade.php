@@ -147,6 +147,70 @@
                 <p class="text-gray-600">Masuk ke dashboard admin</p>
             </div>
 
+            <!-- Notification for Already Logged In Users -->
+            @if(auth()->check())
+                <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-6 mb-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user-check text-3xl text-amber-600"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-amber-800 mb-2">
+                            Anda Sudah Login!
+                        </h3>
+                        <p class="text-sm text-amber-700 mb-4">
+                            Anda sedang login sebagai <strong>{{ auth()->user()->name }}</strong>
+                            <br>dengan role <strong>{{ auth()->user()->roles->first()->name ?? 'User' }}</strong>
+                        </p>
+
+                        <div class="flex flex-col gap-3">
+                            @if(auth()->user()->hasRole('Admin'))
+                                <a href="{{ route('admin.dashboard') }}"
+                                   class="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-cyan-700 transition-all flex items-center justify-center gap-2">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    Ke Dashboard Admin
+                                </a>
+                            @elseif(auth()->user()->hasRole('Keagamaan'))
+                                <a href="{{ route('keagamaan.dashboard') }}"
+                                   class="w-full py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-xl font-bold hover:from-teal-700 hover:to-emerald-700 transition-all flex items-center justify-center gap-2">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    Ke Dashboard Keagamaan
+                                </a>
+                            @endif
+
+                            <form method="POST" action="{{ route('logout') }}" id="alreadyLoggedInLogoutForm">
+                                @csrf
+                                <button type="button" onclick="handleAlreadyLoggedInLogout()"
+                                        class="w-full py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-all flex items-center justify-center gap-2">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Logout dari Akun Ini
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    function handleAlreadyLoggedInLogout() {
+                        SwalHelper.customConfirm({
+                            title: 'Konfirmasi Logout',
+                            message: 'Anda akan keluar dari akun: <strong>{{ auth()->user()->name }}</strong>',
+                            subMessage: 'Session Anda akan diakhiri.',
+                            iconClass: 'fas fa-sign-out-alt',
+                            iconColor: '#ef4444',
+                            confirmText: 'Ya, Logout',
+                            confirmColor: '#ef4444',
+                            loadingTitle: 'Memproses Logout',
+                            loadingMessage: 'Sedang mengakhiri session...',
+                            onConfirm: () => {
+                                setTimeout(function() {
+                                    document.getElementById('alreadyLoggedInLogoutForm').submit();
+                                }, 1000);
+                            }
+                        });
+                    }
+                </script>
+            @endif
+
             <!-- Info Messages -->
             @if (session('info'))
                 <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-xl mb-4">
@@ -221,7 +285,7 @@
                 </div>
 
                 <!-- Login Button -->
-                <button type="submit" class="w-full py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-cyan-700 transition-all transform hover:scale-[1.02] shadow-lg btn-ripple flex items-center justify-center gap-2">
+                <button type="submit" class="w-full py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold text-lg hover:from-green-700 hover:to-green-800 transition-all transform hover:scale-[1.02] shadow-lg btn-ripple flex items-center justify-center gap-2">
                     <i class="fas fa-sign-in-alt"></i>
                     Masuk
                 </button>
@@ -242,7 +306,7 @@
                             <i class="fas fa-info-circle mr-2"></i>
                             Belum ada admin terdaftar
                         </p>
-                        <a href="{{ route('admin.register') }}" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition-all transform hover:scale-[1.02] shadow-lg">
+                        <a href="{{ route('admin.register') }}" class="ml-2 px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg hover:shadow-xl hover:from-emerald-600 hover:to-green-700 transition-all transform hover:scale-105 border-2 border-emerald-300 inline-flex items-center gap-2">
                             <i class="fas fa-user-plus"></i>
                             Daftar Admin Pertama
                         </a>
@@ -264,6 +328,9 @@
             <p>&copy; 2025 Disdukcapil Kabupaten Toba</p>
         </div>
     </div>
+
+    <!-- Load SweetAlert Helper Global -->
+    <script src="{{ asset('js/sweetalert-helper.js') }}"></script>
 
     <script>
         // Toggle Password Visibility
@@ -294,6 +361,38 @@
                     }, 500);
                 }, 5000);
             });
+
+            // Show SweetAlert for session messages menggunakan helper global
+            @if(session('success'))
+                SwalHelper.toastSuccess('{{ session('success') }}');
+            @endif
+
+            @if(session('error'))
+                SwalHelper.toastError('{{ session('error') }}');
+            @endif
+
+            @if(session('info'))
+                SwalHelper.toastInfo('{{ session('info') }}');
+            @endif
+
+            @if(session('warning'))
+                SwalHelper.toastWarning('{{ session('warning') }}');
+            @endif
+        });
+
+        // Enhanced form submission dengan loading
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memproses...';
+
+            // Re-enable after 30 seconds in case of error
+            setTimeout(function() {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }, 30000);
         });
     </script>
 </body>

@@ -8,11 +8,33 @@ use App\Exceptions\Handler;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Middleware untuk web requests
+        $middleware->web(append: [
+            \App\Http\Middleware\CheckUserActivity::class,
+            \App\Http\Middleware\SecurityHeadersMiddleware::class,
+            \App\Http\Middleware\AuditLogMiddleware::class,
+        ]);
+
+        // Middleware untuk API requests
+        $middleware->api(append: [
+            \App\Http\Middleware\XSSProtectionMiddleware::class,
+            \App\Http\Middleware\RateLimitingMiddleware::class . ':api',
+        ]);
+
+        // Rate limiting untuk sensitive routes
+        $middleware->alias([
+            'security.headers' => \App\Http\Middleware\SecurityHeadersMiddleware::class,
+            'xss.protection' => \App\Http\Middleware\XSSProtectionMiddleware::class,
+            'rate.limit' => \App\Http\Middleware\RateLimitingMiddleware::class,
+            'ip.whitelist' => \App\Http\Middleware\IPWhitelistMiddleware::class,
+            'secure.upload' => \App\Http\Middleware\SecureFileUploadMiddleware::class,
+            'audit.log' => \App\Http\Middleware\AuditLogMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->renderable(function (\Illuminate\Session\TokenMismatchException $e, $request) {

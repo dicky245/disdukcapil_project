@@ -1,0 +1,245 @@
+# Konfigurasi OCR KTP Indonesia
+# Pipeline: Hybrid (Deep Learning Detection + Tesseract OCR)
+
+project:
+  name: "ktp_hybrid_ocr"
+  version: "2.0.0"
+  description: "Hybrid OCR system untuk Indonesian KTP dengan DL Detection + Tesseract"
+  pipeline_type: "hybrid"  # hybrid: dl_detection + tesseract_ocr
+
+# ============================================
+# DATASET CONFIGURATION
+# ============================================
+dataset:
+  train_path: "D:/Semester 6/PA 3/Project/PA3/model/dataset/Train"
+  test_path: "D:/Semester 6/PA 3/Project/PA3/model/dataset/Test"
+  labels_file: "D:/Semester 6/PA 3/Project/PA3/model/dataset/labels.json"
+  augmentation_factor: 15
+
+# ============================================
+# DEEP LEARNING DETECTION CONFIG
+# ============================================
+detection:
+  engine: "yolo"  # yolo untuk YOLOv8 custom trained model
+  lang: "id"
+  use_gpu: false
+
+  # YOLO Config (Custom Trained Model)
+  yolo_model_path: "D:/Semester 6/PA 3/Project/PA3/model/dataset/runs/quick_test/weights/best.pt"
+  yolo_confidence: 0.5
+  yolo_iou: 0.45
+
+  # PaddleOCR Detection Config (Fallback)
+  det_model_dir: null
+  det_limit_side_len: 960
+  det_box_thresh: 0.6
+  det_unclip_ratio: 1.5
+
+# ============================================
+# TESSERACT OCR CONFIG
+# ============================================
+tesseract:
+  # Path ke Tesseract binary
+  binary_path: "C:/Program Files/Tesseract-OCR/tesseract.exe"
+
+  # Bahasa
+  language: "ind"  # Bahasa Indonesia
+
+  # OCR Engine Mode (OEM)
+  # 0: Legacy engine only
+  # 1: Neural nets LSTM only
+  # 2: Legacy + LSTM
+  # 3: Default (based on what's available)
+  oem: 3
+
+  # Page Segmentation Mode (PSM)
+  # 6: Assume a single uniform block of text
+  # 3: Fully automatic page segmentation
+  psm: 6
+
+  # Confidence threshold
+  min_confidence: 85
+
+  # Multi-pass OCR (original + inverted)
+  enable_multipass: true
+
+# ============================================
+# IMAGE PREPROCESSING CONFIG
+# ============================================
+preprocessing:
+  # Target dimensions
+  target_width: 1920
+  target_height: 1080
+
+  # Blur detection
+  blur_threshold: 100.0  # Laplacian variance threshold
+
+  # Preprocessing steps
+  steps:
+    - resize
+    - grayscale
+    - deskew
+    - denoise
+    - clahe
+    - sharpening
+    - adaptive_threshold
+
+  # CLAHE (Contrast Limited Adaptive Histogram Equalization)
+  clahe_clip_limit: 3.0
+  clahe_tile_size: 8
+
+  # Sharpening kernel
+  sharpen_strength: 1.0
+
+# ============================================
+# FIELD COORDINATES (Default/Fallback)
+# ============================================
+fields:
+  nik:
+    x: 180
+    y: 55
+    width: 400
+    height: 30
+    pattern: "\\d{16}"
+    description: "16 digit Nomor Induk Kependudukan"
+
+  nama:
+    x: 180
+    y: 95
+    width: 450
+    height: 25
+    keywords: ["Nama", "NAMA"]
+    max_words: 4
+
+  tempat_lahir:
+    x: 180
+    y: 125
+    width: 200
+    height: 20
+    keywords: ["Tempat Lahir", "TEMPAT LAHIR"]
+
+  tanggal_lahir:
+    x: 450
+    y: 125
+    width: 180
+    height: 20
+    pattern: "\\d{2}-\\d{2}-\\d{4}"
+    keywords: ["Tgl Lahir", "TGL LAHIR"]
+
+  alamat:
+    x: 50
+    y: 155
+    width: 600
+    height: 50
+    keywords: ["Alamat", "ALAMAT"]
+    min_words: 3
+    max_lines: 3
+
+# ============================================
+# DATA VALIDATION CONFIG
+# ============================================
+validation:
+  nik:
+    length: 16
+    digits_only: true
+    correction_rules:
+      O: "0"
+      o: "0"
+      D: "0"
+      l: "1"
+      I: "1"
+      i: "1"
+      Z: "2"
+      z: "2"
+      S: "5"
+      s: "5"
+      B: "8"
+
+  name:
+    min_length: 3
+    valid_chars: "A-Z\\s\\-\\."
+    uppercase: true
+
+  address:
+    min_length: 10
+    valid_chars: "A-Z0-9\\s\\.\\,\\-\\/"
+
+  date:
+    formats:
+      - "d-m-Y"
+      - "d/m/Y"
+      - "d M Y"
+    separator: "-"
+
+# ============================================
+# DATA AUGMENTATION (Training)
+# ============================================
+data_augmentation:
+  enable: true
+  techniques:
+    rotation: [-5, 5]
+    brightness: [0.7, 1.3]
+    contrast: [0.8, 1.2]
+    gaussian_noise: [0, 25]
+    gaussian_blur: [0, 1.5]
+    motion_blur: [0, 3]
+    perspective_transform: true
+
+# ============================================
+# EVALUATION METRICS
+# ============================================
+evaluation:
+  metrics:
+    - cer  # Character Error Rate
+    - wer  # Word Error Rate
+    - field_accuracy  # Accuracy per field
+    - confidence_score  # OCR confidence
+
+  thresholds:
+    cer: 0.15  # 15% error rate acceptable
+    wer: 0.25  # 25% word error acceptable
+    confidence: 85  # Minimum 85% confidence
+
+# ============================================
+# OUTPUT CONFIGURATION
+# ============================================
+output:
+  results_dir: "./results"
+  models_dir: "./models"
+  logs_dir: "./logs"
+  augmented_dir: "./dataset/augmented"
+  temp_dir: "./temp"
+
+  # Laravel paths
+  laravel_upload_path: "public/uploads/ktp"
+  laravel_temp_path: "storage/app/temp"
+
+# ============================================
+# FLASK API CONFIG (Optional Python ML Service)
+# ============================================
+flask:
+  enabled: false  # Set true jika ingin menggunakan Python service
+  host: "127.0.0.1"
+  port: 5000
+  debug: false
+  workers: 1
+
+# ============================================
+# LOGGING CONFIG
+# ============================================
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "./logs/ocr_system.log"
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+
+# ============================================
+# NOTES:
+# ============================================
+# 1. PaddleOCR digunakan untuk DETECTION koordinat field
+# 2. Tesseract digunakan untuk ekstraksi teks (OCR)
+# 3. Jika detection gagal, gunakan default field coordinates
+# 4. Pastikan Tesseract terinstall dan language pack 'ind' tersedia
+# 5. Untuk training model detection gunakan dataset di train_path
+

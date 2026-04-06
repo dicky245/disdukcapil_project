@@ -12,7 +12,7 @@
             <h1 class="text-2xl font-bold text-gray-800">Manajemen Dokumen</h1>
             <p class="text-gray-600 mt-1">Kelola semua dokumen keagamaan</p>
         </div>
-        <button onclick="uploadModal()" class="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition flex items-center gap-2">
+        <button onclick="uploadModal()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2">
             <i class="fas fa-upload"></i>
             <span>Upload Dokumen</span>
         </button>
@@ -245,7 +245,7 @@
             <button class="px-4 py-2 border border-gray-200 rounded-lg text-sm hover:bg-gray-50 transition disabled:opacity-50" disabled>
                 <i class="fas fa-chevron-left"></i>
             </button>
-            <button class="px-4 py-2 bg-teal-600 text-white rounded-lg text-sm">1</button>
+            <button class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm">1</button>
             <button class="px-4 py-2 border border-gray-200 rounded-lg text-sm hover:bg-gray-50 transition">2</button>
             <button class="px-4 py-2 border border-gray-200 rounded-lg text-sm hover:bg-gray-50 transition">3</button>
             <button class="px-4 py-2 border border-gray-200 rounded-lg text-sm hover:bg-gray-50 transition">
@@ -286,7 +286,7 @@
                 </div>
             `,
             confirmButtonText: 'Upload',
-            confirmButtonColor: '#0d9488',
+            confirmButtonColor: '#28A745',
             showCancelButton: true,
             cancelButtonText: 'Batal'
         }).then((result) => {
@@ -295,7 +295,7 @@
                     icon: 'success',
                     title: 'Berhasil',
                     text: 'Dokumen berhasil diupload',
-                    confirmButtonColor: '#0d9488'
+                    confirmButtonColor: '#28A745'
                 });
             }
         });

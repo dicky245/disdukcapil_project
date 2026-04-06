@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Keagamaan;
 use App\Http\Controllers\Controller;
 use App\Models\Keagamaan_Model;
 use App\Models\Jenis_Keagamaan_Model;
+use App\Exceptions\DatabaseException;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 // Import Model
 use App\Models\Layanan_Model;
@@ -183,7 +185,7 @@ class Keagamaan_Controller extends Controller
     /**
      * Update data keagamaan
      */
-    public function update_keagamaan(Request $request, $id)
+    public function update_keagamaan(Request $request, $uuid)
     {
         if (!Auth::user()->hasRole('Keagamaan')) {
             abort(403, 'Anda tidak memiliki akses.');
@@ -197,7 +199,7 @@ class Keagamaan_Controller extends Controller
             'status' => 'required|string|in:Pending,Proses,Selesai,Ditolak',
         ]);
 
-        $keagamaan = Keagamaan_Model::find($id);
+        $keagamaan = Keagamaan_Model::where('keagamaan_id', $uuid)->first();
 
         if (!$keagamaan) {
             return response()->json([
@@ -255,23 +257,33 @@ class Keagamaan_Controller extends Controller
                 'message' => 'Data antrian dengan ID ' . $request->id . ' tidak ditemukan.'
             ], 404);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal memperbarui: ' . $e->getMessage()
-            ], 500);
+            // Format error untuk user
+            $errorInfo = DatabaseException::formatForUser($e);
+
+            Log::error('Keagamaan update status failed', [
+                'error_code' => $errorInfo['error_code'],
+                'error' => $e->getMessage(),
+                'location' => $errorInfo['location'],
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json(
+                DatabaseException::toJsonResponse($errorInfo),
+                500
+            );
         }
     }
 
     /**
      * Hapus data keagamaan
      */
-    public function hapus_keagamaan($id)
+    public function hapus_keagamaan($uuid)
     {
         if (!Auth::user()->hasRole('Keagamaan')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $keagamaan = Keagamaan_Model::find($id);
+        $keagamaan = Keagamaan_Model::where('keagamaan_id', $uuid)->first();
 
         if (!$keagamaan) {
             return response()->json([
@@ -426,7 +438,23 @@ class Keagamaan_Controller extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            // Format error untuk user
+            $errorInfo = DatabaseException::formatForUser($e);
+
+            Log::error('Keagamaan submit pengajuan failed', [
+                'error_code' => $errorInfo['error_code'],
+                'error' => $e->getMessage(),
+                'location' => $errorInfo['location'],
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorInfo['user_message'])
+                ->with('error_detail', $errorInfo['technical_detail'])
+                ->with('error_location', $errorInfo['location'])
+                ->with('error_solution', $errorInfo['solution'])
+                ->with('error_code', $errorInfo['error_code']);
         }
     }
 }

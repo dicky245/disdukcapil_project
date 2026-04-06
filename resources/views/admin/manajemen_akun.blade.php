@@ -61,6 +61,26 @@
             </h3>
             <p class="text-sm text-gray-600 font-medium">Non-Aktif</p>
         </div>
+        <h3 class="text-3xl font-extrabold text-gray-800 mb-1 text-red-600">
+            {{ $users->where('detail_keagamaan.status', 'non-aktif')->count() }}
+        </h3>
+        <p class="text-sm text-gray-600 font-medium">Non-Aktif</p>
+    </div>
+</div>
+
+ {{-- Search and Add Button --}}
+<div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-8 reveal">
+    <div class="p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="relative w-full md:w-1/2">
+            <input type="text" id="searchBox" onkeyup="filterAccounts()"
+                placeholder="Cari nama atau username..."
+                class="w-full pl-11 pr-4 py-3 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        </div>
+        <button onclick="openAddModal()"
+            class="w-full md:w-auto px-5 py-2.5 rounded-xl text-sm font-bold bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg hover:shadow-xl hover:from-emerald-600 hover:to-green-700 transition-all transform hover:scale-105 border-2 border-emerald-300 flex items-center gap-2">
+            <i class="fas fa-plus"></i> Tambah Akun
+        </button>
     </div>
 
      {{-- Search and Add Button --}}
@@ -146,6 +166,92 @@
                     <h3 class="text-xl font-bold text-gray-800" id="modalTitle">Tambah Akun Baru</h3>
                     <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 transition">
                         <i class="fas fa-times"></i>
+            <form id="accountForm" action="{{ route('admin.manajemen-akun.store') }}" method="POST"
+                class="p-6 space-y-4">
+                @csrf
+                <input type="hidden" name="accountId" id="accountId">
+
+                {{-- Nama & Username --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">
+                            Nama Lengkap <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="name" id="fullName" required
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none transition text-sm"
+                            placeholder="Masukkan nama lengkap">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">
+                            Username <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" name="username" id="username_field" required
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none transition text-sm"
+                            placeholder="Masukkan username">
+                    </div>
+                </div>
+
+                {{-- Agama --}}
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">
+                        Agama <span class="text-red-500">*</span>
+                    </label>
+                    <select name="agama" id="agama_select" required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none transition text-sm bg-white">
+                        <option value="" disabled selected>Pilih agama...</option>
+                        @foreach($list_agama as $agama)
+                            <option value="{{ $agama->jenis_keagamaan_id }}">{{ $agama->nama_jenis_keagamaan }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Alamat --}}
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">
+                        Alamat Lengkap <span class="text-red-500">*</span>
+                    </label>
+                    <textarea name="alamat" id="alamat_field" required rows="3"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-600 focus:border-brand-600 outline-none transition text-sm resize-none"
+                        placeholder="Contoh: Jl. Sudirman No. 123, Kelurahan..."></textarea>
+                </div>
+
+                {{-- Password & Confirm Password --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">
+                            Password <span id="passwordRequiredLabel" class="text-red-500">*</span>
+                            <span id="passwordOptionalLabel" class="text-gray-400 text-xs hidden">(Opsional)</span>
+                        </label>
+                        <input type="password" name="password" id="password_field"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm"
+                            placeholder="Masukkan password">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">
+                            Konfirmasi Password <span id="passwordConfirmRequiredLabel" class="text-red-500">*</span>
+                            <span id="passwordConfirmOptionalLabel" class="text-gray-400 text-xs hidden">(Opsional)</span>
+                        </label>
+                        <input type="password" name="password_confirmation" id="password_confirmation_field"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm"
+                            placeholder="Ulangi password">
+                    </div>
+                </div>
+
+                {{-- Info: Status otomatis aktif --}}
+                <div class="flex items-center gap-2 px-4 py-3 bg-green-50 border border-green-200 rounded-xl">
+                    <i class="fas fa-info-circle text-green-600"></i>
+                    <p class="text-sm text-green-700">Status akun akan otomatis diatur sebagai <strong>Aktif</strong></p>
+                </div>
+
+                {{-- Buttons --}}
+                <div class="flex items-center gap-3 pt-4 border-t border-gray-100">
+                    <button type="submit"
+                        class="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl font-bold hover:from-emerald-600 hover:to-green-700 transition-all shadow-lg hover:shadow-xl border-2 border-emerald-300">
+                        <i class="fas fa-save mr-2"></i> Simpan
+                    </button>
+                    <button type="button" onclick="closeModal()"
+                        class="px-6 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 rounded-xl font-bold hover:from-gray-200 hover:to-gray-300 transition-all shadow-md">
+                        Batal
                     </button>
                 </div>
 
@@ -259,6 +365,117 @@
                 const elementTop = element.getBoundingClientRect().top;
                 if (elementTop < windowHeight - 50) {
                     element.classList.add('active');
+<script>
+    // Reveal animation
+    function reveal() {
+        const reveals = document.querySelectorAll('.reveal');
+        reveals.forEach(element => {
+            const windowHeight = window.innerHeight;
+            const elementTop = element.getBoundingClientRect().top;
+            if (elementTop < windowHeight - 50) {
+                element.classList.add('active');
+            }
+        });
+    }
+    window.addEventListener('scroll', reveal);
+    window.addEventListener('load', reveal);
+
+    // Modal functions
+    function openAddModal() {
+        document.getElementById('accountForm').reset();
+        document.getElementById('accountId').value = '';
+        document.getElementById('modalTitle').innerText = 'Tambah Akun Baru';
+
+        // Set password as required for new account
+        document.getElementById('password_field').required = true;
+        document.getElementById('password_confirmation_field').required = true;
+
+        // Show required labels, hide optional labels
+        document.getElementById('passwordRequiredLabel').classList.remove('hidden');
+        document.getElementById('passwordOptionalLabel').classList.add('hidden');
+        document.getElementById('passwordConfirmRequiredLabel').classList.remove('hidden');
+        document.getElementById('passwordConfirmOptionalLabel').classList.add('hidden');
+
+        document.getElementById('accountModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function editAccount(user) {
+        document.getElementById('accountId').value = user.id;
+        document.getElementById('fullName').value = user.name;
+        document.getElementById('username_field').value = user.username;
+
+        if (user.detail_keagamaan) {
+            document.getElementById('agama_select').value = user.detail_keagamaan.jenis_keagamaan_id;
+            document.getElementById('alamat_field').value = user.detail_keagamaan.alamat || '';
+        }
+
+        document.getElementById('modalTitle').innerText = 'Edit Akun';
+
+        // Set password as optional for existing account
+        document.getElementById('password_field').required = false;
+        document.getElementById('password_confirmation_field').required = false;
+
+        // Hide required labels, show optional labels
+        document.getElementById('passwordRequiredLabel').classList.add('hidden');
+        document.getElementById('passwordOptionalLabel').classList.remove('hidden');
+        document.getElementById('passwordConfirmRequiredLabel').classList.add('hidden');
+        document.getElementById('passwordConfirmOptionalLabel').classList.remove('hidden');
+
+        document.getElementById('accountModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('accountModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Filter accounts
+    function filterAccounts() {
+        const q = document.getElementById('searchBox').value.toLowerCase();
+        const rows = document.querySelectorAll('#accountTableBody tr');
+        rows.forEach(row => {
+            const name = row.children[0].innerText.toLowerCase();
+            const user = row.children[1].innerText.toLowerCase();
+            row.style.display = (name.includes(q) || user.includes(q)) ? "" : "none";
+        });
+    }
+
+    // Form validation for password confirmation
+    document.addEventListener('DOMContentLoaded', function() {
+        const accountForm = document.getElementById('accountForm');
+        if (accountForm) {
+            accountForm.addEventListener('submit', function(e) {
+                const accountId = document.getElementById('accountId').value;
+                const password = document.getElementById('password_field').value;
+                const passwordConfirmation = document.getElementById('password_confirmation_field').value;
+
+                // Untuk akun baru (accountId kosong), password wajib diisi
+                if (!accountId) {
+                    if (!password) {
+                        e.preventDefault();
+                        SwalHelper.modalWarning('Password Wajib Diisi!', 'Silakan masukkan password minimal 6 karakter untuk akun baru.');
+                        return false;
+                    }
+                    if (password.length < 6) {
+                        e.preventDefault();
+                        SwalHelper.modalWarning('Password Terlalu Pendek!', 'Password minimal 6 karakter.');
+                        return false;
+                    }
+                }
+
+                // Validasi password confirmation
+                const passwordValue = document.getElementById('password_field').value;
+                const passwordConfirmValue = document.getElementById('password_confirmation_field').value;
+
+                // Jika password diisi, konfirmasi harus sama
+                if (passwordValue || passwordConfirmValue) {
+                    if (passwordValue !== passwordConfirmValue) {
+                        e.preventDefault();
+                        SwalHelper.modalWarning('Password Tidak Cocok!', 'Password dan konfirmasi password harus sama.');
+                        return false;
+                    }
                 }
             });
         }
@@ -414,4 +631,17 @@
             });
         @endif
     </script>
+    // SweetAlert2 Pop-up Handlers
+    @if(session('success'))
+        SwalHelper.modalSuccess('Berhasil!', "{{ session('success') }}");
+    @endif
+
+    @if(session('error'))
+        SwalHelper.modalError('Gagal!', "{{ session('error') }}");
+    @endif
+
+    @if ($errors->any())
+        SwalHelper.modalWarning('Perhatian!', "{{ $errors->first() }}");
+    @endif
+</script>
 @endpush
