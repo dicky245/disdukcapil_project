@@ -127,7 +127,7 @@ return [
         'allowed_extensions' => ['jpg', 'jpeg', 'png', 'pdf'],
         'randomize_names' => true,
         'scan_uploads' => env('SCAN_UPLOADS', false),
-        'storage_disk' => env('FILE_UPLOAD_DISK', 'secure_uploads'),
+        'storage_disk' => env('FILE_UPLOAD_DISK', 'secure'),
     ],
 
     /*

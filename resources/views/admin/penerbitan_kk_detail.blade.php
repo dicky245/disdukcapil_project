@@ -52,7 +52,7 @@
                         Kartu Keluarga Lama
                     </p>
                     <button onclick="openPreview('{{ asset('storage/'.$berkas->kk_lama) }}')"
-                    class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">
+                    class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-sm">
                         Lihat Berkas
                     </button>
                 </div>
@@ -61,7 +61,7 @@
                         Surat Keterangan Pengganti
                     </p>
                     <button onclick="openPreview('{{ asset('storage/'.$berkas->surat_keterangan_pengganti) }}')"
-                    class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">
+                    class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-sm">
                         Lihat Berkas
                     </button>
                 </div>
@@ -70,7 +70,7 @@
                         Salinan Kepres
                     </p>
                     <button onclick="openPreview('{{ asset('storage/'.$berkas->salinan_kepres) }}')"
-                    class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">
+                    class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-sm">
                         Lihat Berkas
                     </button>
                 </div>
@@ -79,7 +79,7 @@
                         Izin Tinggal Asing
                     </p>
                     <button onclick="openPreview('{{ asset('storage/'.$berkas->izin_tinggal_asing) }}')"
-                    class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">
+                    class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-sm">
                         Lihat Berkas
                     </button>
                 </div>

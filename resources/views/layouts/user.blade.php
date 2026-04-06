@@ -27,6 +27,9 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- SweetAlert Helper -->
+    <script src="{{ asset('js/sweetalert-helper.js') }}"></script>
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
@@ -576,12 +579,13 @@
             loading: function(message = 'Memuat...') {
                 Swal.fire({
                     title: message,
-                    html: '<div class="swal2-loader"></div>',
+                    html: '<div class="loading-icon"><i class="fas fa-circle-notch fa-spin"></i></div>',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     showConfirmButton: false,
-                    didOpen: () => {
-                        Swal.showLoading();
+                    customClass: {
+                        popup: 'swal2-modal-popup',
+                        htmlContainer: 'swal2-html-container'
                     }
                 });
             },

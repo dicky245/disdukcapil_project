@@ -21,7 +21,7 @@
                        class="w-full pl-12 pr-4 py-3 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-500">
             </div>
         </div>
-        <button onclick="searchBerkas()" class="w-full md:w-auto px-6 py-3 bg-white text-teal-700 rounded-xl hover:bg-gray-100 transition font-semibold whitespace-nowrap">
+        <button onclick="searchBerkas()" class="w-full md:w-auto px-6 py-3 bg-white text-green-700 rounded-xl hover:bg-gray-100 transition font-semibold whitespace-nowrap">
             <i class="fas fa-search mr-2"></i>Lacak Berkas
         </button>
     </div>
@@ -158,7 +158,7 @@
 
     <!-- Actions -->
     <div class="flex gap-3 reveal">
-        <button class="flex-1 px-6 py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition flex items-center justify-center gap-2">
+        <button class="flex-1 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition flex items-center justify-center gap-2">
             <i class="fas fa-download"></i>
             <span>Unduh Dokumen</span>
         </button>
@@ -227,7 +227,7 @@
                 icon: 'warning',
                 title: 'Peringatan',
                 text: 'Masukkan nomor antrian atau nama lengkap',
-                confirmButtonColor: '#0d9488'
+                confirmButtonColor: '#28A745'
             });
             return;
         }
@@ -265,7 +265,7 @@
                         icon: 'error',
                         title: 'Tidak Ditemukan',
                         text: data.message || 'Data antrian tidak ditemukan',
-                        confirmButtonColor: '#0d9488'
+                        confirmButtonColor: '#28A745'
                     });
                 }
             })
@@ -275,7 +275,7 @@
                     icon: 'error',
                     title: 'Terjadi Kesalahan',
                     text: 'Gagal mencari data. Silakan coba lagi.',
-                    confirmButtonColor: '#0d9488'
+                    confirmButtonColor: '#28A745'
                 });
             });
     }
@@ -328,7 +328,7 @@
         const actionsContainer = document.querySelector('#trackingResult .flex.gap-3');
         if (data.status_antrian === 'Siap Pengambilan') {
             actionsContainer.innerHTML = `
-                <button class="flex-1 px-6 py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition flex items-center justify-center gap-2">
+                <button class="flex-1 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition flex items-center justify-center gap-2">
                     <i class="fas fa-download"></i>
                     <span>Unduh Bukti</span>
                 </button>

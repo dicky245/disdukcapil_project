@@ -323,10 +323,10 @@ const showLoading = (title = 'Memproses', message = 'Mohon tunggu sebentar...') 
     return Swal.fire({
         title: title,
         html: `
-            <div class="swal2-loading-container">
-                <div class="swal2-loader"></div>
-                <p class="swal2-text">${message}</p>
+            <div class="loading-icon">
+                <i class="fas fa-circle-notch fa-spin"></i>
             </div>
+            <p class="text-gray-600 mt-4">${message}</p>
         `,
         showConfirmButton: false,
         showCancelButton: false,
@@ -334,12 +334,10 @@ const showLoading = (title = 'Memproses', message = 'Mohon tunggu sebentar...') 
         allowEscapeKey: false,
         backdrop: 'rgba(0, 0, 0, 0.7)',
         customClass: {
-            popup: 'swal2-loading-popup',
+            popup: 'swal2-modal-popup',
+            htmlContainer: 'swal2-html-container'
         },
-        zIndex: 9999,
-        didOpen: () => {
-            Swal.showLoading();
-        }
+        zIndex: 9999
     });
 };
 
@@ -474,6 +472,176 @@ const showSessionAlerts = () => {
     }
 };
 
+// === Custom Confirmation Dialog (handleSidebarLogout Pattern) ===
+
+/**
+ * showCustomConfirm - Dialog konfirmasi kustom dengan icon besar dan HTML template
+ * Berguna untuk berbagai kebutuhan (hapus data, simpan perubahan, logout, dll)
+ *
+ * @param {Object} options - Opsi konfigurasi
+ * @param {string} options.title - Judul dialog
+ * @param {string} options.message - Pesan utama
+ * @param {string} options.subMessage - Pesan tambahan (opsional)
+ * @param {string} options.iconClass - Class Font Awesome untuk icon (mis: 'fas fa-trash')
+ * @param {string} options.iconColor - Warna icon (default: '#ef4444' untuk merah)
+ * @param {string} options.confirmText - Teks tombol konfirmasi (default: 'Ya, Lanjutkan')
+ * @param {string} options.confirmColor - Warna tombol konfirmasi (default: '#ef4444')
+ * @param {string} options.cancelText - Teks tombol batal (default: 'Batal')
+ * @param {Function} options.onConfirm - Callback saat dikonfirmasi
+ * @param {Function} options.onCancel - Callback saat dibatalkan
+ * @param {string} options.loadingTitle - Judul loading (default: 'Memproses')
+ * @param {string} options.loadingMessage - Pesan loading (default: 'Mohon tunggu...')
+ * @param {boolean} options.showLoadingAfterConfirm - Tampilkan loading setelah konfirmasi (default: true)
+ *
+ * @example
+ * // Untuk hapus data
+ * showCustomConfirm({
+ *     title: 'Konfirmasi Hapus',
+ *     message: 'Apakah Anda yakin ingin menghapus data ini?',
+ *     subMessage: 'Data yang dihapus tidak dapat dikembalikan.',
+ *     iconClass: 'fas fa-trash',
+ *     iconColor: '#ef4444',
+ *     confirmText: 'Ya, Hapus',
+ *     confirmColor: '#ef4444',
+ *     onConfirm: () => {
+ *         // Logika hapus data
+ *     }
+ * });
+ *
+ * @example
+ * // Untuk simpan perubahan
+ * showCustomConfirm({
+ *     title: 'Konfirmasi Simpan',
+ *     message: 'Apakah data yang diisi sudah benar?',
+ *     subMessage: 'Pastikan semua data sudah terisi dengan lengkap.',
+ *     iconClass: 'fas fa-save',
+ *     iconColor: '#22c55e',
+ *     confirmText: 'Ya, Simpan',
+ *     confirmColor: '#22c55e',
+ *     onConfirm: () => {
+ *         // Logika simpan data
+ *     }
+ * });
+ *
+ * @example
+ * // Untuk logout
+ * showCustomConfirm({
+ *     title: 'Konfirmasi Logout',
+ *     message: 'Apakah Anda yakin ingin keluar dari sistem?',
+ *     subMessage: 'Session Anda akan diakhiri dan Anda akan kembali ke halaman login.',
+ *     iconClass: 'fas fa-sign-out-alt',
+ *     iconColor: '#ef4444',
+ *     confirmText: 'Ya, Keluar',
+ *     confirmColor: '#ef4444',
+ *     onConfirm: () => {
+ *         document.getElementById('logoutForm').submit();
+ *     }
+ * });
+ */
+const showCustomConfirm = (options = {}) => {
+    // Default options
+    const defaults = {
+        title: 'Konfirmasi',
+        message: 'Apakah Anda yakin?',
+        subMessage: '',
+        iconClass: 'fas fa-question-circle',
+        iconColor: '#ef4444',
+        confirmText: 'Ya, Lanjutkan',
+        confirmColor: '#ef4444',
+        cancelText: 'Batal',
+        cancelColor: '#64748b',
+        onConfirm: null,
+        onCancel: null,
+        loadingTitle: 'Memproses',
+        loadingMessage: 'Mohon tunggu...',
+        showLoadingAfterConfirm: true,
+    };
+
+    // Merge options with defaults
+    const config = { ...defaults, ...options };
+
+    // Build HTML content
+    let htmlContent = `
+        <div class="text-center">
+            <div class="mb-4">
+                <i class="${config.iconClass} text-6xl" style="color: ${config.iconColor}"></i>
+            </div>
+            <p class="text-gray-600 text-lg mb-2">${config.message}</p>
+    `;
+
+    if (config.subMessage) {
+        htmlContent += `<p class="text-gray-500 text-sm">${config.subMessage}</p>`;
+    }
+
+    htmlContent += '</div>';
+
+    // Show confirmation dialog
+    Swal.fire({
+        title: config.title,
+        html: htmlContent,
+        icon: false,
+        showCancelButton: true,
+        confirmButtonColor: config.confirmColor,
+        cancelButtonColor: config.cancelColor,
+        confirmButtonText: `<i class="${config.iconClass} mr-2"></i>${config.confirmText}`,
+        cancelButtonText: '<i class="fas fa-times mr-2"></i>' + config.cancelText,
+        reverseButtons: true,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        keydownListenerCapture: true,
+        customClass: {
+            popup: 'swal2-custom-popup',
+            confirmButton: 'swal2-custom-confirm-button',
+            cancelButton: 'swal2-custom-cancel-button'
+        },
+        didOpen: () => {
+            // Add marker class to popup
+            const popup = document.querySelector('.swal2-popup');
+            if (popup) {
+                popup.classList.add('custom-confirm-active');
+            }
+        },
+        didClose: () => {
+            // Remove marker class
+            const popup = document.querySelector('.swal2-popup');
+            if (popup) {
+                popup.classList.remove('custom-confirm-active');
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Show loading if enabled
+            if (config.showLoadingAfterConfirm) {
+                Swal.fire({
+                    title: config.loadingTitle,
+                    html: `
+                        <div class="loading-icon">
+                            <i class="fas fa-circle-notch fa-spin"></i>
+                        </div>
+                        <p class="text-gray-600 mt-4">${config.loadingMessage}</p>
+                    `,
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    customClass: {
+                        popup: 'swal2-modal-popup',
+                        htmlContainer: 'swal2-html-container'
+                    }
+                });
+            }
+
+            // Execute confirm callback
+            if (config.onConfirm && typeof config.onConfirm === 'function') {
+                config.onConfirm();
+            }
+        } else {
+            // Execute cancel callback
+            if (config.onCancel && typeof config.onCancel === 'function') {
+                config.onCancel();
+            }
+        }
+    });
+};
+
 // === Export All Functions ===
 
 // Global Object
@@ -498,6 +666,7 @@ window.SwalHelper = {
     confirm: confirmDialog,
     delete: deleteConfirm,
     save: saveConfirm,
+    customConfirm: showCustomConfirm, // NEW!
 
     // Loading
     loading: showLoading,
@@ -530,25 +699,28 @@ document.addEventListener('DOMContentLoaded', () => {
             padding: 2rem !important;
         }
 
-        .swal2-loader {
-            width: 60px !important;
-            height: 60px !important;
-            border: 4px solid #f3f4f6 !important;
-            border-top-color: #0052CC !important;
-            border-radius: 50% !important;
-            animation: swal2-spin 1s linear infinite !important;
-        }
-
-        @keyframes swal2-spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         .swal2-text {
             margin-top: 1.5rem !important;
             color: #6b7280 !important;
             font-size: 0.95rem !important;
             text-align: center !important;
+        }
+
+        .loading-icon {
+            font-size: 48px !important;
+            color: #0052CC !important;
+            animation: pulse 1.5s ease-in-out infinite !important;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
         }
 
         /* Toast positioning fix */
@@ -566,6 +738,98 @@ document.addEventListener('DOMContentLoaded', () => {
 
         .swal2-html-container {
             font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+
+        /* Custom Confirm Dialog Styles */
+        .swal2-custom-popup {
+            border-radius: 16px !important;
+            padding: 24px !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+            z-index: 99999 !important;
+            pointer-events: auto !important;
+            will-change: transform, opacity;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        .swal2-custom-confirm-button {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+            border-radius: 12px !important;
+            padding: 12px 24px !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+            pointer-events: auto !important;
+        }
+
+        .swal2-custom-confirm-button:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4) !important;
+        }
+
+        .swal2-custom-cancel-button {
+            background: #64748b !important;
+            border-radius: 12px !important;
+            padding: 12px 24px !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            transition: all 0.3s ease !important;
+            pointer-events: auto !important;
+        }
+
+        .swal2-custom-cancel-button:hover {
+            background: #475569 !important;
+            transform: translateY(-2px) !important;
+        }
+
+        .custom-confirm-active {
+            pointer-events: auto !important;
+        }
+
+        /* Loading Container - Perfect Center */
+        .swal2-html-container {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            padding: 20px !important;
+        }
+
+        /* Loading text styling */
+        .swal2-html-container p {
+            margin: 0 !important;
+            padding: 0 !important;
+            text-align: center !important;
+        }
+
+        /* Ensure popup is centered */
+        .swal2-popup.swal2-show {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+
+        .swal2-title {
+            text-align: center !important;
+        }
+
+        .loading-icon {
+            font-size: 48px !important;
+            color: #0052CC !important;
+            animation: pulse 1.5s ease-in-out infinite !important;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
         }
     `;
     document.head.appendChild(style);

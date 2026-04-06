@@ -107,7 +107,7 @@
         </a>
         <form method="POST" action="{{ route('logout') }}" id="logoutForm" class="inline">
             @csrf
-            <button type="button" onclick="handleLogout()"
+            <button type="button" onclick="handleSidebarLogout(event)"
                 class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-all">
                 <i class="fas fa-sign-out-alt w-5"></i>
                 <span class="sidebar-text font-medium">Logout</span>
@@ -141,52 +141,35 @@
     }
 
     // Logout Handler - SweetAlert Confirmation
-    function handleLogout() {
-        Swal.fire({
-            title: 'Konfirmasi Logout',
-            html: `
-                <div class="text-center">
-                    <div class="mb-4">
-                        <i class="fas fa-sign-out-alt text-6xl text-red-500"></i>
-                    </div>
-                    <p class="text-gray-600 text-lg mb-2">Apakah Anda yakin ingin keluar dari sistem?</p>
-                    <p class="text-gray-500 text-sm">Session Anda akan diakhiri dan Anda akan kembali ke halaman login.</p>
-                </div>
-            `,
-            icon: false,
-            showCancelButton: true,
-            confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#64748b',
-            confirmButtonText: '<i class="fas fa-sign-out-alt mr-2"></i>Ya, Keluar',
-            cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
-            reverseButtons: true,
-            customClass: {
-                popup: 'swal2-custom-popup',
-                confirmButton: 'swal2-custom-confirm-button',
-                cancelButton: 'swal2-custom-cancel-button'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Show loading
-                Swal.fire({
-                    title: 'Memproses Logout',
-                    html: `
-                        <div class="text-center">
-                            <div class="swal2-loader"></div>
-                            <p class="text-gray-600 mt-4">Sedang mengakhiri session...</p>
-                        </div>
-                    `,
-                    allowOutsideClick: false,
-                    showConfirmButton: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
+    function handleSidebarLogout(event) {
+        // Mencegah event bubbling
+        event.preventDefault();
+        event.stopPropagation();
 
-                // Submit form setelah delay
-                setTimeout(function() {
-                    document.getElementById('logoutForm').submit();
-                }, 1000);
+        // Pause auto-logout monitoring during confirmation
+        if (window.pauseAutoLogoutReset) {
+            window.pauseAutoLogoutReset();
+        }
+
+        SwalHelper.customConfirm({
+            title: 'Konfirmasi Logout',
+            message: 'Apakah Anda yakin ingin keluar dari sistem?',
+            subMessage: 'Session Anda akan diakhiri dan Anda akan kembali ke halaman login.',
+            iconClass: 'fas fa-sign-out-alt',
+            iconColor: '#ef4444',
+            confirmText: 'Ya, Keluar',
+            confirmColor: '#ef4444',
+            loadingTitle: 'Memproses Logout',
+            loadingMessage: 'Sedang mengakhiri session...',
+            onConfirm: () => {
+                // Submit form tanpa delay
+                document.getElementById('logoutForm').submit();
+            },
+            onCancel: () => {
+                // Resume auto-logout monitoring if cancelled
+                if (window.resumeAutoLogoutReset) {
+                    window.resumeAutoLogoutReset();
+                }
             }
         });
     }
@@ -198,6 +181,29 @@
         border-radius: 16px !important;
         padding: 24px !important;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+        z-index: 99999 !important;
+        pointer-events: auto !important; /* Memastikan popup menerima pointer events */
+        will-change: transform, opacity; /* Optimize untuk animasi */
+        transform: translateZ(0); /* Force GPU acceleration */
+        backface-visibility: hidden; /* Mencegah rendering glitches */
+    }
+
+    /* SweetAlert Container - Pastikan z-index cukup tinggi */
+    .swal2-container {
+        z-index: 99999 !important;
+        pointer-events: auto !important; /* Memastikan container menerima pointer events */
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+    }
+
+    /* Protect backdrop */
+    .swal2-backdrop-show {
+        background: rgba(0, 0, 0, 0.5) !important;
+        z-index: 99998 !important;
+        pointer-events: auto !important;
     }
 
     .swal2-custom-confirm-button {
@@ -208,6 +214,7 @@
         font-size: 14px !important;
         transition: all 0.3s ease !important;
         box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+        pointer-events: auto !important;
     }
 
     .swal2-custom-confirm-button:hover {
@@ -222,10 +229,16 @@
         font-weight: 600 !important;
         font-size: 14px !important;
         transition: all 0.3s ease !important;
+        pointer-events: auto !important;
     }
 
     .swal2-custom-cancel-button:hover {
         background: #475569 !important;
         transform: translateY(-2px) !important;
+    }
+
+    /* Marker class untuk logout confirmation */
+    .logout-confirmation-active {
+        pointer-events: auto !important;
     }
 </style>

@@ -25,10 +25,17 @@
     2 => [
         'icon' => 'fa-baby',
         'color'=> 'blue',
-        'id'=>'akte_kelahiran', 
+        'id'=>'akte_kelahiran',
         'fields'=>[
-<<<<<<< HEAD
-        ['name'=>'tes', 'label'=>'tes','type'=>'text']
+            ['name' => 'layanan_id', 'value' => '2', 'type' => 'hidden'],
+            ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi', 'placeholder' => 'Masukkan Nomor Reqistrasi', 'type' => 'text'],
+            ['name' => 'nama', 'label' => 'Nama Kepala Keluarga', 'placeholder' => 'Masukkan Nama Kepala Keluarga','type' => 'text'],
+            ['name' => 'alamat', 'label' => 'Alamat', 'placeholder' => 'Masukkan Alamat','type' => 'textarea'],
+            ['name' => 'fotokopi_buku_nikah','label'=>'Foto Buku Nikah Orang Tua', 'type'=>'file'],
+            ['name' => 'surat_bidan','label'=>'Surat Keterangan dari Bidan', 'type'=>'file'],
+            ['name' => 'ktp_orangtua','label'=>'Foto KTP Orang Tua', 'type'=>'file'],
+            ['name' => 'fotokopi_kk','label'=>'Foto Kartu Keluarga', 'type'=>'file'],
+            ['name' => 'identitas_saksi','label'=>'Identitas Saksi', 'placeholder' => 'Masukkan Data Identitas Saksi', 'type'=>'text'],
         ]
     ],
     3 => [ // Akte Kematian
@@ -48,6 +55,8 @@
             ['name' => 'surat_keterangan_kematian', 'label' => 'Surat Keterangan Kematian (RS/Kelurahan)', 'type' => 'file'],
             ['name' => 'ktp_almarhum', 'label' => 'KTP Almarhum', 'type' => 'file'],
             ['name' => 'kartu_keluarga', 'label' => 'Kartu Keluarga', 'type' => 'file'],
+            ['name' => 'ktp_pelapor', 'label' => 'KTP Pelapor', 'type' => 'file'],
+            ['name' => 'surat_keterangan_rs', 'label' => 'Surat Keterangan RS (jika meninggal di RS)', 'type' => 'file'],
         ]
     ],
     4 => [ // Lahir Mati
@@ -68,17 +77,6 @@
             ['name' => 'surat_keterangan_lahir_mati', 'label' => 'Surat Keterangan Lahir Mati', 'type' => 'file'],
             ['name' => 'ktp_ayah', 'label' => 'KTP Ayah', 'type' => 'file'],
             ['name' => 'ktp_ibu', 'label' => 'KTP Ibu', 'type' => 'file'],
-=======
-            ['name' => 'layanan_id', 'value' => '2', 'type' => 'hidden'],
-            ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi', 'placeholder' => 'Masukkan Nomor Reqistrasi', 'type' => 'text'],
-            ['name' => 'nama', 'label' => 'Nama Kepala Keluarga', 'placeholder' => 'Masukkan Nama Kepala Keluarga','type' => 'text'],
-            ['name' => 'alamat', 'label' => 'Alamat', 'placeholder' => 'Masukkan Alamat','type' => 'textarea'],
-            ['name' => 'fotokopi_buku_nikah','label'=>'Foto Buku Nikah Orang Tua', 'type'=>'file'],
-            ['name' => 'surat_bidan','label'=>'Surat Keterangan dari Bidan', 'type'=>'file'],
-            ['name' => 'ktp_orangtua','label'=>'Foto KTP Orang Tua', 'type'=>'file'],
-            ['name' => 'fotokopi_kk','label'=>'Foto Kartu Keluarga', 'type'=>'file'],
-            ['name' => 'identitas_saksi','label'=>'Identitas Saksi', 'placeholder' => 'Masukkan Data Identitas Saksi', 'type'=>'text'],
->>>>>>> 7d40513c353fa7162c4c073a09a61bc333a184f2
         ]
     ],
         'Penerbitan Akte Kematian' => [

@@ -18,6 +18,10 @@ return new class extends Migration
                 table: 'layanan',
                 column: 'layanan_id'
             )->onDelete('cascade');
+
+            // NIK bayi (encrypted, gunakan TEXT type)
+            $table->text('nik')->nullable();
+
             $table->string('nomor_registrasi');
             $table->string('nama');
             $table->string('alamat');
@@ -27,6 +31,9 @@ return new class extends Migration
             $table->string('fotokopi_kk');
             $table->string('identitas_saksi');
             $table->timestamps();
+
+            // Index untuk NIK
+            $table->index('nik');
         });
     }
 

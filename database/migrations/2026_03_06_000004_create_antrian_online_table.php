@@ -15,17 +15,35 @@ return new class extends Migration
             // Gunakan CHAR(36) secara eksplisit untuk UUID
             $table->char('antrian_online_id', 36)->primary();
             $table->string('nomor_antrian', 20)->unique();
+
+            // NIK (encrypted, gunakan TEXT type)
+            $table->text('nik')->nullable();
+
+            // KTP & Selfie photos (store path to uploaded images)
+            $table->string('foto_ktp', 500)->nullable();
+            $table->string('foto_selfie', 500)->nullable();
+
+            // Data personal
             $table->string('nama_lengkap', 100);
             $table->text('alamat')->nullable();
             $table->date('tanggal_lahir')->nullable();
+
+            // Foreign key ke layanan
             $table->foreignId('layanan_id')->constrained(
                 table: 'layanan',
                 column: 'layanan_id'
             )->onDelete('cascade');
+
+            // Status antrian
             $table->enum('status_antrian', ['Menunggu', 'Dokumen Diterima', 'Verifikasi Data', 'Proses Cetak', 'Siap Pengambilan', 'Ditolak', 'Dibatalkan'])->default('Menunggu');
+
+            // Timestamps
             $table->timestamps();
+
+            // Indexes
             $table->index('nomor_antrian');
             $table->index('status_antrian');
+            $table->index('nik');
         });
     }
 

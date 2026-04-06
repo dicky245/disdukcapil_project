@@ -334,22 +334,12 @@
                 if (!accountId) {
                     if (!password) {
                         e.preventDefault();
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Password Wajib Diisi!',
-                            text: 'Silakan masukkan password minimal 6 karakter untuk akun baru.',
-                            confirmButtonColor: '#0052CC'
-                        });
+                        SwalHelper.modalWarning('Password Wajib Diisi!', 'Silakan masukkan password minimal 6 karakter untuk akun baru.');
                         return false;
                     }
                     if (password.length < 6) {
                         e.preventDefault();
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Password Terlalu Pendek!',
-                            text: 'Password minimal 6 karakter.',
-                            confirmButtonColor: '#0052CC'
-                        });
+                        SwalHelper.modalWarning('Password Terlalu Pendek!', 'Password minimal 6 karakter.');
                         return false;
                     }
                 }
@@ -362,12 +352,7 @@
                 if (passwordValue || passwordConfirmValue) {
                     if (passwordValue !== passwordConfirmValue) {
                         e.preventDefault();
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Password Tidak Cocok!',
-                            text: 'Password dan konfirmasi password harus sama.',
-                            confirmButtonColor: '#0052CC'
-                        });
+                        SwalHelper.modalWarning('Password Tidak Cocok!', 'Password dan konfirmasi password harus sama.');
                         return false;
                     }
                 }
@@ -377,32 +362,15 @@
 
     // SweetAlert2 Pop-up Handlers
     @if(session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: "{{ session('success') }}",
-            confirmButtonColor: '#0052CC',
-            timer: 3000,
-            timerProgressBar: true
-        });
+        SwalHelper.modalSuccess('Berhasil!', "{{ session('success') }}");
     @endif
 
     @if(session('error'))
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal!',
-            text: "{{ session('error') }}",
-            confirmButtonColor: '#0052CC'
-        });
+        SwalHelper.modalError('Gagal!', "{{ session('error') }}");
     @endif
 
     @if ($errors->any())
-        Swal.fire({
-            icon: 'warning',
-            title: 'Perhatian!',
-            text: "{{ $errors->first() }}",
-            confirmButtonColor: '#0052CC'
-        });
+        SwalHelper.modalWarning('Perhatian!', "{{ $errors->first() }}");
     @endif
 </script>
 @endpush
