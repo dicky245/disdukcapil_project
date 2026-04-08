@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Keagamaan;
 use App\Http\Controllers\Controller;
 use App\Models\Keagamaan_Model;
 use App\Models\Jenis_Keagamaan_Model;
+use App\Exceptions\DatabaseException;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 // Import Model
 use App\Models\Layanan_Model;
@@ -68,7 +70,7 @@ class Keagamaan_Controller extends Controller
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        return view('keagamaan.sinkronisasi_dukcapil');
+        return view('keagamaan.sinkronisasi-dukcapil');
     }
 
     /**
@@ -88,20 +90,28 @@ class Keagamaan_Controller extends Controller
      */
     public function lacak_berkas()
     {
+        // Validasi Akses Role Keagamaan
         if (!Auth::user()->hasRole('Keagamaan')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        // 1. Ambil ID terakhir dari setiap antrian agar tidak duplikat
+        // 1. Ambil ID terakhir dari setiap antrian agar tidak duplikat (History Terkini)
         $latestLacakIds = Lacak_Berkas_Model::selectRaw('MAX(lacak_berkas_id) as id')
             ->groupBy('antrian_online_id')
             ->pluck('id');
 
-        // 2. Filter hanya untuk layanan yang mengandung kata "Pernikahan"
+        // 2. Filter data berdasarkan skema tabel yang Anda miliki
         $berkas = Lacak_Berkas_Model::with(['antrian_online.layanan', 'antrian_online.user'])
             ->whereIn('lacak_berkas_id', $latestLacakIds)
-            ->whereNotNull('detail_form')
+
+            /* PENYESUAIAN: 
+           Karena di migration Anda tidak ada 'detail_form', 
+           kita gunakan 'keterangan' atau hapus baris ini jika tidak ingin memfilter kolom kosong.
+        */
+            ->whereNotNull('keterangan')
+
             ->whereHas('antrian_online.layanan', function ($query) {
+                // Memastikan hanya layanan terkait "Pernikahan" yang muncul untuk user Keagamaan
                 $query->where('nama_layanan', 'like', '%Pernikahan%');
             })
             ->latest()
@@ -247,10 +257,20 @@ class Keagamaan_Controller extends Controller
                 'message' => 'Data antrian dengan ID ' . $request->id . ' tidak ditemukan.'
             ], 404);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal memperbarui: ' . $e->getMessage()
-            ], 500);
+            // Format error untuk user
+            $errorInfo = DatabaseException::formatForUser($e);
+
+            Log::error('Keagamaan update status failed', [
+                'error_code' => $errorInfo['error_code'],
+                'error' => $e->getMessage(),
+                'location' => $errorInfo['location'],
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json(
+                DatabaseException::toJsonResponse($errorInfo),
+                500
+            );
         }
     }
 
@@ -418,7 +438,23 @@ class Keagamaan_Controller extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            // Format error untuk user
+            $errorInfo = DatabaseException::formatForUser($e);
+
+            Log::error('Keagamaan submit pengajuan failed', [
+                'error_code' => $errorInfo['error_code'],
+                'error' => $e->getMessage(),
+                'location' => $errorInfo['location'],
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorInfo['user_message'])
+                ->with('error_detail', $errorInfo['technical_detail'])
+                ->with('error_location', $errorInfo['location'])
+                ->with('error_solution', $errorInfo['solution'])
+                ->with('error_code', $errorInfo['error_code']);
         }
     }
 }

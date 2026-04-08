@@ -89,4 +89,5 @@ class LahirMatiController extends Controller
         $lahirMati->save();
         return redirect()->back()->with('success', 'Status berhasil diperbarui');
     }
-} 
+}
+

@@ -89,7 +89,3 @@ class AkteKematianController extends Controller
         return redirect()->back()->with('success', 'Status berhasil diperbarui');
     }
 }
-    /**
-     *
-     * POST /akte-kematian/extract-ktp
-     */

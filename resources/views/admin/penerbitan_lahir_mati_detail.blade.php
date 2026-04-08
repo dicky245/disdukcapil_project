@@ -90,7 +90,7 @@
                     <p class="text-sm font-semibold mb-3">{{ $dok['label'] }}</p>
                     @if($berkas->{$dok['field']})
                         <button onclick="openPreview('{{ asset('storage/'.$berkas->{$dok['field']}) }}')"
-                        class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">
+                        class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-sm">
                             Lihat Berkas
                         </button>
                     @else

@@ -7,49 +7,30 @@ use Illuminate\Support\Str;
 
 class AkteLahir extends Model
 {
-    protected $table = 'akte_lahir';
-
+    protected $table = 'aktelahirs';
     protected $fillable = [
-        'layanan_id',
-        'nomor_registrasi',
-        'nama',
-        'alamat',
-        'fotokopi_buku_nikah',
-        'surat_bidan',
-        'ktp_orangtua',
-        'fotokopi_kk',
-        'identitas_saksi',
-        'status',
+    'uuid',
+    'layanan_id',
+    'nomor_registrasi',
+    'nama',
+    'alamat',
+    'fotokopi_buku_nikah',
+    'surat_bidan',
+    'ktp_orangtua',
+    'fotokopi_kk',
+    'identitas_saksi',
+    'alasan_penolakan',
+    'status',
+    'deleted_at',
+    'created_at',
+    'update_at'
     ];
-
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-    ];
-
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * The "type" of the auto-incrementing ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
-
-    /**
-     * Boot function from Laravel.
-     */
     protected static function boot()
     {
         parent::boot();
-        self::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = (string) Str::uuid();
+        static::creating(function ($model) {
+            if (!$model->uuid) {
+                $model->uuid = Str::uuid();
             }
         });
     }

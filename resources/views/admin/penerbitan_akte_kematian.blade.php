@@ -42,7 +42,7 @@
             <option value="Siap Pengambilan" {{ request('status') == 'Siap Pengambilan' ? 'selected' : '' }}>Siap Pengambilan</option>
             <option value="Tolak" {{ request('status') == 'Tolak' ? 'selected' : '' }}>Ditolak</option>
         </select>
-        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+        <button class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm">
             Terapkan
         </button>
     </div>
@@ -85,7 +85,7 @@
                     <td class="p-4">
                         <div class="flex flex-col gap-1 items-center">
                             <a href="{{ route('admin.akte-kematian.detail', $data->id) }}"
-                            class="w-28 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-xs font-semibold text-center">
+                            class="w-28 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-xs font-semibold text-center">
                                 Detail
                             </a>
                             @if($data->status == 'Dokumen Diterima')
@@ -117,7 +117,7 @@
                                 <form action="{{ route('admin.akte-kematian.status', $data->id) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Siap Pengambilan">
-                                    <button class="w-28 bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
+                                    <button class="w-28 bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
                                         Siap Diambil
                                     </button>
                                 </form>
@@ -128,7 +128,7 @@
                 @empty
                 <tr>
                     <td colspan="6" class="p-8 text-center text-gray-400">
-                        <div class="text-4xl mb-2">📋</div>
+                        <div class="text-4xl mb-2"><i class="fas fa-clipboard-list"></i></div>
                         <p class="font-semibold">Belum ada permohonan akte kematian</p>
                     </td>
                 </tr>

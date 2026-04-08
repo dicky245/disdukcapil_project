@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Increase execution time for heavy operations
+ */
+set_time_limit(300); // 5 minutes
+ini_set('memory_limit', '512M');
+
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 

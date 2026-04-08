@@ -1,0 +1,9 @@
+# KTP Field Detection Dataset
+path: D:\Semester 6\PA 3\Project\PA3\model\dataset
+train: Train/images
+val: Val/images
+test: Test/images
+
+# Classes
+nc: 13
+names: ['nik', 'nama', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'rt_rw', 'kel_desa', 'kecamatan', 'agama', 'status_perkawinan', 'pekerjaan', 'kewarganegaraan', 'berlaku_hingga']

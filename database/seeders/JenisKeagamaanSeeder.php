@@ -18,6 +18,7 @@ class JenisKeagamaanSeeder extends Seeder
             ['nama_jenis_keagamaan' => 'Islam', 'keterangan' => 'Pelayanan Islam'],
             ['nama_jenis_keagamaan' => 'Buddha', 'keterangan' => 'Pelayanan Buddha'],
             ['nama_jenis_keagamaan' => 'Hindu', 'keterangan' => 'Pelayanan Hindu'],
+            ['nama_jenis_keagamaan' => 'Konghucu', 'keterangan' => 'Pelayanan Konghucu'],
         ];
 
         foreach ($agama as $a) {

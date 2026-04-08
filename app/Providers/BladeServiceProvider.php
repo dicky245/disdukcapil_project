@@ -37,9 +37,18 @@ class BladeServiceProvider extends ServiceProvider
             return "<?php echo \App\Helpers\NikHelper::format($expression); ?>";
         });
 
-        // Directive untuk masking NIK tapi full untuk admin
+        // Share isAdmin variable ke semua views (cached)
+        view()->composer('*', function ($view) {
+            $isAdmin = false;
+            if (auth()->check() && auth()->user()) {
+                $isAdmin = auth()->user()->hasRole('Admin');
+            }
+            $view->with('isAdmin', $isAdmin);
+        });
+
+        // Directive untuk masking NIK tapi full untuk admin (optimized)
         Blade::directive('maskNikAdmin', function ($expression) {
-            return "<?php echo \App\Helpers\NikHelper::mask($expression, auth()->check() && auth()->user()?->hasRole('Admin')); ?>";
+            return "<?php echo \App\Helpers\NikHelper::mask($expression, $isAdmin ?? false); ?>";
         });
     }
 }

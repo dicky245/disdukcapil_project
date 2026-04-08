@@ -8,11 +8,13 @@ use App\Models\Lacak_Berkas_Model;
 use App\Models\Jenis_Keagamaan_Model; // TAMBAHKAN INI
 use App\Models\User;
 use App\Models\Layanan_Model;
+use App\Exceptions\DatabaseException;
 use Illuminate\Http\Request;
 use App\Models\Keagamaan_Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class Admin_Controller extends Controller
 {
@@ -197,8 +199,25 @@ class Admin_Controller extends Controller
             return redirect()->back()->with('success', 'Akun Keagamaan Berhasil Disimpan!');
         } catch (\Exception $e) {
             DB::rollback();
+
+            // Format error untuk user
+            $errorInfo = DatabaseException::formatForUser($e);
+
+            Log::error('Admin save account failed', [
+                'error_code' => $errorInfo['error_code'],
+                'error' => $e->getMessage(),
+                'location' => $errorInfo['location'],
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             // Mengirim session error untuk memicu pop-up SweetAlert2 di View
-            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', $errorInfo['user_message'])
+                ->with('error_detail', $errorInfo['technical_detail'])
+                ->with('error_location', $errorInfo['location'])
+                ->with('error_solution', $errorInfo['solution'])
+                ->with('error_code', $errorInfo['error_code']);
         }
     }
 
@@ -298,7 +317,7 @@ class Admin_Controller extends Controller
         ]);
     }
 
-   /**
+    /**
      * Terima dokumen (langkah pertama)
      */
     public function Terima_Dokumen($uuid)
@@ -655,12 +674,12 @@ class Admin_Controller extends Controller
         $endDate = now()->endOfDay();
 
         $antrianData = Antrian_Online_Model::select(
-                DB::raw('DATE(created_at) as date'),
-                DB::raw('COUNT(*) as total'),
-                DB::raw('SUM(CASE WHEN status_antrian = "Menunggu" THEN 1 ELSE 0 END) as menunggu'),
-                DB::raw('SUM(CASE WHEN status_antrian IN ("Dokumen Diterima", "Verifikasi Data", "Proses Cetak") THEN 1 ELSE 0 END) as proses'),
-                DB::raw('SUM(CASE WHEN status_antrian = "Siap Pengambilan" THEN 1 ELSE 0 END) as selesai')
-            )
+            DB::raw('DATE(created_at) as date'),
+            DB::raw('COUNT(*) as total'),
+            DB::raw('SUM(CASE WHEN status_antrian = "Menunggu" THEN 1 ELSE 0 END) as menunggu'),
+            DB::raw('SUM(CASE WHEN status_antrian IN ("Dokumen Diterima", "Verifikasi Data", "Proses Cetak") THEN 1 ELSE 0 END) as proses'),
+            DB::raw('SUM(CASE WHEN status_antrian = "Siap Pengambilan" THEN 1 ELSE 0 END) as selesai')
+        )
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('date')
             ->orderBy('date')
@@ -691,5 +710,5 @@ class Admin_Controller extends Controller
                 'selesai' => $dataSelesai,
             ],
         ]);
-    }    
+    }
 }

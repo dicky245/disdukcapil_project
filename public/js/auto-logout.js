@@ -17,11 +17,17 @@
     let logoutTimer = null;
     let countdownTimer = null;
     let timeRemaining = 0;
+    let autoLogoutPaused = false; // NEW: Pause flag for logout confirmation
 
     /**
      * Reset inactivity timer on user activity
      */
     function resetInactivityTimer() {
+        // NEW: Check if auto-logout is paused (during logout confirmation)
+        if (autoLogoutPaused) {
+            return; // Don't reset if paused
+        }
+
         inactivityTime = 0;
         warningShown = false;
 
@@ -35,9 +41,24 @@
             countdownTimer = null;
         }
 
-        // Close any open SweetAlert
+        // MODIFIED: Only close SweetAlert if it's NOT a logout confirmation
         if (window.Swal && Swal.isVisible()) {
-            Swal.close();
+            const popup = document.querySelector('.swal2-popup');
+            // Check if it's a logout confirmation dialog
+            if (popup) {
+                const popupText = popup.textContent || '';
+                const isLogoutConfirmation = popupText.includes('Konfirmasi Logout') ||
+                                           popupText.includes('keluar dari sistem') ||
+                                           popup.classList.contains('logout-confirmation-active');
+
+                // Only close if it's NOT the logout confirmation
+                if (!isLogoutConfirmation) {
+                    Swal.close();
+                }
+            } else {
+                // No popup found, close any SweetAlert
+                Swal.close();
+            }
         }
 
         // Update last activity in localStorage
@@ -46,6 +67,27 @@
         // Start new timer
         startInactivityCheck();
     }
+
+    /**
+     * Pause auto-logout monitoring (for logout confirmation dialogs)
+     */
+    function pauseAutoLogout() {
+        autoLogoutPaused = true;
+        console.log('[Auto-Logout] Monitoring paused');
+    }
+
+    /**
+     * Resume auto-logout monitoring
+     */
+    function resumeAutoLogout() {
+        autoLogoutPaused = false;
+        resetInactivityTimer();
+        console.log('[Auto-Logout] Monitoring resumed');
+    }
+
+    // Export functions to global scope
+    window.pauseAutoLogoutReset = pauseAutoLogout;
+    window.resumeAutoLogoutReset = resumeAutoLogout;
 
     /**
      * Start inactivity check
