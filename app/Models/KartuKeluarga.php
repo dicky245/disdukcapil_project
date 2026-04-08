@@ -58,3 +58,4 @@ class KartuKeluarga extends Model
             }
         });
     }
+}
