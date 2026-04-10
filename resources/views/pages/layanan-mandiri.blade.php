@@ -23,7 +23,7 @@
             'template_url' => '#',
             'fields' => [
                 ['name' => 'layanan_id', 'value' => '1', 'type' => 'hidden'],
-                ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi', 'placeholder' => 'Masukkan Nomor Registrasi', 'type' => 'text'],
+                ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi (Opsional)', 'placeholder' => 'Masukkan Nomor Registrasi', 'type' => 'text', 'required' => false],
                 ['name' => 'nama', 'label' => 'Nama Kepala Keluarga', 'placeholder' => 'Masukkan Nama Kepala Keluarga', 'type' => 'text'],
                 ['name' => 'alamat', 'label' => 'Alamat', 'placeholder' => 'Masukkan Alamat', 'type' => 'textarea'],
                 ['name' => 'kutipan_perkawinan', 'label' => 'Kutipan Perkawinan', 'placeholder' => 'Masukkan Kutipan Perkawinan', 'type' => 'text'],
@@ -31,9 +31,9 @@
             ],
             'files' => [
                 ['name' => 'kk_lama', 'label' => 'Kartu Keluarga Sebelumnya'],
-                ['name' => 'surat_keterangan_pengganti', 'label' => 'Surat Keterangan Pengganti'],
-                ['name' => 'salinan_kepres', 'label' => 'Salinan Kepres'],
-                ['name' => 'izin_tinggal_asing', 'label' => 'Surat Izin Tinggal Bagi Asing'],
+                ['name' => 'surat_keterangan_pengganti', 'label' => 'Surat Keterangan Pengganti (Opsional)', 'required' => false],
+                ['name' => 'salinan_kepres', 'label' => 'Salinan Kepres (Opsional)', 'required' => false],
+                ['name' => 'izin_tinggal_asing', 'label' => 'Surat Izin Tinggal Bagi Asing (Opsional)', 'required' => false],
             ],
         ],
         2 => [
@@ -55,7 +55,7 @@
             'template_url' => '#',
             'fields' => [
                 ['name' => 'layanan_id', 'value' => '2', 'type' => 'hidden'],
-                ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi', 'placeholder' => 'Masukkan Nomor Registrasi', 'type' => 'text'],
+                ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi (Opsional)', 'placeholder' => 'Masukkan Nomor Registrasi', 'type' => 'text', 'required' => false],
                 ['name' => 'nama', 'label' => 'Nama Kepala Keluarga', 'placeholder' => 'Masukkan Nama Kepala Keluarga', 'type' => 'text'],
                 ['name' => 'alamat', 'label' => 'Alamat', 'placeholder' => 'Masukkan Alamat', 'type' => 'textarea'],
                 ['name' => 'identitas_saksi', 'label' => 'Identitas Saksi', 'placeholder' => 'Masukkan Data Identitas Saksi', 'type' => 'text'],
@@ -67,6 +67,117 @@
                 ['name' => 'fotokopi_kk', 'label' => 'Foto Kartu Keluarga'],
             ],
         ],
+        3 => [
+            'icon' => 'fa-user-times',
+            'color' => 'blue',
+            'id' => 'akte_kematian',
+            'persyaratan' => [
+                'Fotokopi surat kematian dari dokter atau kepala desa/lurah atau yang disebut dengan nama lain...',
+                'Fotokopi Dokumen Perjalanan Republik Indonesia bagi WNI bukan Penduduk atau Fotokopi Dokumen Perjalanan bagi OA.',
+                'Fotokopi KK/KTP yang meninggal dunia.',
+            ],
+            'penjelasan' => [
+                'Mengisi formulir F-2.01.',
+                'Untuk pelayanan secara offline/tatap muka, persyaratan surat kematian yang diserahkan berupa fotokopi bukan asli (asli hanya diperlihatkan).',
+                'Dinas tidak menarik surat kematian asli.',
+                'WNI melampirkan fotokopi KK untuk verifikasi data yang tercantum dalam formulir F-2.01.',
+                'Untuk pelayanan online/Daring, persyaratan yang discan/ difoto untuk diunggah harus aslinya.',
+                'WNI dan OA tidak perlu melampirkan fotokopi KTP-el saksi, karena identitasnya sudah tercantum dalam formulir F-2.01.',
+                'WNI bukan penduduk menyerahkan fotokopi dokumen perjalanan RI yang meninggal dunia.',
+                'Pencatatan Kematian dilaporkan tidak hanya oleh anak atau ahli waris tetapi dapat juga dilaporkan oleh keluarga lainnya, termasuk ketua RT.',
+                'Dalam hal subjek akta tidak tercantum dalam KK dan database kependudukan, kutipan akta kematian diterbitkan tanpa NIK.',
+                'Dinas menerbitkan kutipan akta kematian.',
+            ],
+            'template_url' => '#',
+            'fields' => [ 
+            ['name' => 'layanan_id', 'value' => '3', 'type' => 'hidden'],
+            ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi (Opsional)', 'placeholder' => 'Masukkan Nomor Registrasi', 'type' => 'text', 'required' => false],
+            ['type' => 'heading', 'label' => 'Data Pelapor'],
+            ['name' => 'nik_pelapor', 'label' => 'NIK Pelapor', 'placeholder' => 'Masukkan 16 digit NIK Pelapor', 'type' => 'text', 'maxlength' => '16'],
+            ['name' => 'nomor_kk_pelapor', 'label' => 'Nomor KK Pelapor (Opsional)', 'placeholder' => 'Masukkan Nomor KK Pelapor', 'type' => 'text', 'maxlength' => '16', 'required' => false],
+            ['name' => 'nama_pelapor', 'label' => 'Nama Lengkap Pelapor', 'placeholder' => 'Masukkan Nama Lengkap Pelapor', 'type' => 'text'],
+            ['name' => 'hubungan_pelapor', 'label' => 'Hubungan dengan Jenazah', 'placeholder' => 'Contoh: Anak / Suami / Saudara / Ketua RT', 'type' => 'text'],
+            
+            ['type' => 'heading', 'label' => 'Identitas Jenazah'],
+            ['name' => 'nik_almarhum', 'label' => 'NIK Jenazah (Opsional)', 'placeholder' => 'Masukkan 16 digit NIK', 'type' => 'text', 'maxlength' => '16', 'required' => false],
+            ['name' => 'nama_almarhum', 'label' => 'Nama Lengkap Jenazah', 'placeholder' => 'Masukkan Nama Lengkap Jenazah', 'type' => 'text'],
+            
+            ['type' => 'heading', 'label' => 'Rincian Kematian'],
+            ['name' => 'tgl_meninggal', 'label' => 'Tanggal Kematian', 'placeholder' => 'Pilih Tanggal Kematian', 'type' => 'date'],
+            ['name' => 'tempat_meninggal', 'label' => 'Tempat Kematian', 'placeholder' => 'Contoh: Rumah Sakit / Rumah / Perjalanan', 'type' => 'text'],
+            ['name' => 'sebab_meninggal', 'label' => 'Sebab Kematian (Opsional)', 'placeholder' => 'Contoh: Sakit biasa / Kecelakaan / dll', 'type' => 'text', 'required' => false],
+            ['name' => 'yang_menerangkan', 'label' => 'Yang Menerangkan Kematian (Opsional)', 'placeholder' => 'Contoh: Dokter / Kepala Desa / Polisi', 'type' => 'text', 'required' => false],
+            
+            ['type' => 'heading', 'label' => 'Data Saksi (Opsional)'],
+            ['name' => 'nik_saksi_1', 'label' => 'NIK Saksi 1', 'placeholder' => 'Masukkan 16 digit NIK Saksi 1', 'type' => 'text', 'maxlength' => '16', 'required' => false],
+            ['name' => 'nama_saksi_1', 'label' => 'Nama Lengkap Saksi 1', 'placeholder' => 'Masukkan Nama Lengkap Saksi 1', 'type' => 'text', 'required' => false],
+            ['name' => 'nik_saksi_2', 'label' => 'NIK Saksi 2', 'placeholder' => 'Masukkan 16 digit NIK Saksi 2', 'type' => 'text', 'maxlength' => '16', 'required' => false],
+            ['name' => 'nama_saksi_2', 'label' => 'Nama Lengkap Saksi 2', 'placeholder' => 'Masukkan Nama Lengkap Saksi 2', 'type' => 'text', 'required' => false],
+        ],
+        'files' => [
+            ['name' => 'surat_keterangan_kematian', 'label' => 'Scan/Foto Asli Surat Kematian'],
+            ['name' => 'kartu_keluarga', 'label' => 'Scan/Foto Asli KK yang Meninggal (Opsional)', 'required' => false],
+            ['name' => 'ktp_almarhum', 'label' => 'Scan/Foto Asli KTP yang Meninggal (Opsional)', 'required' => false],
+            ['name' => 'dokumen_perjalanan', 'label' => 'Dokumen Perjalanan (Opsional - Khusus Orang Asing)', 'required' => false],
+        ],
+        ],
+
+        4 => [
+            'icon' => 'fa-exclamation-triangle',
+            'color' => 'blue',
+            'id' => 'lahir_mati',
+            'persyaratan' => [
+                'Fotokopi surat keterangan lahir mati, yaitu dari rumah sakit/Puskesmas/ fasilitas kesehatan/dokter/bidan, surat keterangan lahir mati dari nakhoda kapal laut/kapten pesawat terbang, atau dari kepala desa/lurah jika lahir mati di rumah/tempat lain.',
+                'Fotokopi KK Orang Tua.',
+            ],
+            'penjelasan' => [
+                'Mengisi formulir F-2.01.',
+                'Untuk pelayanan secara offline/tatap muka, persyaratan surat keterangan lahir mati yang diserahkan berupa fotokopi bukan asli (asli hanya diperlihatkan).',
+                'Dinas tidak menarik surat keterangan lahir mati asli.',
+                'Melampirkan fotokopi KK untuk verifikasi data yang tercantum dalam formulir F-2.01.',
+                'Untuk pelayanan online/Daring, persyaratan yang discan/ difoto untuk diunggah harus aslinya.',
+                'Dinas menerbitkan surat keterangan lahir mati.',
+            ],
+            'template_url' => '#',
+            'fields' => [
+                ['name' => 'layanan_id', 'value' => '4', 'type' => 'hidden'],
+                ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi (Opsional)', 'placeholder' => 'Masukkan Nomor Registrasi', 'type' => 'text', 'required' => false],
+                
+                ['type' => 'heading', 'label' => 'Data Pelapor'],
+                ['name' => 'nik_pelapor', 'label' => 'NIK Pelapor', 'placeholder' => 'Masukkan 16 digit NIK Pelapor', 'type' => 'text', 'maxlength' => '16'],
+                ['name' => 'nama_pelapor', 'label' => 'Nama Lengkap Pelapor', 'placeholder' => 'Masukkan Nama Lengkap Pelapor', 'type' => 'text'],
+                ['name' => 'hubungan_pelapor', 'label' => 'Hubungan dengan Bayi', 'placeholder' => 'Contoh: Ayah / Ibu / Bidan / Keluarga', 'type' => 'text'],
+                
+                ['type' => 'heading', 'label' => 'Rincian Lahir Mati'],
+                ['name' => 'tgl_lahir', 'label' => 'Tanggal Lahir Mati', 'placeholder' => 'Pilih Tanggal Kejadian', 'type' => 'date'],
+                ['name' => 'tempat_lahir', 'label' => 'Tempat Kejadian', 'placeholder' => 'Contoh: RS / Puskesmas / Rumah', 'type' => 'text'],
+                ['name' => 'lama_kandungan', 'label' => 'Lama Kandungan (Bulan)', 'placeholder' => 'Berapa bulan usia kehamilan', 'type' => 'text'],
+                ['name' => 'penolong_persalinan', 'label' => 'Penolong Persalinan', 'placeholder' => 'Contoh: Dokter / Bidan / Lainnya', 'type' => 'text'],
+                
+                ['type' => 'heading', 'label' => 'Data Bayi (Opsional)'],
+                ['name' => 'nama_bayi', 'label' => 'Nama Bayi', 'placeholder' => 'Isi jika sudah diberi nama', 'type' => 'text', 'required' => false],
+                ['name' => 'jenis_kelamin', 'label' => 'Jenis Kelamin Bayi', 'type' => 'select', 'options' => ['Laki-laki' => 'Laki-laki', 'Perempuan' => 'Perempuan'], 'required' => false],
+                
+                ['type' => 'heading', 'label' => 'Data Orang Tua'],
+                ['name' => 'nik_ayah', 'label' => 'NIK Ayah', 'placeholder' => 'Masukkan 16 digit NIK Ayah', 'type' => 'text', 'maxlength' => '16'],
+                ['name' => 'nama_ayah', 'label' => 'Nama Ayah', 'placeholder' => 'Masukkan Nama Lengkap Ayah', 'type' => 'text'],
+                ['name' => 'nik_ibu', 'label' => 'NIK Ibu', 'placeholder' => 'Masukkan 16 digit NIK Ibu', 'type' => 'text', 'maxlength' => '16'],
+                ['name' => 'nama_ibu', 'label' => 'Nama Ibu', 'placeholder' => 'Masukkan Nama Lengkap Ibu', 'type' => 'text'],
+
+                ['type' => 'heading', 'label' => 'Data Saksi (Opsional)'],
+                ['name' => 'nik_saksi_1', 'label' => 'NIK Saksi 1', 'placeholder' => 'Masukkan 16 digit NIK Saksi 1', 'type' => 'text', 'maxlength' => '16', 'required' => false],
+                ['name' => 'nama_saksi_1', 'label' => 'Nama Lengkap Saksi 1', 'placeholder' => 'Masukkan Nama Lengkap Saksi 1', 'type' => 'text', 'required' => false],
+                ['name' => 'nik_saksi_2', 'label' => 'NIK Saksi 2', 'placeholder' => 'Masukkan 16 digit NIK Saksi 2', 'type' => 'text', 'maxlength' => '16', 'required' => false],
+                ['name' => 'nama_saksi_2', 'label' => 'Nama Lengkap Saksi 2', 'placeholder' => 'Masukkan Nama Lengkap Saksi 2', 'type' => 'text', 'required' => false],
+            ],
+            'files' => [
+                ['name' => 'surat_keterangan_lahir_mati', 'label' => 'Scan/Foto Asli Surat Lahir Mati'],
+                ['name' => 'kk_orangtua', 'label' => 'Scan/Foto Asli Kartu Keluarga (KK) Orang Tua'],
+                ['name' => 'ktp_ayah', 'label' => 'Scan/Foto Asli KTP Ayah (Opsional)', 'required' => false],
+                ['name' => 'ktp_ibu', 'label' => 'Scan/Foto Asli KTP Ibu (Opsional)', 'required' => false],
+            ],
+        ],
+
         5 => [
             'icon' => 'fa-ring',
             'color' => 'blue',
@@ -88,9 +199,9 @@
                 ['name' => 'nomor_antrian', 'label' => 'Kode Antrian', 'type' => 'text', 'placeholder' => 'Masukkan kode antrian Anda'],
                 ['name' => 'tanggal_perkawinan', 'label' => 'Tanggal Perkawinan', 'type' => 'date'],
                 ['name' => 'nama_lengkap_suami', 'label' => 'Nama Suami Lengkap', 'type' => 'text', 'placeholder' => 'Nama sesuai KTP'],
-                ['name' => 'nik_suami', 'label' => 'NIK Suami', 'type' => 'number', 'placeholder' => '16 digit NIK'],
+                ['name' => 'nik_suami', 'label' => 'NIK Suami', 'type' => 'text', 'maxlength' => '16', 'placeholder' => '16 digit NIK'],
                 ['name' => 'nama_lengkap_istri', 'label' => 'Nama Istri Lengkap', 'type' => 'text', 'placeholder' => 'Nama sesuai KTP'],
-                ['name' => 'nik_istri', 'label' => 'NIK Istri', 'type' => 'number', 'placeholder' => '16 digit NIK'],
+                ['name' => 'nik_istri', 'label' => 'NIK Istri', 'type' => 'text', 'maxlength' => '16', 'placeholder' => '16 digit NIK'],
             ],
             'files' => [
                 ['name' => 'akta_pernikahan', 'label' => 'Upload Akta Pernikahan (Opsional)', 'required' => false],
@@ -135,6 +246,7 @@
             </svg>
         </div>
     </section>
+    
     <section class="py-12 bg-gray-50 -mt-6 relative z-10">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-8 bg-blue-50 border border-blue-200 rounded-2xl p-5 reveal shadow-sm">
@@ -181,7 +293,7 @@
                         ]);
                     @endphp
                     <div class="reveal" style="animation-delay: {{ $loop->index * 100 }}ms">
-                        <button onclick='openServiceModal({{ $configJson }}, {{ json_encode($serviceName) }})'
+                        <button id="btn-layanan-{{ $layanan->layanan_id }}" onclick='openServiceModal({{ $configJson }}, {{ json_encode($serviceName) }})'
                                 class="service-card group bg-white rounded-2xl p-6 text-center
                                        hover:shadow-2xl transition-all duration-300 hover:-translate-y-1
                                        border-2 border-gray-100 hover:border-{{ $serviceColor }}-400 min-h-[180px] flex flex-col w-full">
@@ -207,6 +319,7 @@
             </div>
         </div>
     </section>
+    
     <section class="py-12 bg-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-10 reveal">
@@ -238,6 +351,7 @@
         </div>
     </section>
 </main>
+
 <div id="serviceModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
     <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
@@ -271,19 +385,7 @@
                     @endforeach
                 </div>
             </div>
-            @if ($errors->any())
-            <div class="mx-5 mt-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl">
-                <div class="flex items-center mb-2">
-                    <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
-                    <span class="text-red-800 font-bold text-sm">Terjadi Kesalahan Validasi:</span>
-                </div>
-                <ul class="list-disc list-inside text-xs text-red-600 space-y-1">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
+            
             <form id="serviceForm" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div id="step1" class="step-content p-5 space-y-5">
@@ -436,6 +538,7 @@
     let currentStep = 1;
     let currentConfig = {};
     let currentServiceName = '';
+    
     function reveal() {
         document.querySelectorAll('.reveal').forEach(el => {
             if (el.getBoundingClientRect().top < window.innerHeight - 50) el.classList.add('active');
@@ -443,6 +546,7 @@
     }
     window.addEventListener('scroll', reveal);
     window.addEventListener('load', reveal);
+    
     function openServiceModal(config, serviceName) {
         currentConfig = config;
         currentServiceName = serviceName;
@@ -456,11 +560,17 @@
             form.action = "{{ route('kk.store') }}";
         } else if (config.id === 'akte_kelahiran') {
             form.action = "{{ route('aktelahir.store') }}";
+        } else if (config.id === 'akte_kematian') {
+            form.action = "{{ route('akte-kematian.store') }}";
+        } else if (config.id === 'lahir_mati') { 
+            form.action = "{{ route('lahirmati.store') }}";
         } else {
             form.action = "#";
         }
+        
         document.getElementById('infoLayanan').textContent =
             `Layanan ${serviceName} adalah layanan kependudukan yang dapat diajukan secara online melalui portal Disdukcapil Kabupaten Toba. Proses verifikasi dilakukan oleh petugas dalam 2-3 hari kerja.`;
+        
         const ul = document.getElementById('listPersyaratan');
         ul.innerHTML = config.persyaratan.map((p, i) => `
             <li class="flex items-start gap-3 bg-white border border-gray-100 rounded-xl p-3">
@@ -470,6 +580,7 @@
                 <span class="text-sm text-gray-700 leading-relaxed">${p}</span>
             </li>
         `).join('');
+        
         const ol = document.getElementById('listPenjelasan');
         ol.innerHTML = config.penjelasan.map((p, i) => `
             <li class="flex items-start gap-3">
@@ -479,23 +590,40 @@
                 <span class="text-sm text-gray-700 leading-relaxed">${p}</span>
             </li>
         `).join('');
+        
         document.getElementById('btnDownloadTemplate').href = config.template_url;
         const formFields = document.getElementById('formFields');
         const hiddenAndText = config.fields.filter(f => f.type !== 'file');
+        
         formFields.innerHTML = hiddenAndText.map(field => {
+            // Abaikan input hidden
             if (field.type === 'hidden') {
                 return `<input type="hidden" name="${field.name}" value="${field.value}">`;
             }
+            
+            // Render Heading
+            if (field.type === 'heading') {
+                return `
+                    <div class="col-span-1 md:col-span-2 mt-6 mb-2 border-b border-gray-200 pb-2">
+                        <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wide">
+                            ${field.label}
+                        </h3>
+                    </div>
+                `;
+            }
+
+            // Render form normal
             const isFullWidth = field.type === 'textarea' ? 'md:col-span-2' : '';
             return `
                 <div class="${isFullWidth}">
                     <label class="block text-xs font-semibold text-gray-600 mb-1">
-                        ${field.label} <span class="text-red-400">*</span>
+                        ${field.label} ${field.required !== false ? '<span class="text-red-400">*</span>' : ''}
                     </label>
                     ${renderField(field)}
                 </div>
             `;
         }).join('');
+        
         const fileFields = document.getElementById('fileFields');
         fileFields.innerHTML = config.files.map(file => `
             <div>
@@ -509,31 +637,49 @@
                     <p class="text-sm font-semibold text-gray-600">Pilih File PDF</p>
                     <p class="text-[10px] text-gray-400 mt-1 uppercase tracking-wider">Format: PDF</p>
                     <input type="file" name="${file.name}" accept=".pdf"
-                           ${file.required !== false ? 'required' : ''}
-                           class="hidden" onchange="handleFileSelect(this, '${file.name}')">
+                           class="hidden file-upload-input" onchange="handleFileSelect(this, '${file.name}')">
                 </label>
                 <div id="name-${file.name}" class="mt-1.5 px-2 text-[11px] text-blue-600 font-medium hidden">
                     <i class="fas fa-check-circle mr-1"></i><span class="file-label"></span>
                 </div>
             </div>
         `).join('');
+        
         goToStep(1);
         document.getElementById('serviceModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
+    
     function renderField(field) {
         const cls = 'form-input';
+        const isRequired = field.required !== false ? 'required' : '';
+        
+        // Cek jika ini adalah kolom NIK atau KK untuk memberlakukan filter Angka
+        let extraAttributes = '';
+        if (field.name.includes('nik') || field.name.includes('nomor_kk')) {
+            // Filter otomatis: Hapus selain angka, potong otomatis maksimal 16 digit
+            extraAttributes = `oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 16);" maxlength="16"`;
+        }
+
         if (field.type === 'textarea') {
-            return `<textarea name="${field.name}" placeholder="${field.placeholder || ''}" class="${cls} h-24 resize-none" required></textarea>`;
+            return `<textarea name="${field.name}" placeholder="${field.placeholder || ''}" class="${cls} h-24 resize-none" ${isRequired}></textarea>`;
         }
         if (field.type === 'select') {
-            return `<select name="${field.name}" class="${cls}" required>
+            // Perbaikan untuk mencegah error map is not a function jika array berbentuk object di PHP
+            let optionsHtml = '';
+            if (Array.isArray(field.options)) {
+                optionsHtml = field.options.map(o => `<option value="${o}">${o}</option>`).join('');
+            } else if (typeof field.options === 'object') {
+                optionsHtml = Object.entries(field.options).map(([val, label]) => `<option value="${val}">${label}</option>`).join('');
+            }
+            return `<select name="${field.name}" class="${cls}" ${isRequired}>
                 <option value="">Pilih...</option>
-                ${field.options.map(o => `<option value="${o}">${o}</option>`).join('')}
+                ${optionsHtml}
             </select>`;
         }
-        return `<input type="${field.type}" name="${field.name}" placeholder="${field.placeholder || ''}" class="${cls}" required>`;
+        return `<input type="${field.type}" name="${field.name}" placeholder="${field.placeholder || ''}" class="${cls}" ${extraAttributes} ${isRequired}>`;
     }
+    
     function goToStep(step) {
         currentStep = step;
         document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
@@ -572,19 +718,34 @@
         document.getElementById('modalContent').scrollTop = 0;
         if (step === 4) buildSummary();
     }
+    
     function validateAndGoStep3() {
         const step2 = document.getElementById('step2');
         const inputs = step2.querySelectorAll('input[required], textarea[required], select[required]');
         let valid = true;
+        let errorMessage = 'Harap lengkapi semua data yang diperlukan.';
+
         inputs.forEach(input => {
             input.style.borderColor = '';
-            if (!input.value.trim()) {
+            let val = input.value.trim();
+
+            if (!val) {
                 input.style.borderColor = '#ef4444';
                 valid = false;
+            } 
+            // Validasi Khusus: Pastikan NIK / KK Tepat 16 Digit
+            else if ((input.name.includes('nik') || input.name.includes('nomor_kk')) && val.length !== 16) {
+                input.style.borderColor = '#ef4444';
+                valid = false;
+                
+                // Ambil label dari input yang bersangkutan (hilangkan tanda bintang)
+                let labelText = input.previousElementSibling.innerText.replace('*','').trim();
+                errorMessage = `Isian <b>${labelText}</b> harus tepat 16 angka!`;
             }
         });
+
         if (!valid) {
-            showToast('Harap lengkapi semua data yang diperlukan.', 'error');
+            showToast(errorMessage, 'error');
             return;
         }
         goToStep(3);
@@ -594,26 +755,27 @@
         const summary = document.getElementById('summaryData');
         let html = '';
         currentConfig.fields.forEach(f => {
-            if (f.type === 'hidden' || f.type === 'file') return;
+            if (f.type === 'hidden' || f.type === 'file' || f.type === 'heading') return;
             const el = document.querySelector(`[name="${f.name}"]`);
             const val = el ? el.value : '-';
             html += `
                 <div class="flex justify-between py-1.5 border-b border-gray-100 last:border-0">
-                    <span class="text-gray-500 text-xs">${f.label}</span>
+                    <span class="text-gray-500 text-xs">${f.label.replace('*','').trim()}</span>
                     <span class="font-semibold text-gray-800 text-xs text-right max-w-[60%] truncate">${val || '-'}</span>
                 </div>`;
         });
         currentConfig.files.forEach(f => {
             const el = document.querySelector(`[name="${f.name}"]`);
-            const val = el && el.files[0] ? el.files[0].name : '(belum dipilih)';
+            const val = el && el.files[0] ? el.files[0].name : '(belum diunggah)';
             html += `
                 <div class="flex justify-between py-1.5 border-b border-gray-100 last:border-0">
-                    <span class="text-gray-500 text-xs">${f.label}</span>
+                    <span class="text-gray-500 text-xs">${f.label.replace('*','').trim()}</span>
                     <span class="font-semibold text-xs text-right max-w-[60%] truncate ${el && el.files[0] ? 'text-green-600' : 'text-gray-400'}">${val}</span>
                 </div>`;
         });
         summary.innerHTML = html;
     }
+    
     function handleFileSelect(input, fieldName) {
         const displayDiv = document.getElementById(`name-${fieldName}`);
         const icon = document.getElementById(`icon-${fieldName}`);
@@ -626,25 +788,96 @@
             if (icon) { icon.className = 'fas fa-file-pdf text-2xl text-gray-400 mb-2'; }
         }
     }
+    
     function showToast(message, type = 'error') {
         const colors = { error: 'bg-red-500', success: 'bg-green-500' };
         const toast = document.createElement('div');
         toast.className = `fixed top-5 right-5 z-[9999] px-5 py-3 rounded-xl text-white text-sm font-semibold shadow-lg ${colors[type]} transition-all`;
         toast.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'} mr-2"></i>${message}`;
         document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3500);
+        setTimeout(() => toast.remove(), 4000);
     }
-    document.getElementById('serviceForm').addEventListener('submit', function () {
+    
+    // --- FITUR VALIDASI BERKAS SEBELUM DIKIRIM ---
+    document.getElementById('serviceForm').addEventListener('submit', function (e) {
+        let missingFiles = [];
+        
+        currentConfig.files.forEach(f => {
+            if (f.required !== false) { 
+                const fileInput = document.querySelector(`input[name="${f.name}"]`);
+                if (!fileInput || fileInput.files.length === 0) {
+                    let cleanLabel = f.label.replace(/<[^>]*>?/gm, '').replace('(Opsional)', '').trim();
+                    missingFiles.push(cleanLabel);
+                }
+            }
+        });
+
+        if (missingFiles.length > 0) {
+            e.preventDefault(); 
+            
+            const errorHtml = "Anda belum mengunggah dokumen yang diwajibkan berikut:<br><ul class='text-left mt-3 list-disc pl-5 font-bold text-gray-700'>" +
+                                 missingFiles.map(file => `<li class="mb-1">${file}</li>`).join('') +
+                                 "</ul>";
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Data Belum Lengkap!',
+                html: errorHtml,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Baik, saya akan lengkapi'
+            });
+            
+            goToStep(3); 
+            return false;
+        }
+
         Swal.fire({
             title: 'Memproses...',
             allowOutsideClick: false,
             didOpen: () => Swal.showLoading()
         });
     });
+    
     function closeModal() {
         document.getElementById('serviceModal').classList.add('hidden');
         document.body.style.overflow = 'auto';
     }
+
+    // --- TAMBAHAN BARU: POP-UP NOTIFIKASI ERROR/SUCCESS DARI CONTROLLER ---
+    @if(session('error'))
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal Memproses!',
+                html: '{!! session("error") !!}',
+                confirmButtonColor: '#d33'
+            });
+        });
+    @endif
+
+    @if(session('success'))
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil Terkirim!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#16a34a'
+            });
+        });
+    @endif
+    
+    // --- FITUR AUTO-RECOVERY MODAL ---
+    @if($errors->any() || session('error'))
+        document.addEventListener('DOMContentLoaded', function() {
+            let lastLayananId = "{{ old('layanan_id') }}";
+            if(lastLayananId) {
+                let btn = document.getElementById('btn-layanan-' + lastLayananId);
+                if(btn) {
+                    btn.click();
+                }
+            }
+        });
+    @endif
 </script>
 @endpush
 @endsection
