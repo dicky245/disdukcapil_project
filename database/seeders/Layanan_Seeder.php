@@ -16,11 +16,15 @@ class Layanan_Seeder extends Seeder
         Layanan_Model::query()->delete();
 
         $data_layanan = [
-            ['nama_layanan' => 'Penerbitan Kartu Keluarga Baru'],
-            ['nama_layanan' => 'Penerbitan Akte Kelahiran'],
+            ['nama_layanan' => 'PENERBITAN KARTU KELUARGA KARENA PERUBAHAN DATA'],
+            ['nama_layanan' => 'PENERBITAN AKTE KELAHIRAN'],
             ['nama_layanan' => 'Penerbitan Akte Kematian'],
             ['nama_layanan' => 'Penerbitan Akte Lahir Mati'],
             ['nama_layanan' => 'Penerbitan Akte Perkawinan'],
+            ['nama_layanan' => 'PENERBITAN KARTU KELUARGA BARU KARENA PENGGANTIAN KEPALA KELUARGA (KEMATIAN KEPALA KELUARGA)'],
+            ['nama_layanan' => 'PENERBITAN KARTU KELUARGA KARENA HILANG/RUSAK'],
+            ['nama_layanan' => 'PENERBITAN KARTU KELUARGA BARU KARENA PISAH KK DALAM 1 (SATU) ALAMAT'],
+            
         ];
 
         foreach ($data_layanan as $layanan) {

@@ -9,36 +9,5 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('kk', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('uuid')->unique();
-            $table->foreignId('layanan_id')->constrained(
-                table: 'layanan',
-                column: 'layanan_id'
-            )->onDelete('cascade');
-            $table->string('nomor_registrasi')->unique();
-            $table->string('nama');
-            $table->string('alamat');
-            $table->string('kutipan_perkawinan');
-            $table->string('keterangan_pindah')->nullable();
-            $table->string('kk_lama');
-            $table->string('surat_keterangan_pengganti');
-            $table->string('salinan_kepres');
-            $table->string('izin_tinggal_asing')->nullable();
-            $table->string('alasan_penolakan')->nullable();
-            $table->enum('status',['Dokumen Diterima', 'Verifikasi Data','Proses Cetak', 'Siap Pengambilan','Tolak'])->default('Dokumen Diterima');
-            $table->softDeletes();
-            $table->timestamps();
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('kk');
-    }
+    
 };

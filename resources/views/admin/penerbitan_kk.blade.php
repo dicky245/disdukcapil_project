@@ -44,7 +44,7 @@
                 <tr>
                     <th class="p-4 text-left">No</th>
                     <th class="p-4 text-left">Nama</th>
-                    <th class="p-4 text-left">Alamat</th>
+                    <th class="p-4 text-left">Jenis</th>
                     <th class="p-4 text-center">Status</th>
                     <th class="p-4 text-center">Aksi</th>
                 </tr>
@@ -54,7 +54,7 @@
                 <tr class="hover:bg-gray-50">
                     <td class="p-4">{{ $loop->iteration }}</td>
                     <td class="p-4 font-semibold">{{ $data->nama }}</td>
-                    <td class="p-4">{{ $data->alamat }}</td>
+                    <td class="p-4">{{ $data->jenis }}</td>
                     <td class="p-4 text-center">
                         <span class="px-3 py-1 rounded-full text-xs font-bold
                             @if($data->status == 'Dokumen Diterima') bg-gray-100 text-gray-700
@@ -68,19 +68,19 @@
                     </td>
                     <td class="p-4 text-center">
                         <div class="flex flex-col gap-2 items-center">
-                            <a href="{{ route('admin.detail', $data->uuid) }}"
+                            <a href="{{ route('admin.detail', ['uuid' => $data->uuid,'jenis' => $data->jenis]) }}"
                                class="w-28 bg-blue-600 text-white px-3 py-1 rounded text-xs">
                                Detail
                             </a>
                             @if($data->status == 'Dokumen Diterima')
-                            <form action="{{ route('admin.status', $data->uuid) }}" method="POST">
+                            <form action="{{ route('admin.status', ['uuid' => $data->uuid,'jenis' => $data->jenis]) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="status" value="Verifikasi Data">
                                 <button type="button" class="btn-status w-28 bg-green-500 text-white px-3 py-1 rounded text-xs">
                                     Verifikasi
                                 </button>
                             </form>
-                            <form action="{{ route('admin.status', $data->uuid) }}" method="POST">
+                            <form action="{{ route('admin.status', ['uuid' => $data->uuid,'jenis' => $data->jenis]) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="status" value="Tolak">
                                 <input type="hidden" name="alasan" class="input-alasan">
@@ -90,7 +90,7 @@
                             </form>
                             @endif
                             @if($data->status == 'Verifikasi Data')
-                            <form action="{{ route('admin.status', $data->uuid) }}" method="POST">
+                            <form action="{{ route('admin.status', ['uuid' => $data->uuid,'jenis' => $data->jenis]) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="status" value="Proses Cetak">
                                 <button type="button" class="btn-status w-28 bg-yellow-500 text-white px-3 py-1 rounded text-xs">
@@ -99,7 +99,7 @@
                             </form>
                             @endif
                             @if($data->status == 'Proses Cetak')
-                            <form action="{{ route('admin.status', $data->uuid) }}" method="POST">
+                            <form action="{{ route('admin.status', ['uuid' => $data->uuid,'jenis' => $data->jenis]) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="status" value="Siap Pengambilan">
                                 <button type="button" class="btn-status w-28 bg-purple-500 text-white px-3 py-1 rounded text-xs">
@@ -118,38 +118,52 @@
 @push('scripts')
 <script>
 document.querySelectorAll('.btn-status').forEach(btn => {
-    btn.addEventListener('click', function () {
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
         let form = this.closest('form');
         let statusBaru = form.querySelector('input[name="status"]').value;
-        SwalHelper.confirm(
-            `Ubah status menjadi ${statusBaru}?`, 
-            `Data ini akan diperbarui ke status: ${statusBaru}`,
+        SwalHelper.confirmUpdate(
+            'Ubah Status',
+            `Apakah Anda yakin ingin mengubah status?`,
+            `Status akan diperbarui ke: ${statusBaru}`,
             () => form.submit()
         );
     });
 });
 document.querySelectorAll('.btn-tolak').forEach(btn => {
-    btn.addEventListener('click', function () {
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
         let form = this.closest('form');
         let alasan = form.querySelector('.input-alasan');
-        Swal.fire({
-            title: 'Konfirmasi Penolakan',
-            text: 'Apakah Anda yakin ingin menolak permohonan ini?',
-            input: 'textarea',
-            inputPlaceholder: 'Masukkan alasan penolakan...',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, Tolak',
-            cancelButtonText: 'Batal',
-            confirmButtonColor: '#ef4444',
-            inputValidator: (value) => {
-                if (!value) return 'Alasan wajib diisi!';
+        SwalHelper.confirmDelete(
+            'Tolak Permohonan',
+            'Apakah Anda yakin ingin menolak permohonan ini?',
+            'Permohonan yang ditolak tidak dapat dikembalikan.',
+            () => {
+                Swal.fire({
+                    title: 'Alasan Penolakan',
+                    input: 'textarea',
+                    inputPlaceholder: 'Masukkan alasan penolakan...',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, Tolak',
+                    cancelButtonText: 'Batal',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    inputValidator: (value) => {
+                        if (!value) return 'Alasan wajib diisi!';
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        alasan.value = result.value;
+                        form.submit();
+                    }
+                });
             }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                alasan.value = result.value;
-                form.submit();
-            }
-        });
+        );
     });
 });
 @if(session('success'))

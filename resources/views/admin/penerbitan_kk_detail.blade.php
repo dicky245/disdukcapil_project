@@ -30,6 +30,10 @@
                     <span class="font-semibold">{{ $berkas->alamat }}</span>
                 </div>
                 <div class="flex justify-between border-b pb-2">
+                    <span class="text-gray-500">Jenis Layanan</span>
+                    <span class="font-semibold">{{ $jenis }}</span>
+                </div>
+                <div class="flex justify-between border-b pb-2">
                     <span class="text-gray-500">Tanggal Pengajuan</span>
                     <span class="font-semibold">
                         {{ $berkas->created_at->format('d M Y') }}
@@ -48,46 +52,81 @@
                 Dokumen Persyaratan
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="border rounded-lg p-4 text-center hover:shadow">
-                    <p class="text-sm font-semibold mb-3">
-                        Kartu Keluarga Lama
-                    </p>
-                    <a href="{{ asset('storage/'.$berkas->kk_lama) }}"
-                    target="_blank"
-                    class="block w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">
-                        Lihat Berkas
-                    </a>
-                </div>
-                <div class="border rounded-lg p-4 text-center hover:shadow">
-                    <p class="text-sm font-semibold mb-3">
-                        Surat Keterangan Pengganti
-                    </p>
-                    <a href="{{ asset('storage/'.$berkas->surat_keterangan_pengganti) }}"
-                    target="_blank"
-                    class="block w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">
-                        Lihat Berkas
-                    </a>
-                </div>
-                <div class="border rounded-lg p-4 text-center hover:shadow">
-                    <p class="text-sm font-semibold mb-3">
-                        Salinan Kepres
-                    </p>
-                    <a href="{{ asset('storage/'.$berkas->salinan_kepres) }}"
-                    target="_blank"
-                    class="block w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">
-                        Lihat Berkas
-                    </a>
-                </div>
-                <div class="border rounded-lg p-4 text-center hover:shadow">
-                    <p class="text-sm font-semibold mb-3">
-                        Izin Tinggal Asing
-                    </p>
-                    <a href="{{ asset('storage/'.$berkas->izin_tinggal_asing) }}"
-                    target="_blank"
-                    class="block w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">
-                        Lihat Berkas
-                    </a>
-                </div>
+
+                @if($jenis == 'Perubahan Data')
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Formulir F-1.02',
+                        'field' => 'formulir_f102'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KK Lama',
+                        'field' => 'kk_lama'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Formulir F-1.06',
+                        'field' => 'formulir_f106'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Suket Perubahan',
+                        'field' => 'surat_keterangan_perubahan'
+                    ])
+                    @if($berkas->pernyataan_pindah_kk)
+                        @include('admin.partials.dokumen', [
+                            'label' => 'Pernyataan Pindah KK',
+                            'field' => 'pernyataan_pindah_kk'
+                        ])
+                    @endif
+                @endif
+                @if($jenis == 'Ganti Kepala')
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Formulir F-1.02',
+                        'field' => 'formulir_f102'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Akta Kematian',
+                        'field' => 'fotokopi_akta_kematian'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KK Lama',
+                        'field' => 'kk_lama'
+                    ])
+                    @if($berkas->surat_pernyataan_wali)
+                        @include('admin.partials.dokumen', [
+                            'label' => 'Surat Pernyataan Wali',
+                            'field' => 'surat_pernyataan_wali'
+                        ])
+                    @endif
+                @endif
+                @if($jenis == 'Hilang/Rusak')
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Fotokopi KTP',
+                        'field' => 'fotokopi_ktp'
+                    ])
+                    @if($berkas->fotokopi_izin_tinggal)
+                        @include('admin.partials.dokumen', [
+                            'label' => 'Izin Tinggal',
+                            'field' => 'fotokopi_izin_tinggal'
+                        ])
+                    @endif
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Surat Kehilangan/Rusak',
+                        'field' => 'suket_hilang_rusak'
+                    ])
+                @endif
+                @if($jenis == 'Pisah KK')
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Formulir F-1.02',
+                        'field' => 'formulir_f102'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Buku Nikah',
+                        'field' => 'fotokopi_buku_nikah'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KK Lama',
+                        'field' => 'kk_lama'
+                    ])
+                @endif
             </div>
         </div>
     </div>

@@ -53,7 +53,10 @@ Route::prefix('layanan-mandiri')->group(function () {
     Route::post('/{jenis_layanan}', [PageController::class, 'submitLayanan'])->name('layanan-mandiri.submit');
 });
 
-Route::post('/kk/store', [KartKeluargaController::class, 'store'])->name('kk.store');
+Route::post('/kk/store/ubah-data', [KartKeluargaController::class, 'store_perubahan_data'])->name('kk.store');
+Route::post('/kk/store/ganti-kepala-keluarga', [KartKeluargaController::class, 'store_ganti_kepala_kk'])->name('kk.store.gantikepalakk');
+Route::post('/kk/store/kk_hilang_rusak', [KartKeluargaController::class, 'store_kk_hilang_rusak'])->name('kk.store.hilangrusak');
+Route::post('/kk/store/pisah_kk', [KartKeluargaController::class, 'store_pisah_kk'])->name('kk.store.pisahkk');
 Route::post('/akte-kematian/store', [AkteKematianController::class, 'store'])->name('akte-kematian.store');
 Route::post('/lahir-mati/store', [LahirMatiController::class, 'store'])->name('lahir-mati.store');
 Route::post('/penerbitan-akte-kelahiran-pengguna/store',[AkteLahirController::class, 'store'])->name('aktelahir.store');
@@ -156,8 +159,9 @@ Route::prefix('admin')->group(function () {
         // Kartu Keluarga
         Route::prefix('penerbitan-kk')->group(function () {
             Route::get('/', [KartKeluargaController::class, 'daftar_kk'])->name('admin.penerbitan-kk');
-            Route::get('/detail/{uuid}',[KartKeluargaController::class, 'detail'])->name('admin.detail');
-            Route::post('/{uuid}/status',[KartKeluargaController::class, 'updateStatus'])->name('admin.status');
+            Route::get('/detail/{uuid}/{jenis}', [KartKeluargaController::class, 'detail'])->name('admin.detail');
+            Route::post('/{uuid}/{jenis}/status', [KartKeluargaController::class, 'updateStatus'])->name('admin.status');
+            Route::get('/admin/berkas/{uuid}/{jenis}/lihat/{field}',[KartKeluargaController::class, 'lihatBerkas'])->name('admin.lihat-berkas');
         }); 
 
         // Penerbitan Akte Kematian

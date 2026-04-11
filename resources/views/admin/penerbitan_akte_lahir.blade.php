@@ -49,7 +49,7 @@
                 <tr class="bg-blue-700 text-white">
                     <th class="p-4 font-semibold uppercase text-xs">No</th>
                     <th class="p-4 font-semibold uppercase text-xs">Nama Pemohon</th>
-                    <th class="p-4 font-semibold uppercase text-xs">Alamat</th>
+                    <th class="p-4 font-semibold uppercase text-xs">Nomor Registrasi</th>
                     <th class="p-4 font-semibold uppercase text-xs text-center">Status</th>
                     <th class="p-4 font-semibold uppercase text-xs text-center">Aksi</th>
                 </tr>
@@ -58,8 +58,8 @@
                 @foreach ($dataAkteLahir as $data)
                 <tr class="hover:bg-gray-50 transition-colors">
                     <td class="p-4 text-sm text-gray-700">{{ $loop->iteration }}</td>
-                    <td class="p-4 text-sm font-bold text-gray-800">{{ $data->nama }}</td>
-                    <td class="p-4 text-sm text-gray-700">{{ $data->alamat }}</td>
+                    <td class="p-4 text-sm font-bold text-gray-800">{{ $data->nama_pelapor }}</td>
+                    <td class="p-4 text-sm text-gray-700">{{ $data->nomor_registrasi }}</td>
                     <td class="p-4 text-center">
                         <span class="px-3 py-1 rounded-full text-xs font-bold border 
                             {{ $data->status == 'Tolak' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-orange-50 text-orange-600 border-orange-100' }}">
@@ -120,45 +120,56 @@
 @push('scripts')
 <script>
     document.querySelectorAll('.btn-status').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const form = this.closest('form');
-            const statusTarget = form.querySelector('input[name="status"]').value;
-            SwalHelper.confirm(
-                `Ubah status menjadi ${statusTarget}?`,
-                `Permohonan ini akan diperbarui ke tahap: ${statusTarget}`,
-                () => form.submit()
-            );
-        });
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        let form = this.closest('form');
+        let statusBaru = form.querySelector('input[name="status"]').value;
+        SwalHelper.confirmUpdate(
+            'Ubah Status',
+            `Apakah Anda yakin ingin mengubah status?`,
+            `Status akan diperbarui ke: ${statusBaru}`,
+            () => form.submit()
+        );
     });
+});
     document.querySelectorAll('.btn-tolak').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const form = this.closest('form');
-            const inputAlasan = form.querySelector('.input-alasan');
-
-            Swal.fire({
-                title: 'Alasan Penolakan',
-                text: 'Berikan alasan mengapa permohonan ini ditolak',
-                input: 'textarea',
-                inputPlaceholder: 'Tulis alasan di sini...',
-                showCancelButton: true,
-                confirmButtonText: 'Kirim Penolakan',
-                cancelButtonText: 'Batal',
-                confirmButtonColor: '#ef4444',
-                inputValidator: (value) => {
-                    if (!value) {
-                        return 'Alasan penolakan wajib diisi!';
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        let form = this.closest('form');
+        let alasan = form.querySelector('.input-alasan');
+        SwalHelper.confirmDelete(
+            'Tolak Permohonan',
+            'Apakah Anda yakin ingin menolak permohonan ini?',
+            'Permohonan yang ditolak tidak dapat dikembalikan.',
+            () => {
+                Swal.fire({
+                    title: 'Alasan Penolakan',
+                    input: 'textarea',
+                    inputPlaceholder: 'Masukkan alasan penolakan...',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, Tolak',
+                    cancelButtonText: 'Batal',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    inputValidator: (value) => {
+                        if (!value) return 'Alasan wajib diisi!';
                     }
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    inputAlasan.value = result.value;
-                    form.submit();
-                }
-            });
-        });
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        alasan.value = result.value;
+                        form.submit();
+                    }
+                });
+            }
+        );
     });
-    @if(session('success'))
-        SwalHelper.success("{{ session('success') }}");
-    @endif
+});
+@if(session('success'))
+    SwalHelper.success("{{ session('success') }}");
+@endif
 </script>
 @endpush
