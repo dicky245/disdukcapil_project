@@ -200,94 +200,144 @@ $serviceConfig = [
 
     // AKTE KEMATIAN 
     3 => [
-        'icon'         => 'fa-file-medical',
-        'color'        => 'orange',
-        'id'           => 'akte_kematian',
-        'persyaratan'  => [
-            'Surat keterangan kematian dari dokter/rumah sakit',
-            'KTP almarhum/almarhumah',
-            'KK almarhum/almarhumah',
-            'KTP pelapor (anggota keluarga)',
-        ],
-        'penjelasan'   => [
-            'Keluarga mengisi formulir permohonan pencatatan kematian',
-            'Melampirkan semua persyaratan',
-            'Petugas melakukan verifikasi dokumen',
-            'Dinas menerbitkan Kutipan Akta Kematian',
-        ],
-        'fields'       => [
-            ['name' => 'layanan_id',       'value' => '3',  'type' => 'hidden'],
-            ['name' => 'nama_almarhum',    'label' => 'Nama Almarhum/ah',   'placeholder' => 'Nama sesuai KTP',            'type' => 'text'],
-            ['name' => 'nik_almarhum',     'label' => 'NIK Almarhum/ah',    'placeholder' => '16 digit NIK',               'type' => 'number'],
-            ['name' => 'tanggal_meninggal','label' => 'Tanggal Meninggal',  'placeholder' => '',                           'type' => 'date'],
-            ['name' => 'nama_pelapor',     'label' => 'Nama Pelapor',       'placeholder' => 'Nama pelapor sesuai KTP',    'type' => 'text'],
+            'icon' => 'fa-user-times',
+            'color' => 'blue',
+            'id' => 'akte_kematian',
+            'persyaratan' => [
+                'Fotokopi surat kematian dari dokter atau kepala desa/lurah atau yang disebut dengan nama lain...',
+                'Fotokopi Dokumen Perjalanan Republik Indonesia bagi WNI bukan Penduduk atau Fotokopi Dokumen Perjalanan bagi OA.',
+                'Fotokopi KK/KTP yang meninggal dunia.',
+            ],
+            'penjelasan' => [
+                'Mengisi formulir F-2.01.',
+                'Untuk pelayanan secara offline/tatap muka, persyaratan surat kematian yang diserahkan berupa fotokopi bukan asli (asli hanya diperlihatkan).',
+                'Dinas tidak menarik surat kematian asli.',
+                'WNI melampirkan fotokopi KK untuk verifikasi data yang tercantum dalam formulir F-2.01.',
+                'Untuk pelayanan online/Daring, persyaratan yang discan/ difoto untuk diunggah harus aslinya.',
+                'WNI dan OA tidak perlu melampirkan fotokopi KTP-el saksi, karena identitasnya sudah tercantum dalam formulir F-2.01.',
+                'WNI bukan penduduk menyerahkan fotokopi dokumen perjalanan RI yang meninggal dunia.',
+                'Pencatatan Kematian dilaporkan tidak hanya oleh anak atau ahli waris tetapi dapat juga dilaporkan oleh keluarga lainnya, termasuk ketua RT.',
+                'Dalam hal subjek akta tidak tercantum dalam KK dan database kependudukan, kutipan akta kematian diterbitkan tanpa NIK.',
+                'Dinas menerbitkan kutipan akta kematian.',
+            ],
+            'template_url' => '#',
+            'fields' => [ 
+            ['name' => 'layanan_id', 'value' => '3', 'type' => 'hidden'],
+            ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi (Opsional)', 'placeholder' => 'Masukkan Nomor Registrasi', 'type' => 'text', 'required' => false],
+            ['type' => 'heading', 'label' => 'Data Pelapor'],
+            ['name' => 'nik_pelapor', 'label' => 'NIK Pelapor', 'placeholder' => 'Masukkan 16 digit NIK Pelapor', 'type' => 'text', 'maxlength' => '16'],
+            ['name' => 'nomor_kk_pelapor', 'label' => 'Nomor KK Pelapor (Opsional)', 'placeholder' => 'Masukkan Nomor KK Pelapor', 'type' => 'text', 'maxlength' => '16', 'required' => false],
+            ['name' => 'nama_pelapor', 'label' => 'Nama Lengkap Pelapor', 'placeholder' => 'Masukkan Nama Lengkap Pelapor', 'type' => 'text'],
+            ['name' => 'hubungan_pelapor', 'label' => 'Hubungan dengan Jenazah', 'placeholder' => 'Contoh: Anak / Suami / Saudara / Ketua RT', 'type' => 'text'],
+            
+            ['type' => 'heading', 'label' => 'Identitas Jenazah'],
+            ['name' => 'nik_almarhum', 'label' => 'NIK Jenazah (Opsional)', 'placeholder' => 'Masukkan 16 digit NIK', 'type' => 'text', 'maxlength' => '16', 'required' => false],
+            ['name' => 'nama_almarhum', 'label' => 'Nama Lengkap Jenazah', 'placeholder' => 'Masukkan Nama Lengkap Jenazah', 'type' => 'text'],
+            
+            ['type' => 'heading', 'label' => 'Rincian Kematian'],
+            ['name' => 'tgl_meninggal', 'label' => 'Tanggal Kematian', 'placeholder' => 'Pilih Tanggal Kematian', 'type' => 'date'],
+            ['name' => 'tempat_meninggal', 'label' => 'Tempat Kematian', 'placeholder' => 'Contoh: Rumah Sakit / Rumah / Perjalanan', 'type' => 'text'],
+            ['name' => 'sebab_meninggal', 'label' => 'Sebab Kematian (Opsional)', 'placeholder' => 'Contoh: Sakit biasa / Kecelakaan / dll', 'type' => 'text', 'required' => false],
+            ['name' => 'yang_menerangkan', 'label' => 'Yang Menerangkan Kematian (Opsional)', 'placeholder' => 'Contoh: Dokter / Kepala Desa / Polisi', 'type' => 'text', 'required' => false],
+            
+            ['type' => 'heading', 'label' => 'Data Saksi (Opsional)'],
+            ['name' => 'nik_saksi_1', 'label' => 'NIK Saksi 1', 'placeholder' => 'Masukkan 16 digit NIK Saksi 1', 'type' => 'text', 'maxlength' => '16', 'required' => false],
+            ['name' => 'nama_saksi_1', 'label' => 'Nama Lengkap Saksi 1', 'placeholder' => 'Masukkan Nama Lengkap Saksi 1', 'type' => 'text', 'required' => false],
+            ['name' => 'nik_saksi_2', 'label' => 'NIK Saksi 2', 'placeholder' => 'Masukkan 16 digit NIK Saksi 2', 'type' => 'text', 'maxlength' => '16', 'required' => false],
+            ['name' => 'nama_saksi_2', 'label' => 'Nama Lengkap Saksi 2', 'placeholder' => 'Masukkan Nama Lengkap Saksi 2', 'type' => 'text', 'required' => false],
         ],
         'files' => [
-            ['name' => 'surat_kematian_rs', 'label' => 'Surat Keterangan Kematian dari RS/Dokter'],
-            ['name' => 'ktp_almarhum',      'label' => 'KTP Almarhum/ah'],
-            ['name' => 'kk_almarhum',       'label' => 'Kartu Keluarga'],
-            ['name' => 'ktp_pelapor',       'label' => 'KTP Pelapor'],
+            ['name' => 'surat_keterangan_kematian', 'label' => 'Scan/Foto Asli Surat Kematian'],
+            ['name' => 'kartu_keluarga', 'label' => 'Scan/Foto Asli KK yang Meninggal (Opsional)', 'required' => false],
+            ['name' => 'ktp_almarhum', 'label' => 'Scan/Foto Asli KTP yang Meninggal (Opsional)', 'required' => false],
+            ['name' => 'dokumen_perjalanan', 'label' => 'Dokumen Perjalanan (Opsional - Khusus Orang Asing)', 'required' => false],
         ],
     ],
-
     4 => [
-        'icon'         => 'fa-baby-carriage',
-        'color'        => 'orange',
-        'id'           => 'akte_lahir_mati',
-        'persyaratan'  => [
-            'Surat keterangan dari bidan/dokter bahwa bayi lahir mati',
-            'KTP kedua orang tua',
-            'Buku nikah/akta perkawinan orang tua',
+            'icon' => 'fa-exclamation-triangle',
+            'color' => 'blue',
+            'id' => 'lahir_mati',
+            'persyaratan' => [
+                'Fotokopi surat keterangan lahir mati, yaitu dari rumah sakit/Puskesmas/ fasilitas kesehatan/dokter/bidan, surat keterangan lahir mati dari nakhoda kapal laut/kapten pesawat terbang, atau dari kepala desa/lurah jika lahir mati di rumah/tempat lain.',
+                'Fotokopi KK Orang Tua.',
+            ],
+            'penjelasan' => [
+                'Mengisi formulir F-2.01.',
+                'Untuk pelayanan secara offline/tatap muka, persyaratan surat keterangan lahir mati yang diserahkan berupa fotokopi bukan asli (asli hanya diperlihatkan).',
+                'Dinas tidak menarik surat keterangan lahir mati asli.',
+                'Melampirkan fotokopi KK untuk verifikasi data yang tercantum dalam formulir F-2.01.',
+                'Untuk pelayanan online/Daring, persyaratan yang discan/ difoto untuk diunggah harus aslinya.',
+                'Dinas menerbitkan surat keterangan lahir mati.',
+            ],
+            'template_url' => '#',
+            'fields' => [
+                ['name' => 'layanan_id', 'value' => '4', 'type' => 'hidden'],
+                ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi (Opsional)', 'placeholder' => 'Masukkan Nomor Registrasi', 'type' => 'text', 'required' => false],
+                
+                ['type' => 'heading', 'label' => 'Data Pelapor'],
+                ['name' => 'nik_pelapor', 'label' => 'NIK Pelapor', 'placeholder' => 'Masukkan 16 digit NIK Pelapor', 'type' => 'text', 'maxlength' => '16'],
+                ['name' => 'nama_pelapor', 'label' => 'Nama Lengkap Pelapor', 'placeholder' => 'Masukkan Nama Lengkap Pelapor', 'type' => 'text'],
+                ['name' => 'hubungan_pelapor', 'label' => 'Hubungan dengan Bayi', 'placeholder' => 'Contoh: Ayah / Ibu / Bidan / Keluarga', 'type' => 'text'],
+                
+                ['type' => 'heading', 'label' => 'Rincian Lahir Mati'],
+                ['name' => 'tgl_lahir', 'label' => 'Tanggal Lahir Mati', 'placeholder' => 'Pilih Tanggal Kejadian', 'type' => 'date'],
+                ['name' => 'tempat_lahir', 'label' => 'Tempat Kejadian', 'placeholder' => 'Contoh: RS / Puskesmas / Rumah', 'type' => 'text'],
+                ['name' => 'lama_kandungan', 'label' => 'Lama Kandungan (Bulan)', 'placeholder' => 'Berapa bulan usia kehamilan', 'type' => 'text'],
+                ['name' => 'penolong_persalinan', 'label' => 'Penolong Persalinan', 'placeholder' => 'Contoh: Dokter / Bidan / Lainnya', 'type' => 'text'],
+                
+                ['type' => 'heading', 'label' => 'Data Bayi (Opsional)'],
+                ['name' => 'nama_bayi', 'label' => 'Nama Bayi', 'placeholder' => 'Isi jika sudah diberi nama', 'type' => 'text', 'required' => false],
+                ['name' => 'jenis_kelamin', 'label' => 'Jenis Kelamin Bayi', 'type' => 'select', 'options' => ['Laki-laki' => 'Laki-laki', 'Perempuan' => 'Perempuan'], 'required' => false],
+                
+                ['type' => 'heading', 'label' => 'Data Orang Tua'],
+                ['name' => 'nik_ayah', 'label' => 'NIK Ayah', 'placeholder' => 'Masukkan 16 digit NIK Ayah', 'type' => 'text', 'maxlength' => '16'],
+                ['name' => 'nama_ayah', 'label' => 'Nama Ayah', 'placeholder' => 'Masukkan Nama Lengkap Ayah', 'type' => 'text'],
+                ['name' => 'nik_ibu', 'label' => 'NIK Ibu', 'placeholder' => 'Masukkan 16 digit NIK Ibu', 'type' => 'text', 'maxlength' => '16'],
+                ['name' => 'nama_ibu', 'label' => 'Nama Ibu', 'placeholder' => 'Masukkan Nama Lengkap Ibu', 'type' => 'text'],
+
+                ['type' => 'heading', 'label' => 'Data Saksi (Opsional)'],
+                ['name' => 'nik_saksi_1', 'label' => 'NIK Saksi 1', 'placeholder' => 'Masukkan 16 digit NIK Saksi 1', 'type' => 'text', 'maxlength' => '16', 'required' => false],
+                ['name' => 'nama_saksi_1', 'label' => 'Nama Lengkap Saksi 1', 'placeholder' => 'Masukkan Nama Lengkap Saksi 1', 'type' => 'text', 'required' => false],
+                ['name' => 'nik_saksi_2', 'label' => 'NIK Saksi 2', 'placeholder' => 'Masukkan 16 digit NIK Saksi 2', 'type' => 'text', 'maxlength' => '16', 'required' => false],
+                ['name' => 'nama_saksi_2', 'label' => 'Nama Lengkap Saksi 2', 'placeholder' => 'Masukkan Nama Lengkap Saksi 2', 'type' => 'text', 'required' => false],
+            ],
+            'files' => [
+                ['name' => 'surat_keterangan_lahir_mati', 'label' => 'Scan/Foto Asli Surat Lahir Mati'],
+                ['name' => 'kk_orangtua', 'label' => 'Scan/Foto Asli Kartu Keluarga (KK) Orang Tua'],
+                ['name' => 'ktp_ayah', 'label' => 'Scan/Foto Asli KTP Ayah (Opsional)', 'required' => false],
+                ['name' => 'ktp_ibu', 'label' => 'Scan/Foto Asli KTP Ibu (Opsional)', 'required' => false],
+            ],
         ],
-        'penjelasan'   => [
-            'Orang tua mengisi formulir permohonan',
-            'Melampirkan semua persyaratan',
-            'Petugas melakukan verifikasi',
-            'Dinas menerbitkan Akta Lahir Mati',
-        ],
-        'fields'       => [
-            ['name' => 'layanan_id',    'value' => '4',  'type' => 'hidden'],
-            ['name' => 'nama_ibu',      'label' => 'Nama Ibu',          'placeholder' => 'Nama ibu sesuai KTP',  'type' => 'text'],
-            ['name' => 'nik_ibu',       'label' => 'NIK Ibu',           'placeholder' => '16 digit NIK',          'type' => 'number'],
-            ['name' => 'tanggal_lahir', 'label' => 'Tanggal Kejadian',  'placeholder' => '',                      'type' => 'date'],
-        ],
-        'files' => [
-            ['name' => 'surat_bidan',   'label' => 'Surat Keterangan Bidan/Dokter'],
-            ['name' => 'ktp_orangtua',  'label' => 'KTP Kedua Orang Tua'],
-            ['name' => 'buku_nikah',    'label' => 'Buku Nikah / Akta Perkawinan'],
-        ],
-    ],
 
     // PERKAWINAN 
     5 => [
-        'icon'         => 'fa-ring',
-        'color'        => 'purple',
-        'id'           => 'layanan_pernikahan',
-        'persyaratan'  => [
-            'Kutipan akta kelahiran masing-masing pihak',
-            'Surat keterangan belum pernah kawin dari Kepala Desa/Lurah',
-            'KTP dan KK kedua calon mempelai',
-            'Pas foto berdampingan 4x6 sebanyak 5 lembar',
-        ],
-        'penjelasan'   => [
-            'Penduduk mengisi formulir permohonan pencatatan perkawinan',
-            'Melampirkan semua persyaratan yang ditentukan',
-            'Petugas melakukan verifikasi dokumen',
-            'Dinas menerbitkan Kutipan Akta Perkawinan',
-        ],
-        'fields'       => [
-            ['name' => 'layanan_id',         'value' => '5',  'type' => 'hidden'],
-            ['name' => 'nomor_antrian',      'label' => 'Kode Antrian',        'placeholder' => 'Masukkan kode antrian',  'type' => 'text'],
-            ['name' => 'tanggal_perkawinan', 'label' => 'Tanggal Perkawinan',  'placeholder' => '',                       'type' => 'date'],
-            ['name' => 'nama_lengkap_suami', 'label' => 'Nama Suami Lengkap',  'placeholder' => 'Nama sesuai KTP',        'type' => 'text'],
-            ['name' => 'nik_suami',          'label' => 'NIK Suami',           'placeholder' => '16 digit NIK',           'type' => 'number'],
-            ['name' => 'nama_lengkap_istri', 'label' => 'Nama Istri Lengkap',  'placeholder' => 'Nama sesuai KTP',        'type' => 'text'],
-            ['name' => 'nik_istri',          'label' => 'NIK Istri',           'placeholder' => '16 digit NIK',           'type' => 'number'],
-        ],
-        'files' => [
-            ['name' => 'akta_pernikahan', 'label' => 'Upload Akta Pernikahan (Opsional)', 'required' => false],
-        ],
-    ],
+            'icon' => 'fa-ring',
+            'color' => 'blue',
+            'id' => 'layanan-pernikahan',
+            'persyaratan' => [
+                'Kutipan akta kelahiran masing-masing pihak',
+                'Surat keterangan belum pernah kawin dari Kepala Desa/Lurah',
+                'KTP dan KK kedua calon mempelai',
+                'Pas foto berdampingan 4x6 sebanyak 5 lembar',
+            ],
+            'penjelasan' => [
+                'Penduduk mengisi formulir permohonan pencatatan perkawinan',
+                'Melampirkan semua persyaratan yang ditentukan',
+                'Petugas melakukan verifikasi dokumen',
+                'Dinas menerbitkan Kutipan Akta Perkawinan',
+            ],
+            'template_url' => '#',
+            'fields' => [
+                ['name' => 'nomor_antrian', 'label' => 'Kode Antrian', 'type' => 'text', 'placeholder' => 'Masukkan kode antrian Anda'],
+                ['name' => 'tanggal_perkawinan', 'label' => 'Tanggal Perkawinan', 'type' => 'date'],
+                ['name' => 'nama_lengkap_suami', 'label' => 'Nama Suami Lengkap', 'type' => 'text', 'placeholder' => 'Nama sesuai KTP'],
+                ['name' => 'nik_suami', 'label' => 'NIK Suami', 'type' => 'text', 'maxlength' => '16', 'placeholder' => '16 digit NIK'],
+                ['name' => 'nama_lengkap_istri', 'label' => 'Nama Istri Lengkap', 'type' => 'text', 'placeholder' => 'Nama sesuai KTP'],
+                ['name' => 'nik_istri', 'label' => 'NIK Istri', 'type' => 'text', 'maxlength' => '16', 'placeholder' => '16 digit NIK'],
+            ],
+            'files' => [
+                ['name' => 'akta_pernikahan', 'label' => 'Upload Akta Pernikahan (Opsional)', 'required' => false],
+            ],
 ];
 
 $kategoriLayanan = [
@@ -351,6 +401,7 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
             </svg>
         </div>
     </section>
+    
     <section class="py-12 bg-gray-50 -mt-6 relative z-10">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-10 bg-blue-50 border border-blue-200 rounded-2xl p-5 reveal shadow-sm">
@@ -367,20 +418,57 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                     </div>
                 </div>
             </div>
-            @foreach($kategoriLayanan as $namaKategori => $kategoriConfig)
-                @php
-                    $c      = $colorMap[$kategoriConfig['color']] ?? $colorMap['blue'];
-                    $delay  = $loop->index * 80;
-                @endphp
-                <div class="mb-10 reveal" style="animation-delay: {{ $delay }}ms">
-                    {{-- Header Kategori --}}
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                             style="background: {{ $c['badge_bg'] }}">
-                            <i class="fas {{ $kategoriConfig['icon'] }} text-base" style="color: {{ $c['text'] }}"></i>
-                        </div>
-                        <h2 class="text-lg font-bold text-gray-800">{{ $namaKategori }}</h2>
-                        <div class="flex-1 h-px" style="background: {{ $c['border'] }}"></div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6">
+                @foreach($layananList as $layanan)
+                    @php
+                        $config = $serviceConfig[$layanan->layanan_id] ?? [
+                            'icon' => 'fa-file-alt',
+                            'color' => 'blue',
+                            'id' => 'layanan-' . $layanan->layanan_id,
+                            'fields' => [],
+                            'files' => [],
+                            'persyaratan' => [],
+                            'penjelasan' => [],
+                            'template_url' => '#',
+                        ];
+                        $serviceIcon = $config['icon'];
+                        $serviceColor = $config['color'];
+                        $serviceId = $config['id'];
+                        $serviceName = $layanan->nama_layanan;
+                        $shortDesc = $layanan->keterangan ?? str_replace('Penerbitan ', '', $layanan->nama_layanan);
+                        $configJson = json_encode([
+                            'id' => $config['id'],
+                            'icon' => $config['icon'],
+                            'color' => $config['color'],
+                            'persyaratan' => $config['persyaratan'],
+                            'penjelasan' => $config['penjelasan'],
+                            'template_url' => $config['template_url'],
+                            'fields' => $config['fields'],
+                            'files' => $config['files'],
+                        ]);
+                    @endphp
+                    <div class="reveal" style="animation-delay: {{ $loop->index * 100 }}ms">
+                        <button id="btn-layanan-{{ $layanan->layanan_id }}" onclick='openServiceModal({{ $configJson }}, {{ json_encode($serviceName) }})'
+                                class="service-card group bg-white rounded-2xl p-6 text-center
+                                       hover:shadow-2xl transition-all duration-300 hover:-translate-y-1
+                                       border-2 border-gray-100 hover:border-{{ $serviceColor }}-400 min-h-[180px] flex flex-col w-full">
+                            <div class="flex-1">
+                                <div class="w-16 h-16 bg-{{ $serviceColor }}-100 rounded-2xl flex items-center justify-center mx-auto mb-3
+                                            group-hover:bg-{{ $serviceColor }}-500 transition-all duration-300 group-hover:scale-110">
+                                    <i class="fas {{ $serviceIcon }} text-3xl text-{{ $serviceColor }}-600 group-hover:text-white transition-colors duration-300"></i>
+                                </div>
+                                <h3 class="font-bold text-gray-800 text-sm mb-2 leading-tight">{{ $serviceName }}</h3>
+                                <p class="text-xs text-gray-500 leading-relaxed line-clamp-2">{{ $shortDesc }}</p>
+                            </div>
+                            <div class="mt-auto pt-3">
+                                <span class="inline-flex items-center gap-1.5 px-4 py-2 bg-{{ $serviceColor }}-50 text-{{ $serviceColor }}-700
+                                             rounded-lg text-xs font-semibold group-hover:bg-{{ $serviceColor }}-500
+                                             group-hover:text-white transition-all duration-300">
+                                    <i class="fas fa-plus text-xs"></i>
+                                    <span>Pilih</span>
+                                </span>
+                            </div>
+                        </button>
                     </div>
                     <div class="flex flex-wrap justify-center gap-4">
                         @foreach($kategoriConfig['layanan'] as $lid)
@@ -431,6 +519,7 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
             @endforeach
         </div>
     </section>
+    
     <section class="py-12 bg-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-10 reveal">
@@ -462,6 +551,7 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
         </div>
     </section>
 </main>
+
 <div id="serviceModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
     <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
@@ -492,17 +582,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                     @endforeach
                 </div>
             </div>
-            @if($errors->any())
-            <div class="mx-5 mt-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl">
-                <div class="flex items-center mb-2">
-                    <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
-                    <span class="text-red-800 font-bold text-sm">Terjadi Kesalahan Validasi:</span>
-                </div>
-                <ul class="list-disc list-inside text-xs text-red-600 space-y-1">
-                    @foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach
-                </ul>
-            </div>
-            @endif
             <form id="serviceForm" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div id="step1" class="step-content p-5 space-y-5">

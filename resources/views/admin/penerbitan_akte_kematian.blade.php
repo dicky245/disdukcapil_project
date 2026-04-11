@@ -12,15 +12,15 @@
             <p class="text-gray-500 text-sm mt-1">Total Permohonan</p>
         </div>
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h3 class="text-4xl font-bold text-orange-600">{{ $menungguVerifikasi }}</h3>
+            <h3 class="text-4xl font-bold text-blue-700">{{ $menungguVerifikasi }}</h3>
             <p class="text-gray-500 text-sm mt-1">Menunggu Verifikasi</p>
         </div>
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h3 class="text-4xl font-bold text-yellow-600">{{ $dalamProses }}</h3>
+            <h3 class="text-4xl font-bold text-blue-700">{{ $dalamProses }}</h3>
             <p class="text-gray-500 text-sm mt-1">Dalam Proses</p>
         </div>
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h3 class="text-4xl font-bold text-green-600">{{ $selesai }}</h3>
+            <h3 class="text-4xl font-bold text-blue-700">{{ $selesai }}</h3>
             <p class="text-gray-500 text-sm mt-1">Selesai</p>
         </div>
     </div>
@@ -84,19 +84,19 @@
                     </td>
                     <td class="p-4">
                         <div class="flex flex-col gap-1 items-center">
-                            <a href="{{ route('admin.akte-kematian.detail', $data->id) }}"
+                            <a href="{{ route('admin.akte-kematian.detail', $data->uuid) }}"
                             class="w-28 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-xs font-semibold text-center">
                                 Detail
                             </a>
                             @if($data->status == 'Dokumen Diterima')
-                                <form action="{{ route('admin.akte-kematian.status', $data->id) }}" method="POST">
+                                <form action="{{ route('admin.akte-kematian.status', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Verifikasi Data">
                                     <button class="w-28 bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
                                         Verifikasi
                                     </button>
                                 </form>
-                                <form action="{{ route('admin.akte-kematian.status', $data->id) }}" method="POST">
+                                <form action="{{ route('admin.akte-kematian.status', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Tolak">
                                     <button class="w-28 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
@@ -105,7 +105,7 @@
                                 </form>
                             @endif
                             @if($data->status == 'Verifikasi Data')
-                                <form action="{{ route('admin.akte-kematian.status', $data->id) }}" method="POST">
+                                <form action="{{ route('admin.akte-kematian.status', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Proses Cetak">
                                     <button class="w-28 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
@@ -114,7 +114,7 @@
                                 </form>
                             @endif
                             @if($data->status == 'Proses Cetak')
-                                <form action="{{ route('admin.akte-kematian.status', $data->id) }}" method="POST">
+                                <form action="{{ route('admin.akte-kematian.status', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Siap Pengambilan">
                                     <button class="w-28 bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">

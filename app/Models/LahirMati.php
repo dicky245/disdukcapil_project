@@ -14,20 +14,34 @@ class LahirMati extends Model
     protected $table = 'lahir_mati';
 
     protected $fillable = [
+        'uuid',
         'layanan_id',
+        'antrian_online_id',
+        'nomor_registrasi',
+        'nik_pelapor',
+        'nama_pelapor',
+        'hubungan_pelapor',
         'nama_bayi',
         'jenis_kelamin',
         'tgl_lahir',
         'tempat_lahir',
+        'lama_kandungan',
+        'penolong_persalinan',
         'nama_ayah',
         'nik_ayah',
         'nama_ibu',
         'nik_ibu',
+        'nik_saksi_1',
+        'nama_saksi_1',
+        'nik_saksi_2',
+        'nama_saksi_2',
         'keterangan',
         'surat_keterangan_lahir_mati',
         'ktp_ayah',
         'ktp_ibu',
+        'kk_orangtua',
         'status',
+        'alasan_penolakan',
     ];
 
     protected $hidden = [
@@ -44,22 +58,15 @@ class LahirMati extends Model
         return [
             'nik_ayah',
             'nik_ibu',
+            'nik_pelapor',
+            'nik_saksi_1',
+            'nik_saksi_2',
         ];
     }
 
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * The "type" of the auto-incrementing ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
+    // CATATAN PERBAIKAN:
+    // Menghapus public $incrementing = false; dan protected $keyType = 'string';
+    // Karena ID utama tabel ini adalah Angka (Auto Increment), bukan string.
 
     /**
      * Boot function from Laravel.
@@ -68,10 +75,22 @@ class LahirMati extends Model
     {
         parent::boot();
         self::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = (string) Str::uuid();
+            // CATATAN PERBAIKAN:
+            // Masukkan UUID ke kolom 'uuid', BUKAN ke kolom 'id'
+            if (empty($model->uuid)) {
+                $model->uuid = (string) Str::uuid();
             }
         });
+    }
+
+    /**
+     * Relasi dengan antrian online
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function antrian_online()
+    {
+        return $this->belongsTo(Antrian_Online_Model::class, 'antrian_online_id', 'antrian_online_id');
     }
 
     /**

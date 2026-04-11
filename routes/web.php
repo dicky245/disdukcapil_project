@@ -33,6 +33,10 @@ Route::get('/api/layanan', function() {
     ]);
 })->name('api.layanan');
 
+// Rute untuk menangkap data form layanan mandiri
+Route::post('/layanan-mandiri/akte-kematian', [AkteKematianController::class, 'store'])->name('aktekematian.store');
+Route::post('/layanan-mandiri/lahir-mati', [LahirMatiController::class, 'store'])->name('lahirmati.store');
+
 // Antrian Online (Public)
 Route::prefix('antrian-online')->group(function () {
     Route::get('/', [Antrian_Online_Controller::class, 'Tampil_Antrian'])->name('antrian-online');
@@ -53,10 +57,12 @@ Route::prefix('layanan-mandiri')->group(function () {
     Route::post('/{jenis_layanan}', [PageController::class, 'submitLayanan'])->name('layanan-mandiri.submit');
 });
 
+
 Route::post('/kk/store/ubah-data', [KartKeluargaController::class, 'store_perubahan_data'])->name('kk.store');
 Route::post('/kk/store/ganti-kepala-keluarga', [KartKeluargaController::class, 'store_ganti_kepala_kk'])->name('kk.store.gantikepalakk');
 Route::post('/kk/store/kk_hilang_rusak', [KartKeluargaController::class, 'store_kk_hilang_rusak'])->name('kk.store.hilangrusak');
 Route::post('/kk/store/pisah_kk', [KartKeluargaController::class, 'store_pisah_kk'])->name('kk.store.pisahkk');
+
 Route::post('/akte-kematian/store', [AkteKematianController::class, 'store'])->name('akte-kematian.store');
 Route::post('/lahir-mati/store', [LahirMatiController::class, 'store'])->name('lahir-mati.store');
 Route::post('/penerbitan-akte-kelahiran-pengguna/store',[AkteLahirController::class, 'store'])->name('aktelahir.store');
