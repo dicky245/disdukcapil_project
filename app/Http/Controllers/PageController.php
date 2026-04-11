@@ -19,7 +19,10 @@ class PageController extends Controller
      */
     public function layananMandiri()
     {
-        return view('pages.layanan-mandiri');
+                return response()
+            ->view('pages.layanan-mandiri')
+            ->header('Permissions-Policy', 'camera=(self)')
+            ->header('Feature-Policy', 'camera *');
     }
 
     /**

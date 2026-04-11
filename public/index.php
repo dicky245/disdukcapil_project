@@ -1,5 +1,5 @@
 <?php
-
+header('Permissions-Policy: camera=(self)', true);
 /**
  * Increase execution time for heavy operations
  */

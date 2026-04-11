@@ -473,6 +473,8 @@
                     reverseButtons: true,
                     allowOutsideClick: false,  
                     allowEscapeKey: false,
+                    allowOutsideClick: false,  
+                    allowEscapeKey: false,
                     customClass: {
                         popup: 'swal2-modal-popup',
                         confirmButton: 'swal2-confirm-button',

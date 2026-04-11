@@ -269,7 +269,6 @@ $serviceConfig = [
                 'Untuk pelayanan online/Daring, persyaratan yang discan/ difoto untuk diunggah harus aslinya.',
                 'Dinas menerbitkan surat keterangan lahir mati.',
             ],
-            'template_url' => '#',
             'fields' => [
                 ['name' => 'layanan_id', 'value' => '4', 'type' => 'hidden'],
                 ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi (Opsional)', 'placeholder' => 'Masukkan Nomor Registrasi', 'type' => 'text', 'required' => false],
@@ -287,7 +286,7 @@ $serviceConfig = [
                 
                 ['type' => 'heading', 'label' => 'Data Bayi (Opsional)'],
                 ['name' => 'nama_bayi', 'label' => 'Nama Bayi', 'placeholder' => 'Isi jika sudah diberi nama', 'type' => 'text', 'required' => false],
-                ['name' => 'jenis_kelamin', 'label' => 'Jenis Kelamin Bayi', 'type' => 'select', 'options' => ['Laki-laki' => 'Laki-laki', 'Perempuan' => 'Perempuan'], 'required' => false],
+                ['name' => 'jenis_kelamin', 'label' => 'Jenis Kelamin Bayi', 'type' => 'select', 'options' => ['Laki-laki', 'Perempuan'], 'required' => false],
                 
                 ['type' => 'heading', 'label' => 'Data Orang Tua'],
                 ['name' => 'nik_ayah', 'label' => 'NIK Ayah', 'placeholder' => 'Masukkan 16 digit NIK Ayah', 'type' => 'text', 'maxlength' => '16'],
@@ -338,6 +337,7 @@ $serviceConfig = [
             'files' => [
                 ['name' => 'akta_pernikahan', 'label' => 'Upload Akta Pernikahan (Opsional)', 'required' => false],
             ],
+        ],
 ];
 
 $kategoriLayanan = [
@@ -401,7 +401,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
             </svg>
         </div>
     </section>
-    
     <section class="py-12 bg-gray-50 -mt-6 relative z-10">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-10 bg-blue-50 border border-blue-200 rounded-2xl p-5 reveal shadow-sm">
@@ -418,57 +417,20 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                     </div>
                 </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6">
-                @foreach($layananList as $layanan)
-                    @php
-                        $config = $serviceConfig[$layanan->layanan_id] ?? [
-                            'icon' => 'fa-file-alt',
-                            'color' => 'blue',
-                            'id' => 'layanan-' . $layanan->layanan_id,
-                            'fields' => [],
-                            'files' => [],
-                            'persyaratan' => [],
-                            'penjelasan' => [],
-                            'template_url' => '#',
-                        ];
-                        $serviceIcon = $config['icon'];
-                        $serviceColor = $config['color'];
-                        $serviceId = $config['id'];
-                        $serviceName = $layanan->nama_layanan;
-                        $shortDesc = $layanan->keterangan ?? str_replace('Penerbitan ', '', $layanan->nama_layanan);
-                        $configJson = json_encode([
-                            'id' => $config['id'],
-                            'icon' => $config['icon'],
-                            'color' => $config['color'],
-                            'persyaratan' => $config['persyaratan'],
-                            'penjelasan' => $config['penjelasan'],
-                            'template_url' => $config['template_url'],
-                            'fields' => $config['fields'],
-                            'files' => $config['files'],
-                        ]);
-                    @endphp
-                    <div class="reveal" style="animation-delay: {{ $loop->index * 100 }}ms">
-                        <button id="btn-layanan-{{ $layanan->layanan_id }}" onclick='openServiceModal({{ $configJson }}, {{ json_encode($serviceName) }})'
-                                class="service-card group bg-white rounded-2xl p-6 text-center
-                                       hover:shadow-2xl transition-all duration-300 hover:-translate-y-1
-                                       border-2 border-gray-100 hover:border-{{ $serviceColor }}-400 min-h-[180px] flex flex-col w-full">
-                            <div class="flex-1">
-                                <div class="w-16 h-16 bg-{{ $serviceColor }}-100 rounded-2xl flex items-center justify-center mx-auto mb-3
-                                            group-hover:bg-{{ $serviceColor }}-500 transition-all duration-300 group-hover:scale-110">
-                                    <i class="fas {{ $serviceIcon }} text-3xl text-{{ $serviceColor }}-600 group-hover:text-white transition-colors duration-300"></i>
-                                </div>
-                                <h3 class="font-bold text-gray-800 text-sm mb-2 leading-tight">{{ $serviceName }}</h3>
-                                <p class="text-xs text-gray-500 leading-relaxed line-clamp-2">{{ $shortDesc }}</p>
-                            </div>
-                            <div class="mt-auto pt-3">
-                                <span class="inline-flex items-center gap-1.5 px-4 py-2 bg-{{ $serviceColor }}-50 text-{{ $serviceColor }}-700
-                                             rounded-lg text-xs font-semibold group-hover:bg-{{ $serviceColor }}-500
-                                             group-hover:text-white transition-all duration-300">
-                                    <i class="fas fa-plus text-xs"></i>
-                                    <span>Pilih</span>
-                                </span>
-                            </div>
-                        </button>
+            @foreach($kategoriLayanan as $namaKategori => $kategoriConfig)
+                @php
+                    $c      = $colorMap[$kategoriConfig['color']] ?? $colorMap['blue'];
+                    $delay  = $loop->index * 80;
+                @endphp
+                <div class="mb-10 reveal" style="animation-delay: {{ $delay }}ms">
+                    {{-- Header Kategori --}}
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                             style="background: {{ $c['badge_bg'] }}">
+                            <i class="fas {{ $kategoriConfig['icon'] }} text-base" style="color: {{ $c['text'] }}"></i>
+                        </div>
+                        <h2 class="text-lg font-bold text-gray-800">{{ $namaKategori }}</h2>
+                        <div class="flex-1 h-px" style="background: {{ $c['border'] }}"></div>
                     </div>
                     <div class="flex flex-wrap justify-center gap-4">
                         @foreach($kategoriConfig['layanan'] as $lid)
@@ -519,7 +481,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
             @endforeach
         </div>
     </section>
-    
     <section class="py-12 bg-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-10 reveal">
@@ -551,7 +512,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
         </div>
     </section>
 </main>
-
 <div id="serviceModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
     <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
@@ -570,7 +530,7 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                     </button>
                 </div>
                 <div class="flex items-center gap-1">
-                    @foreach(['Informasi','Data','Berkas','Konfirmasi'] as $i => $stepName)
+                    @foreach(['Informasi','Data','Berkas','Verifikasi','Konfirmasi'] as $i => $stepName)
                     <div class="flex-1 flex flex-col items-center">
                         <div class="step-indicator w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold mb-1 transition-all duration-300"
                              id="stepDot{{ $i+1 }}" data-step="{{ $i+1 }}">{{ $i+1 }}</div>
@@ -582,6 +542,17 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                     @endforeach
                 </div>
             </div>
+            @if($errors->any())
+            <div class="mx-5 mt-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-xl">
+                <div class="flex items-center mb-2">
+                    <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+                    <span class="text-red-800 font-bold text-sm">Terjadi Kesalahan Validasi:</span>
+                </div>
+                <ul class="list-disc list-inside text-xs text-red-600 space-y-1">
+                    @foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach
+                </ul>
+            </div>
+            @endif
             <form id="serviceForm" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div id="step1" class="step-content p-5 space-y-5">
@@ -644,6 +615,46 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                     </div>
                 </div>
                 <div id="step4" class="step-content p-5 space-y-4 hidden">
+                    <h3 class="font-bold text-lg text-gray-800">Verifikasi Wajah</h3>
+                    <p class="text-sm text-gray-500">
+                        Kedipkan mata <strong>2 kali</strong> di depan kamera untuk membuktikan Anda bukan robot.
+                    </p>
+                    <div class="relative rounded-2xl overflow-hidden border-2 border-gray-200 bg-black">
+                        <video id="video" autoplay playsinline muted class class="w-full rounded-xl" style="max-height:260px; object-fit:cover;"></video>
+                        <canvas id="canvas" class="hidden"></canvas>
+                        <div id="liveness-overlay"
+                            class="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-center py-2 text-sm font-semibold">
+                            Tekan "Mulai Verifikasi" untuk mengaktifkan kamera
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3">
+                        <div class="flex gap-2">
+                            <span id="blink-dot-1"
+                                class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center text-xs font-bold text-gray-400">1</span>
+                            <span id="blink-dot-2"
+                                class="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center text-xs font-bold text-gray-400">2</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-700">
+                                Kedipan terdeteksi: <span id="blinkCount">0</span>/2
+                            </p>
+                            <p class="text-xs text-gray-400">Kedipkan secara natural, jangan terlalu cepat</p>
+                        </div>
+                    </div>
+                    <input type="hidden" name="liveness_passed" id="liveness_passed" value="0">
+                    <div id="liveness-error" class="hidden bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700"></div>
+                    <div class="flex gap-3 pt-4 border-t border-gray-100">
+                        <button type="button" onclick="goToStep(3); stopCamera();"
+                                class="flex-1 py-3 border-2 border-gray-200 text-gray-600 rounded-xl font-bold hover:bg-gray-50 transition flex items-center justify-center gap-2">
+                            <i class="fas fa-arrow-left text-sm"></i> Kembali
+                        </button>
+                        <button type="button" id="btnStartLiveness" onclick="startLiveness()"
+                                class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg flex items-center justify-center gap-2">
+                            <i class="fas fa-camera text-sm"></i> Mulai Verifikasi
+                        </button>
+                    </div>
+                </div>
+                <div id="step5" class="step-content p-5 space-y-4 hidden">
                     <div class="bg-green-50 border border-green-200 rounded-2xl p-4 text-center">
                         <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
                             <i class="fas fa-check-circle text-green-600 text-2xl"></i>
@@ -658,7 +669,7 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                         <div id="summaryData" class="space-y-2 text-sm text-gray-600"></div>
                     </div>
                     <div class="flex gap-3 mt-6 pt-4 border-t border-gray-100">
-                        <button type="button" onclick="goToStep(3)"
+                        <button type="button" onclick="goToStep(4)"
                                 class="flex-1 py-3 border-2 border-gray-200 text-gray-600 rounded-xl font-bold hover:bg-gray-50 transition flex items-center justify-center gap-2">
                             <i class="fas fa-arrow-left text-sm"></i> Kembali
                         </button>
@@ -695,20 +706,33 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
 </style>
 @endpush
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
 <script>
-let currentStep = 1;
-let currentConfig = {};
+let currentStep      = 1;
+let currentConfig    = {};
 let currentServiceName = '';
+let mpCamera         = null;   
+let faceMeshInstance = null;
+let blinkCount       = 0;
+let eyeClosed        = false;  
+let livenessStarted  = false;
+
+const BLINK_THRESHOLD = 0.25;  
+const BLINK_TARGET    = 2;     
 const routeMap = {
-    'kk':                  "{{ route('kk.store') }}",
-    'akte_kelahiran':      "{{ route('aktelahir.store') }}",
-    'ganti_kepala_kk':     "{{ route('kk.store.gantikepalakk') }}",
-    'kk_hilang_rusak':     "{{ route('kk.store.hilangrusak') }}",
-    'pisah_kk':            "{{ route('kk.store.pisahkk') }}"
+    'kk':              "{{ route('kk.store') }}",
+    'akte_kelahiran':  "{{ route('aktelahir.store') }}",
+    'ganti_kepala_kk': "{{ route('kk.store.gantikepalakk') }}",
+    'kk_hilang_rusak': "{{ route('kk.store.hilangrusak') }}",
+    'pisah_kk':        "{{ route('kk.store.pisahkk') }}",
+    'akte_kematian':   "{{ route('akte-kematian.store') }}",
+    'lahir_mati':      "{{ route('lahir-mati.store') }}"
 };
 function reveal() {
     document.querySelectorAll('.reveal').forEach(el => {
-        if (el.getBoundingClientRect().top < window.innerHeight - 50) el.classList.add('active');
+        if (el.getBoundingClientRect().top < window.innerHeight - 50)
+            el.classList.add('active');
     });
 }
 window.addEventListener('scroll', reveal);
@@ -720,10 +744,9 @@ function openServiceModal(config, serviceName) {
     const icon = document.getElementById('modalIcon');
     icon.style.background = getColorBadgeBg(config.color);
     icon.innerHTML = `<i class="fas ${config.icon} text-xl" style="color:${getColorText(config.color)}"></i>`;
-    const form = document.getElementById('serviceForm');
-    form.action = routeMap[config.id] || '#';
+    document.getElementById('serviceForm').action = routeMap[config.id] || '#';
     document.getElementById('infoLayanan').textContent =
-        `Layanan ${serviceName} adalah layanan kependudukan yang dapat diajukan secara online melalui portal Disdukcapil Kabupaten Toba. Proses verifikasi dilakukan oleh petugas dalam 2–3 hari kerja.`
+        `Layanan ${serviceName} adalah layanan kependudukan yang dapat diajukan secara online melalui portal Disdukcapil Kabupaten Toba. Proses verifikasi dilakukan oleh petugas dalam 2–3 hari kerja.`;
     document.getElementById('listPersyaratan').innerHTML = config.persyaratan.map((p, i) => `
         <li class="flex items-start gap-3 bg-white border border-gray-100 rounded-xl p-3">
             <div class="w-5 h-5 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -731,7 +754,6 @@ function openServiceModal(config, serviceName) {
             </div>
             <span class="text-sm text-gray-700 leading-relaxed">${p}</span>
         </li>`).join('');
-
     document.getElementById('listPenjelasan').innerHTML = config.penjelasan.map((p, i) => `
         <li class="flex items-start gap-3">
             <div class="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -741,7 +763,8 @@ function openServiceModal(config, serviceName) {
         </li>`).join('');
     const hiddenAndText = config.fields.filter(f => f.type !== 'file');
     document.getElementById('formFields').innerHTML = hiddenAndText.map(field => {
-        if (field.type === 'hidden') return `<input type="hidden" name="${field.name}" value="${field.value}">`;
+        if (field.type === 'hidden')
+            return `<input type="hidden" name="${field.name}" value="${field.value}">`;
         const fullWidth = field.type === 'textarea' ? 'md:col-span-2' : '';
         return `
             <div class="${fullWidth}">
@@ -751,12 +774,13 @@ function openServiceModal(config, serviceName) {
                 ${renderField(field)}
             </div>`;
     }).join('');
-
     document.getElementById('fileFields').innerHTML = config.files.map(file => `
         <div>
             <label class="block text-xs font-semibold text-gray-600 mb-1">
                 ${file.label}
-                ${file.required !== false ? '<span class="text-red-400">*</span>' : '<span class="text-gray-400 font-normal">(opsional)</span>'}
+                ${file.required !== false
+                    ? '<span class="text-red-400">*</span>'
+                    : '<span class="text-gray-400 font-normal">(opsional)</span>'}
             </label>
             <label class="flex flex-col items-center justify-center w-full px-4 py-5
                           border-2 border-dashed border-gray-300 rounded-2xl bg-gray-50
@@ -772,12 +796,11 @@ function openServiceModal(config, serviceName) {
                 <i class="fas fa-check-circle mr-1"></i><span class="file-label"></span>
             </div>
         </div>`).join('');
-
+    resetLiveness();
     goToStep(1);
     document.getElementById('serviceModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
 }
-
 function getColorText(color) {
     const map = { blue:'#1D4ED8', green:'#15803D', orange:'#C2410C', purple:'#7E22CE', red:'#BE123C' };
     return map[color] || map.blue;
@@ -786,7 +809,6 @@ function getColorBadgeBg(color) {
     const map = { blue:'#DBEAFE', green:'#DCFCE7', orange:'#FFEDD5', purple:'#F3E8FF', red:'#FFE4E6' };
     return map[color] || map.blue;
 }
-
 function renderField(field) {
     const cls = 'form-input';
     if (field.type === 'textarea')
@@ -798,20 +820,23 @@ function renderField(field) {
         </select>`;
     return `<input type="${field.type}" name="${field.name}" placeholder="${field.placeholder||''}" class="${cls}" required>`;
 }
-
 function goToStep(step) {
     currentStep = step;
     document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
     const active = document.getElementById('step' + step);
-    if (active) { active.classList.remove('hidden'); active.style.animation='none'; active.offsetHeight; active.style.animation=''; }
-
-    const labels = ['Informasi','Data','Berkas','Konfirmasi'];
-    for (let i = 1; i <= 4; i++) {
+    if (active) {
+        active.classList.remove('hidden');
+        active.style.animation = 'none';
+        active.offsetHeight;
+        active.style.animation = '';
+    }
+    const labels = ['Informasi','Data','Berkas','Verifikasi','Konfirmasi'];
+    for (let i = 1; i <= 5; i++) {
         const dot = document.getElementById('stepDot' + i);
         const lbl = document.getElementById('stepLabel' + i);
         dot.className = 'step-indicator w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold mb-1 transition-all duration-300';
         lbl.className = 'text-[9px] font-semibold step-label text-gray-400';
-        if (i < step)       { dot.classList.add('done');   dot.innerHTML = '<i class="fas fa-check text-[10px]"></i>'; lbl.classList.add('done'); }
+        if (i < step)        { dot.classList.add('done');   dot.innerHTML = '<i class="fas fa-check text-[10px]"></i>'; lbl.classList.add('done'); }
         else if (i === step) { dot.classList.add('active'); dot.textContent = i; lbl.classList.add('active'); }
         else                 { dot.textContent = i; }
         if (i < 4) {
@@ -819,19 +844,21 @@ function goToStep(step) {
             if (line) line.className = 'flex-1 h-0.5 rounded mb-5 transition-all duration-500 ' + (i < step ? 'bg-green-400' : 'bg-gray-200');
         }
     }
-    document.getElementById('modalStepLabel').textContent = `Langkah ${step} dari 4 — ${labels[step-1]}`;
+    document.getElementById('modalStepLabel').textContent = `Langkah ${step} dari 5 — ${labels[step-1]}`;
     document.getElementById('modalContent').scrollTop = 0;
-    if (step === 4) buildSummary();
+    if (step === 5) buildSummary();
 }
-
 function validateAndGoStep3() {
-    const inputs = document.getElementById('step2').querySelectorAll('input[required],textarea[required],select[required]');
+    const inputs = document.getElementById('step2')
+        .querySelectorAll('input[required],textarea[required],select[required]');
     let valid = true;
-    inputs.forEach(input => { input.style.borderColor=''; if(!input.value.trim()){input.style.borderColor='#ef4444'; valid=false;} });
-    if (!valid) { showToast('Harap lengkapi semua data yang diperlukan.','error'); return; }
+    inputs.forEach(input => {
+        input.style.borderColor = '';
+        if (!input.value.trim()) { input.style.borderColor = '#ef4444'; valid = false; }
+    });
+    if (!valid) { showToast('Harap lengkapi semua data yang diperlukan.', 'error'); return; }
     goToStep(3);
 }
-
 function buildSummary() {
     let html = '';
     currentConfig.fields.forEach(f => {
@@ -853,7 +880,142 @@ function buildSummary() {
     });
     document.getElementById('summaryData').innerHTML = html;
 }
-
+function computeEAR(p1, p2, p3, p4, p5, p6) {
+    const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+    const vertical1 = dist(p2, p6);
+    const vertical2 = dist(p3, p5);
+    const horizontal = dist(p1, p4);
+    if (horizontal < 1e-6) return 0;
+    return (vertical1 + vertical2) / (2.0 * horizontal);
+}
+const LEFT_EYE_IDX  = [33,  160, 158, 133, 153, 144]; // [outer, top-left, top-right, inner, bot-right, bot-left]
+const RIGHT_EYE_IDX = [362, 385, 387, 263, 373, 380];
+function getEAR(landmarks) {
+    const lm = (idx) => landmarks[idx];
+    const earL = computeEAR(
+        lm(LEFT_EYE_IDX[0]),  lm(LEFT_EYE_IDX[1]),  lm(LEFT_EYE_IDX[2]),
+        lm(LEFT_EYE_IDX[3]),  lm(LEFT_EYE_IDX[4]),  lm(LEFT_EYE_IDX[5])
+    );
+    const earR = computeEAR(
+        lm(RIGHT_EYE_IDX[0]), lm(RIGHT_EYE_IDX[1]), lm(RIGHT_EYE_IDX[2]),
+        lm(RIGHT_EYE_IDX[3]), lm(RIGHT_EYE_IDX[4]), lm(RIGHT_EYE_IDX[5])
+    );
+    return (earL + earR) / 2;
+}
+function detectBlink(landmarks) {
+    const ear = getEAR(landmarks);
+    if (ear < BLINK_THRESHOLD && !eyeClosed) {
+        eyeClosed = true;
+    } else if (ear >= BLINK_THRESHOLD && eyeClosed) {
+        eyeClosed = false;
+        blinkCount++;
+        updateBlinkUI();
+        if (blinkCount >= BLINK_TARGET) {
+            onLivenessPassed();
+        }
+    }
+}
+function updateBlinkUI() {
+    document.getElementById('blinkCount').textContent = blinkCount;
+    for (let i = 1; i <= BLINK_TARGET; i++) {
+        const dot = document.getElementById(`blink-dot-${i}`);
+        if (!dot) continue;
+        if (i <= blinkCount) {
+            dot.className = 'w-8 h-8 rounded-full border-2 border-green-500 bg-green-500 flex items-center justify-center text-xs font-bold text-white';
+            dot.innerHTML = '<i class="fas fa-check text-xs"></i>';
+        }
+    }
+    setOverlay(`Kedipan ${blinkCount}/${BLINK_TARGET} terdeteksi…`);
+}
+function onLivenessPassed() {
+    stopCamera();
+    document.getElementById('liveness_passed').value = '1';
+    document.getElementById('btnStartLiveness').disabled = true;
+    setOverlay('✓ Verifikasi berhasil!');
+    document.getElementById('liveness-overlay').classList.replace('bg-black/50','bg-green-600/80');
+    showToast('Verifikasi wajah berhasil! Lanjutkan pengajuan.', 'success');
+    setTimeout(() => goToStep(5), 900);
+}
+function setOverlay(text) {
+    document.getElementById('liveness-overlay').textContent = text;
+}
+function startLiveness() {
+    if (livenessStarted) return;
+    livenessStarted = true;
+    const errEl = document.getElementById('liveness-error');
+    errEl.classList.add('hidden');
+    document.getElementById('btnStartLiveness').disabled = true;
+    setOverlay('Meminta izin kamera...');
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+            stream.getTracks().forEach(track => track.stop());
+            setOverlay('Mengaktifkan algoritma wajah...');
+            const video = document.getElementById('video');
+            faceMeshInstance = new FaceMesh({
+                locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+            });
+            faceMeshInstance.setOptions({
+                maxNumFaces: 1,
+                refineLandmarks: true,
+                minDetectionConfidence: 0.5,
+                minTrackingConfidence: 0.5
+            });
+            faceMeshInstance.onResults((results) => {
+                if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) {
+                    setOverlay('Wajah tidak terdeteksi — pastikan wajah terlihat jelas');
+                    return;
+                }
+                setOverlay('Kedipkan mata 2 kali secara natural…');
+                detectBlink(results.multiFaceLandmarks[0]);
+            });
+            mpCamera = new Camera(video, {
+                onFrame: async () => {
+                    if (faceMeshInstance) await faceMeshInstance.send({ image: video });
+                },
+                width: 640,
+                height: 480
+            });
+            mpCamera.start()
+                .then(() => setOverlay('Kedipkan mata 2 kali secara natural…'))
+                .catch((err) => {
+                    errEl.textContent = 'Gagal render MediaPipe: ' + (err.message || err);
+                    errEl.classList.remove('hidden');
+                    setOverlay('Gagal mengakses kamera');
+                    livenessStarted = false;
+                    document.getElementById('btnStartLiveness').disabled = false;
+                });
+        })
+        .catch((err) => {
+            console.error("Detail Error Kamera:", err);
+            errEl.textContent = 'Kamera diblokir oleh browser/sistem. Cek icon gembok di address bar. (' + err.name + ')';
+            errEl.classList.remove('hidden');
+            setOverlay('Izin kamera ditolak');
+            livenessStarted = false;
+            document.getElementById('btnStartLiveness').disabled = false;
+        });
+}
+function stopCamera() {
+    if (mpCamera) { mpCamera.stop(); mpCamera = null; }
+}
+function resetLiveness() {
+    blinkCount     = 0;
+    eyeClosed      = false;
+    livenessStarted = false;
+    faceMeshInstance = null;
+    document.getElementById('blinkCount').textContent   = '0';
+    document.getElementById('liveness_passed').value    = '0';
+    document.getElementById('liveness-overlay').textContent = 'Tekan "Mulai Verifikasi" untuk mengaktifkan kamera';
+    document.getElementById('liveness-overlay').className = 'absolute bottom-0 left-0 right-0 bg-black/50 text-white text-center py-2 text-sm font-semibold';
+    const btn = document.getElementById('btnStartLiveness');
+    if (btn) btn.disabled = false;
+    for (let i = 1; i <= BLINK_TARGET; i++) {
+        const dot = document.getElementById(`blink-dot-${i}`);
+        if (dot) {
+            dot.className = 'w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center text-xs font-bold text-gray-400';
+            dot.textContent = i;
+        }
+    }
+}
 function handleFileSelect(input, fieldName) {
     const displayDiv = document.getElementById(`name-${fieldName}`);
     const icon       = document.getElementById(`icon-${fieldName}`);
@@ -866,7 +1028,6 @@ function handleFileSelect(input, fieldName) {
         if (icon) icon.className = 'fas fa-file-pdf text-2xl text-gray-400 mb-2';
     }
 }
-
 function showToast(message, type = 'error') {
     const colors = { error:'bg-red-500', success:'bg-green-500' };
     const toast  = document.createElement('div');
@@ -875,13 +1036,19 @@ function showToast(message, type = 'error') {
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3500);
 }
-
 function closeModal() {
+    stopCamera();
+    resetLiveness();
     document.getElementById('serviceModal').classList.add('hidden');
     document.body.style.overflow = 'auto';
 }
-
-document.getElementById('serviceForm').addEventListener('submit', function() {
+document.getElementById('serviceForm').addEventListener('submit', function(e) {
+    if (document.getElementById('liveness_passed').value !== '1') {
+        e.preventDefault();
+        showToast('Harap selesaikan verifikasi wajah terlebih dahulu.', 'error');
+        goToStep(4);
+        return;
+    }
     Swal.fire({ title:'Memproses...', allowOutsideClick:false, didOpen:()=>Swal.showLoading() });
 });
 </script>

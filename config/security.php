@@ -47,7 +47,7 @@ return [
         'x-xss-protection' => '1; mode=block',
         'strict-transport-security' => 'max-age=31536000; includeSubDomains; preload',
         'referrer-policy' => 'strict-origin-when-cross-origin',
-        'permissions-policy' => 'geolocation=(), microphone=(), camera=()',
+        'permissions-policy' => 'geolocation=(), microphone=(), camera=(self)',
     ],
 
     /*

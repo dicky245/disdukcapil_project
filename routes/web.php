@@ -52,9 +52,13 @@ Route::prefix('antrian-online')->group(function () {
 
 // Layanan Mandiri (Public)
 Route::prefix('layanan-mandiri')->group(function () {
-    Route::get('/', [PageController::class, 'layananMandiri'])->name('layanan-mandiri');
-    Route::get('/{jenis_layanan}', [PageController::class, 'formLayanan'])->name('layanan-mandiri.form');
-    Route::post('/{jenis_layanan}', [PageController::class, 'submitLayanan'])->name('layanan-mandiri.submit');
+    Route::get('/', [PageController::class, 'layananMandiri'])
+        ->name('layanan-mandiri')
+        ->middleware('camera.policy'); // hanya route ini yang butuh kamera
+    Route::get('/{jenis_layanan}', [PageController::class, 'formLayanan'])
+        ->name('layanan-mandiri.form');
+    Route::post('/{jenis_layanan}', [PageController::class, 'submitLayanan'])
+        ->name('layanan-mandiri.submit');
 });
 
 
