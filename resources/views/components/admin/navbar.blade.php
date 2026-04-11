@@ -12,15 +12,14 @@
             </div>
         </div>
 
-            {{-- Profile --}}
-            <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
-                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <i class="fas fa-user text-blue-600"></i>
-                </div>
-                <div class="hidden md:block">
-                    <p class="text-sm font-semibold text-gray-800">{{ auth()->user()->name }}</p>
-                    <p class="text-xs text-gray-500">Administrator</p>
-                </div>
+        {{-- Profile --}}
+        <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
+            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-user text-blue-600"></i>
+            </div>
+            <div class="hidden md:block">
+                <p class="text-sm font-semibold text-gray-800">{{ auth()->user()->name }}</p>
+                <p class="text-xs text-gray-500">Administrator</p>
             </div>
         </div>
     </div>
