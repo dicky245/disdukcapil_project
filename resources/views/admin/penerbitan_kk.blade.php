@@ -53,7 +53,7 @@
                 @foreach ($datakk as $data)
                 <tr class="hover:bg-gray-50">
                     <td class="p-4">{{ $loop->iteration }}</td>
-                    <td class="p-4 font-semibold">{{ $data->nama }}</td>
+                    <td class="p-4 font-semibold">{{ $data->nama_pemohon }}</td>
                     <td class="p-4">{{ $data->jenis }}</td>
                     <td class="p-4 text-center">
                         <span class="px-3 py-1 rounded-full text-xs font-bold

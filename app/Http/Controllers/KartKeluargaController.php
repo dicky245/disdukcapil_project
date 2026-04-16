@@ -18,25 +18,27 @@ class KartKeluargaController extends Controller
         $request->validate([
             'layanan_id' => 'required|integer',
             'nomor_antrian' => 'required|string',
-            'nama' => 'required|string',
-            'alamat' => 'required|string',
-            'nik' => 'required|digits:16',
+            'nama_pemohon' => 'required|string',
+            'nik_pemohon' => 'required|digits:16',
+            'nomor_kk_pemohon' => 'required|integer',
+            'alamat_pemohon' => 'required|string',
             'formulir_f102' => 'required|file|mimes:pdf|max:500',
-            'kk_lama' => 'required|file|mimes:pdf|max:500',
+            'ktp_pemohon' => 'required|file|mimes:pdf|max:500',
+            'kk_pemohon' => 'required|file|mimes:pdf|max:500',
             'formulir_f106' => 'required|file|mimes:pdf|max:500',
             'surat_keterangan_perubahan' => 'required|file|mimes:pdf|max:500',
             'pernyataan_pindah_kk' => 'nullable|file|mimes:pdf|max:500',
             'status' => 'nullable|string'
         ]);
         $data = $request->except([
-            'formulir_f102', 'kk_lama', 'formulir_f106', 
-            'surat_keterangan_perubahan', 'pernyataan_pindah_kk'
+            'formulir_f102', 'ktp_pemohon','kk_pemohon','formulir_f106','surat_keterangan_perubahan', 'pernyataan_pindah_kk','foto_wajah'
         ]);
         $data['status'] = 'Dokumen Diterima';
         $fileFields = [
             'formulir_f102', 
-            'kk_lama', 
-            'formulir_f106', 
+            'ktp_pemohon', 
+            'kk_pemohon', 
+            'formulir_f106',
             'surat_keterangan_perubahan', 
             'pernyataan_pindah_kk'
         ];
@@ -44,6 +46,13 @@ class KartKeluargaController extends Controller
             if ($request->hasFile($field)) {
                 $data[$field] = $request->file($field)->store('ubah_data_kk', 'private');
             }
+        }
+        if ($request->filled('foto_wajah')) {
+            $base64   = preg_replace('/^data:image\/\w+;base64,/', '', $request->foto_wajah);
+            $decoded  = base64_decode($base64);
+            $filename = 'wajah_' . uniqid() . '_' . time() . '.jpg';
+            Storage::disk('private')->put("ubah_data_kk/{$filename}", $decoded);
+            $data['foto_wajah'] = "ubah_data_kk/{$filename}";
         }
         KartuKeluarga::create($data);
         return redirect()->route('layanan-mandiri')
@@ -55,29 +64,39 @@ class KartKeluargaController extends Controller
         $request->validate([
             'layanan_id' => 'required|integer',
             'nomor_antrian' => 'required|string',
-            'nama' => 'required|string',
-            'alamat' => 'required|string',
-            'nik' => 'required|digits:16',
+            'nama_pemohon' => 'required|string',
+            'nik_pemohon' => 'required|digits:16',
+            'nomor_kk_pemohon' => 'required|integer',
+            'alamat_pemohon' => 'required|string',
             'formulir_f102' => 'required|file|mimes:pdf|max:500',
-            'fotokopi_akta_kematian' => 'required|file|mimes:pdf|max:500',
-            'kk_lama' => 'required|file|mimes:pdf|max:500',
+            'ktp_pemohon' => 'required|file|mimes:pdf|max:500',
+            'kk_pemohon' => 'required|file|mimes:pdf|max:500',
+            'akta_kematian' => 'required|file|mimes:pdf|max:500',
             'surat_pernyataan_wali' => 'nullable|file|mimes:pdf|max:500',
             'status' => 'nullable|string'
         ]);
         $data = $request->except([
-            'formulir_f102','fotokopi_akta_kematian', 'kk_lama','surat_pernyataan_wali'
+            'formulir_f102', 'ktp_pemohon','kk_pemohon','akta_kematian','surat_pernyataan_wali','foto_wajah'
         ]);
         $data['status'] = 'Dokumen Diterima';
         $fileFields = [
             'formulir_f102', 
-            'fotokopi_akta_kematian',
-            'kk_lama', 
+            'ktp_pemohon', 
+            'kk_pemohon', 
+            'akta_kematian',
             'surat_pernyataan_wali'
         ];
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 $data[$field] = $request->file($field)->store('ganti_kepala_kk', 'private');
             }
+        }
+        if ($request->filled('foto_wajah')) {
+            $base64   = preg_replace('/^data:image\/\w+;base64,/', '', $request->foto_wajah);
+            $decoded  = base64_decode($base64);
+            $filename = 'wajah_' . uniqid() . '_' . time() . '.jpg';
+            Storage::disk('private')->put("ganti_kepala_kk/{$filename}", $decoded);
+            $data['foto_wajah'] = "ganti_kepala_kk/{$filename}";
         }
         GantiKepalaKK::create($data);
         return redirect()->route('layanan-mandiri')
@@ -90,27 +109,36 @@ class KartKeluargaController extends Controller
         $request->validate([
             'layanan_id' => 'required|integer',
             'nomor_antrian' => 'required|string',
-            'nama' => 'required|string',
-            'alamat' => 'required|string',
-            'nik' => 'required|digits:16',
-            'fotokopi_ktp' => 'required|file|mimes:pdf|max:500',
-            'fotokopi_izin_tinggal' => 'nullable|file|mimes:pdf|max:500',
+            'nama_pemohon' => 'required|string',
+            'nik_pemohon' => 'required|digits:16',
+            'nomor_kk_pemohon' => 'required|integer',
+            'alamat_pemohon' => 'required|string',
+            'formulir_f102' => 'required|file|mimes:pdf|max:500',
+            'ktp_pemohon' => 'required|file|mimes:pdf|max:500',
             'suket_hilang_rusak' => 'required|file|mimes:pdf|max:500',
             'status' => 'nullable|string'
         ]);
         $data = $request->except([
-            'fotokopi_ktp','fotokopi_izin_tinggal', 'suket_hilang_rusak'
+            'formulir_f102','ktp_pemohon','suket_hilang_rusak','foto_wajah'
         ]);
         $data['status'] = 'Dokumen Diterima';
         $fileFields = [
-            'fotokopi_ktp', 
-            'fotokopi_izin_tinggal',
+            'formulir_f102', 
+            'ktp_pemohon', 
+            'kk_pemohon',
             'suket_hilang_rusak', 
         ];
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 $data[$field] = $request->file($field)->store('kk_hilang_rusak', 'private');
             }
+        }
+        if ($request->filled('foto_wajah')) {
+            $base64   = preg_replace('/^data:image\/\w+;base64,/', '', $request->foto_wajah);
+            $decoded  = base64_decode($base64);
+            $filename = 'wajah_' . uniqid() . '_' . time() . '.jpg';
+            Storage::disk('private')->put("kk_hilang_rusak/{$filename}", $decoded);
+            $data['foto_wajah'] = "kk_hilang_rusak/{$filename}";
         }
         KKHilangRusak::create($data);
         return redirect()->route('layanan-mandiri')
@@ -123,20 +151,25 @@ class KartKeluargaController extends Controller
         $request->validate([
             'layanan_id' => 'required|integer',
             'nomor_antrian' => 'required|string',
-            'nama' => 'required|string',
-            'alamat' => 'required|string',
-            'nik' => 'required|digits:16',
+            'nama_pemohon' => 'required|string',
+            'nik_pemohon' => 'required|digits:16',
+            'nomor_kk_pemohon' => 'required|integer',
+            'alamat_pemohon' => 'required|string',
             'formulir_f102' => 'required|file|mimes:pdf|max:500',
-            'fotokopi_buku_nikah' => 'required|file|mimes:pdf|max:500',
+            'ktp_pemohon' => 'required|file|mimes:pdf|max:500',
+            'kk_pemohon' => 'required|file|mimes:pdf|max:500',
+            'fotokopi_buku_nikah' => 'nullable|file|mimes:pdf|max:500',
             'kk_lama' => 'required|file|mimes:pdf|max:500',
             'status' => 'nullable|string'
         ]);
         $data = $request->except([
-            'formulir_f102','fotokopi_buku_nikah', 'kk_lama'
+            'formulir_f102','ktp_pemohon','kk_pemohon','fotokopi_buku_nikah', 'kk_lama','foto_wajah'
         ]);
         $data['status'] = 'Dokumen Diterima';
         $fileFields = [
             'formulir_f102', 
+            'ktp_pemohon',
+            'kk_pemohon', 
             'fotokopi_buku_nikah',
             'kk_lama',
         ];
@@ -145,23 +178,32 @@ class KartKeluargaController extends Controller
                 $data[$field] = $request->file($field)->store('pisah_kk', 'private');
             }
         }
+        if ($request->filled('foto_wajah')) {
+            $base64   = preg_replace('/^data:image\/\w+;base64,/', '', $request->foto_wajah);
+            $decoded  = base64_decode($base64);
+            $filename = 'wajah_' . uniqid() . '_' . time() . '.jpg';
+            Storage::disk('private')->put("pisah_kk/{$filename}", $decoded);
+            $data['foto_wajah'] = "pisah_kk/{$filename}";
+        }
         PisahKK::create($data);
         return redirect()->route('layanan-mandiri')
                         ->with('success', 'Data dan dokumen berhasil dikirim.');
     }
+
+
     // Admin
     public function daftar_kk(Request $request)
     {
-        $kk1 = KartuKeluarga::select('uuid','nama','alamat','status')
+        $kk1 = KartuKeluarga::select('uuid','nama_pemohon','nomor_antrian','status')
             ->addSelect(\DB::raw("'Perubahan Data' as jenis"));
 
-        $kk2 = GantiKepalaKK::select('uuid','nama','alamat','status')
+        $kk2 = GantiKepalaKK::select('uuid','nama_pemohon','nomor_antrian','status')
             ->addSelect(\DB::raw("'Ganti Kepala' as jenis"));
 
-        $kk3 = KKHilangRusak::select('uuid','nama','alamat','status')
-            ->addSelect(\DB::raw("'Hilang/Rusak' as jenis"));
+        $kk3 = KKHilangRusak::select('uuid','nama_pemohon','nomor_antrian','status')
+            ->addSelect(\DB::raw("'Hilang Rusak' as jenis"));
 
-        $kk4 = PisahKK::select('uuid','nama','alamat','status')
+        $kk4 = PisahKK::select('uuid','nama_pemohon','nomor_antrian','status')
             ->addSelect(\DB::raw("'Pisah KK' as jenis"));
         $query = $kk1
             ->unionAll($kk2)
@@ -194,7 +236,7 @@ class KartKeluargaController extends Controller
             case 'Ganti Kepala':
                 $berkas = GantiKepalaKK::where('uuid', $uuid)->firstOrFail();
                 break;
-            case 'Hilang/Rusak':
+            case 'Hilang Rusak':
                 $berkas = KKHilangRusak::where('uuid', $uuid)->firstOrFail();
                 break;
             case 'Pisah KK':
@@ -215,7 +257,7 @@ class KartKeluargaController extends Controller
             case 'Ganti Kepala':
                 $kk = GantiKepalaKK::where('uuid', $uuid)->firstOrFail();
                 break;
-            case 'Hilang/Rusak':
+            case 'Hilang Rusak':
                 $kk = KKHilangRusak::where('uuid', $uuid)->firstOrFail();
                 break;
             case 'Pisah KK':
@@ -243,7 +285,7 @@ class KartKeluargaController extends Controller
             case 'Ganti Kepala':
                 $berkas = GantiKepalaKK::where('uuid', $uuid)->firstOrFail();
                 break;
-            case 'Hilang/Rusak':
+            case 'Hilang Rusak':
                 $berkas = KKHilangRusak::where('uuid', $uuid)->firstOrFail();
                 break;
             case 'Pisah KK':

@@ -54,7 +54,7 @@ Route::prefix('antrian-online')->group(function () {
 Route::prefix('layanan-mandiri')->group(function () {
     Route::get('/', [PageController::class, 'layananMandiri'])
         ->name('layanan-mandiri')
-        ->middleware('camera.policy'); // hanya route ini yang butuh kamera
+        ->middleware('camera.policy'); 
     Route::get('/{jenis_layanan}', [PageController::class, 'formLayanan'])
         ->name('layanan-mandiri.form');
     Route::post('/{jenis_layanan}', [PageController::class, 'submitLayanan'])
@@ -193,6 +193,7 @@ Route::prefix('admin')->group(function () {
              Route::get('/', [AkteLahirController::class, 'daftar_aktelahir'])->name('admin.penerbitan-akte-lahir');
              Route::get('/detail/{uuid}',[AkteLahirController::class, 'detail'])->name('admin.detail.aktelahir');
             Route::post('/{uuid}/status',[AkteLahirController::class, 'updateStatus'])->name('admin.status.aktelahir');
+            Route::get('/admin/berkas/{uuid}/lihat/{field}',[AkteLahirController::class, 'lihatBerkas'])->name('admin.lihat-berkas');
         });
         Route::get('/penerbitan-pernikahan', [Admin_Controller::class, 'penerbitan_pernikahan'])->name('admin.penerbitan-pernikahan');
         // Manajemen Akun
