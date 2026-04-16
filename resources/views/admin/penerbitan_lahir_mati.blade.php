@@ -50,6 +50,7 @@
             <thead>
                 <tr class="bg-blue-700 text-white">
                     <th class="p-4 font-semibold uppercase text-xs">No</th>
+                    <th class="p-4 font-semibold uppercase text-xs">Nomor Antrian</th>
                     <th class="p-4 font-semibold uppercase text-xs">Nama Pemohon</th>
                     <th class="p-4 font-semibold uppercase text-xs">NIK Pemohon</th>
                     <th class="p-4 font-semibold uppercase text-xs">Tgl Pengajuan</th>
@@ -61,6 +62,7 @@
                 @forelse ($dataLahirMati as $data)
                 <tr class="hover:bg-gray-50 transition-colors">
                     <td class="p-4 text-sm text-gray-700">{{ $loop->iteration }}</td>
+                    <td class="p-4 text-sm text-gray-700">{{ $data->nomor_antrian }}</td>
                     <td class="p-4 text-sm font-bold text-gray-800">{{ $data->nama_pemohon }}</td>
                     <td class="p-4 text-sm text-gray-700">{{ $data->nik_pemohon }}</td>
                     <td class="p-4 text-sm text-gray-700">{{ $data->created_at->format('d M Y') }}</td>

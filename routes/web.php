@@ -36,6 +36,7 @@ Route::get('/api/layanan', function() {
 // Rute untuk menangkap data form layanan mandiri
 Route::post('/layanan-mandiri/akte-kematian', [AkteKematianController::class, 'store'])->name('aktekematian.store');
 Route::post('/layanan-mandiri/lahir-mati', [LahirMatiController::class, 'store'])->name('lahirmati.store');
+Route::get('/unduh-formulir', [PageController::class, 'unduhFormulir'])->name('unduh-formulir');
 
 // Antrian Online (Public)
 Route::prefix('antrian-online')->group(function () {

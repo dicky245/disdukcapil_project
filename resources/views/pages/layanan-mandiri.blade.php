@@ -83,7 +83,7 @@ $serviceConfig = [
             'Fotokopi kartu izin tinggal tetap (untuk Orang Asing)',
         ],
         'penjelasan'   => [
-            'Penduduk mengisi F.1.02 dan tidak perlu melampirkan fotokopi KTP-el',
+            'Penduduk mengisi F.1.02 dan tidak perlu melampirkan fotokopi KTP-el <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
             'Penduduk menyerahkan dokumen KK yang rusak/surat keterangan kehilangan dari kepolisian'
         ],
         'fields'       => [
@@ -113,7 +113,7 @@ $serviceConfig = [
             'Berumur sekurang-kurangnya 17 (tujuh belas) tahun atau sudah kawin.',
         ],
         'penjelasan'   => [
-            'Penduduk mengisi F-1.02',
+            'Penduduk mengisi F-1.02 <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>'',
             'Penduduk melampirkan fotokopi buku nikah atau akta perceraian (jika disebabkan pernikahan atau perceraian)',
             'Penduduk melampirkan KK lama',
         ],
@@ -141,6 +141,7 @@ $serviceConfig = [
         'color'        => 'green',
         'id'           => 'akte_kelahiran',
         'persyaratan'  => [
+            'Formulir F-2.01 (Wajib diisi)',
             'Surat keterangan kelahiran dari rumah sakit/Puskesmas/bidan/kepala desa.',
             'Buku nikah/kutipan akta perkawinan orang tua',
             'KK dan KTP orang tua',
@@ -216,22 +217,25 @@ $serviceConfig = [
             'color' => 'blue',
             'id' => 'akte_kematian',
             'persyaratan' => [
+                'Formulir F-2.01 (Wajib diisi) <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
                 'Fotokopi surat kematian dari dokter atau kepala desa/lurah',
-                'Fotokopi KK/KTP yang meninggal dunia.',
+                'Fotokopi KTP & KK Pemohon.',
+                'Fotokopi KTP yang meninggal dunia.',
+                'Fotokopi KTP Saksi.'
             ],
             'penjelasan' => [
                 'WNI melampirkan fotokopi KK untuk verifikasi data.',
                 'Untuk pelayanan online/Daring, persyaratan yang discan/ difoto untuk diunggah harus aslinya.',
-                'Seluruh informasi terkait jenazah dan saksi dilampirkan melalui isian Formulir F-2.01.',
+                'Seluruh informasi terkait jenazah dan saksi dilampirkan melalui isian Formulir F-2.01.', 
             ],
-            'template_url' => '#', // Berikan URL template Formulir F-2.01 di sini
+            'template_url' => '#',
             'fields' => [ 
                 ['name' => 'layanan_id', 'value' => '3', 'type' => 'hidden'],
                 
                 ['type' => 'heading', 'label' => 'Informasi Pengajuan'],
-                ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian (Opsional)', 'placeholder' => 'Masukkan Nomor Antrian', 'type' => 'text', 'required' => false],
+                ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Masukkan Nomor Antrian', 'type' => 'text', 'required' => false],
                 
-                // DISESUAIKAN DENGAN AKTE KEMATIAN CONTROLLER TERBARU
+                
                 ['type' => 'heading', 'label' => 'Data Pemohon'],
                 ['name' => 'nik_pemohon', 'label' => 'NIK Pemohon', 'placeholder' => '16 digit NIK Pemohon', 'type' => 'text'],
                 ['name' => 'nomor_kk_pemohon', 'label' => 'Nomor KK Pemohon', 'placeholder' => '16 digit Nomor KK', 'type' => 'text'],
@@ -239,15 +243,15 @@ $serviceConfig = [
                 ['name' => 'alamat_pemohon', 'label' => 'Alamat Pemohon', 'placeholder' => 'Alamat Domisili', 'type' => 'textarea'],
                 ['name' => 'hubungan_pemohon', 'label' => 'Hubungan dengan Jenazah', 'placeholder' => 'Contoh: Anak / Suami / Istri / Ketua RT', 'type' => 'text'],
             ],
-            // BERKAS DISESUAIKAN DENGAN AKTE KEMATIAN CONTROLLER TERBARU
+            
             'files' => [
                 ['name' => 'formulir_f201', 'label' => 'Scan/Foto Asli Formulir F-2.01 yang telah diisi'],
                 ['name' => 'surat_keterangan_kematian', 'label' => 'Scan/Foto Asli Surat Keterangan Kematian (Dokter/Kades)'],
                 ['name' => 'ktp_pemohon', 'label' => 'Scan/Foto Asli KTP Pemohon'],
                 ['name' => 'kartu_keluarga_pemohon', 'label' => 'Scan/Foto Asli KK Pemohon'],
-                ['name' => 'ktp_almarhum', 'label' => 'Scan/Foto Asli KTP Almarhum (Opsional)', 'required' => false],
-                ['name' => 'ktp_saksi1', 'label' => 'Scan/Foto Asli KTP Saksi 1 (Opsional)', 'required' => false],
-                ['name' => 'ktp_saksi2', 'label' => 'Scan/Foto Asli KTP Saksi 2 (Opsional)', 'required' => false],
+                ['name' => 'ktp_almarhum', 'label' => 'Scan/Foto Asli KTP Almarhum '],
+                ['name' => 'ktp_saksi1', 'label' => 'Scan/Foto Asli KTP Saksi 1 '],
+                ['name' => 'ktp_saksi2', 'label' => 'Scan/Foto Asli KTP Saksi 2 '],
             ],
     ],
 
@@ -257,8 +261,11 @@ $serviceConfig = [
             'color' => 'blue',
             'id' => 'lahir_mati',
             'persyaratan' => [
+                'Formulir F-2.01 (Wajib diisi) <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
+                'Pemohon Merupakan Orang Tua Kandung dari Bayi yang Lahir Mati.',
                 'Fotokopi surat keterangan lahir mati (RS/Bidan/Kades).',
-                'Fotokopi KK Orang Tua.',
+                'Fotokopi KTP & KK Orang Tua.',
+                'Fotokopi KTP Saksi.',
             ],
             'penjelasan' => [
                 'WNI melampirkan fotokopi KK untuk verifikasi data.',
@@ -270,7 +277,7 @@ $serviceConfig = [
                 ['name' => 'layanan_id', 'value' => '4', 'type' => 'hidden'],
                 
                 ['type' => 'heading', 'label' => 'Informasi Pengajuan'],
-                ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian (Opsional)', 'placeholder' => 'Masukkan Nomor Antrian', 'type' => 'text', 'required' => false],
+                ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Masukkan Nomor Antrian', 'type' => 'text', 'required' => false],
                 
                 ['type' => 'heading', 'label' => 'Data Pemohon'],
                 ['name' => 'nik_pemohon', 'label' => 'NIK Pemohon', 'placeholder' => '16 digit NIK Pemohon', 'type' => 'text'],
@@ -284,12 +291,12 @@ $serviceConfig = [
                 ['name' => 'surat_keterangan_lahir_mati', 'label' => 'Scan/Foto Asli Surat Ket. Lahir Mati (RS/Bidan/Kades)'],
                 ['name' => 'ktp_pemohon', 'label' => 'Scan/Foto Asli KTP Pemohon'],
                 ['name' => 'kartu_keluarga_pemohon', 'label' => 'Scan/Foto Asli KK Pemohon'],
-                ['name' => 'ktp_saksi1', 'label' => 'Scan/Foto Asli KTP Saksi 1 (Opsional)', 'required' => false],
-                ['name' => 'ktp_saksi2', 'label' => 'Scan/Foto Asli KTP Saksi 2 (Opsional)', 'required' => false],
+                ['name' => 'ktp_saksi1', 'label' => 'Scan/Foto Asli KTP Saksi 1 '],
+                ['name' => 'ktp_saksi2', 'label' => 'Scan/Foto Asli KTP Saksi 2 '],
             ],
         ],
 
-    // PERKAWINAN 
+    // PERKAWINAN
     5 => [
             'icon' => 'fa-ring',
             'color' => 'blue',

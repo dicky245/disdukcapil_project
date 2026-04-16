@@ -25,6 +25,10 @@ class PageController extends Controller
             ->header('Feature-Policy', 'camera *');
     }
 
+public function unduhFormulir()
+    {
+        return view('pages.unduh-formulir');
+    }
     /**
      * Form Layanan Mandiri per jenis
      */

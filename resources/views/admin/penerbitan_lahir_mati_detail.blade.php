@@ -56,8 +56,8 @@
                         <p class="font-semibold">{{ $berkas->alamat_pemohon }}</p>
                     </div>
                     <div class="flex justify-between border-b pb-2">
-                        <span class="text-gray-500">No. Registrasi</span>
-                        <span class="font-semibold text-blue-600">{{ $berkas->nomor_registrasi ?? '-' }}</span>
+                        <span class="text-gray-500">No. Antrian</span>
+                        <span class="font-semibold text-blue-600">{{ $berkas->nomor_antrian ?? '-' }}</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-500">Tgl Pengajuan</span>
@@ -100,8 +100,8 @@
                             ['label' => 'Suket Lahir Mati (Wajib)', 'field' => 'surat_keterangan_lahir_mati', 'icon' => 'fa-file-medical', 'color' => 'red'],
                             ['label' => 'KTP Pemohon (Wajib)', 'field' => 'ktp_pemohon', 'icon' => 'fa-id-card', 'color' => 'green'],
                             ['label' => 'KK Pemohon (Wajib)', 'field' => 'kartu_keluarga_pemohon', 'icon' => 'fa-users', 'color' => 'green'],
-                            ['label' => 'KTP Saksi 1 (Opsional)', 'field' => 'ktp_saksi1', 'icon' => 'fa-user-check', 'color' => 'gray'],
-                            ['label' => 'KTP Saksi 2 (Opsional)', 'field' => 'ktp_saksi2', 'icon' => 'fa-user-check', 'color' => 'gray'],
+                            ['label' => 'KTP Saksi 1 (Wajib) ', 'field' => 'ktp_saksi1', 'icon' => 'fa-user-check', 'color' => 'gray'],
+                            ['label' => 'KTP Saksi 2 (Wajib) ', 'field' => 'ktp_saksi2', 'icon' => 'fa-user-check', 'color' => 'gray'],
                         ];
                     @endphp
                     

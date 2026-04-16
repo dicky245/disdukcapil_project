@@ -11,22 +11,17 @@ use Illuminate\Support\Facades\Validator;
 
 class AkteKematianController extends Controller
 {
-    /**
-     * Simpan permohonan akte kematian dari layanan mandiri dengan sinkronisasi antrian online
-     */
     public function store(Request $request)
     {
-        // 1. Validasi dengan struktur yang lebih aman
         $validator = Validator::make($request->all(), [
             'layanan_id'                => 'required|integer',
-            'nomor_antrian'          => 'nullable|string',
+            'nomor_antrian'             => 'nullable|string', // Pastikan ini sudah diganti ke nomor_antrian
             'nik_pemohon'               => 'required|string|digits:16',
             'nomor_kk_pemohon'          => 'nullable|string|digits:16',
             'nama_pemohon'              => 'required|string',
             'alamat_pemohon'            => 'required|string',
             'hubungan_pemohon'          => 'required|string',
             
-            // File validation
             'ktp_pemohon'               => 'nullable|file|mimes:pdf|max:5120',
             'kartu_keluarga_pemohon'    => 'nullable|file|mimes:pdf|max:5120',
             'formulir_f201'             => 'nullable|file|mimes:pdf|max:5120',
@@ -47,14 +42,21 @@ class AkteKematianController extends Controller
         }
 
         try {
+            // 1. GENERATE TOKEN ANTRIAN DI AWAL
+            $nomorAntrian = $this->generateNomorAntrian();
+
             // 2. Ambil semua data teks
             $data = $request->except([
                 'ktp_pemohon', 'kartu_keluarga_pemohon', 'formulir_f201', 
                 'surat_keterangan_kematian', 'ktp_almarhum', 'ktp_saksi1', 'ktp_saksi2'
             ]);
+            
             $data['status'] = 'Dokumen Diterima';
+            
+            // 3. INI KUNCINYA: Timpa input asal-asalan pemohon dengan Token Resmi
+            $data['nomor_antrian'] = $nomorAntrian; 
 
-            // 3. Handle file uploads (Simpan ke storage/app/public/akte_kematian)
+            // 4. Handle file uploads
             $fileUploads = [
                 'ktp_pemohon'               => 'akte_kematian/pemohon',
                 'kartu_keluarga_pemohon'    => 'akte_kematian/kk',
@@ -71,32 +73,24 @@ class AkteKematianController extends Controller
                 }
             }
 
-            // 4. Simpan ke database Akte Kematian
+            // 5. Simpan ke database Akte Kematian
             $akteKematian = AkteKematian::create($data);
 
-            // 5. Generate nomor antrian
-            $nomorAntrian = $this->generateNomorAntrian();
-
-            // 6. Create antrian online record (PERBAIKAN ERROR "CANNOT BE NULL" DI SINI)
+            // 6. Create antrian online record
             $antrian = Antrian_Online_Model::create([
                 'layanan_id'     => $request->layanan_id,
                 'nomor_antrian'  => $nomorAntrian,
-                
-                // Variabel disesuaikan dengan yang ada di log/form
                 'nama_lengkap'   => $request->nama_pemohon, 
                 'nik'            => $request->nik_pemohon,
                 'alamat'         => $request->alamat_pemohon, 
-                
                 'tanggal_lahir'  => null,
                 'status_antrian' => 'Menunggu',
             ]);
 
-            // 7. Update akte kematian dengan ID relasi antrian
-            $akteKematian->update([
-                'antrian_online_id' => $antrian->antrian_online_id,
-            ]);
+            // 7. Update relasi
+            $akteKematian->update(['antrian_online_id' => $antrian->antrian_online_id]);
 
-            // 8. Create lacak berkas record
+            // 8. Create lacak berkas
             Lacak_Berkas_Model::create([
                 'antrian_online_id' => $antrian->antrian_online_id,
                 'status'            => 'Dokumen Diterima',
@@ -104,67 +98,54 @@ class AkteKematianController extends Controller
                 'keterangan'        => 'Permohonan Akte Kematian diterima dan sedang menunggu verifikasi.',
             ]);
 
-            // 9. Kembalikan ke halaman User dengan pesan sukses
             return redirect()->back()->with('success', 'Permohonan Akte Kematian berhasil dikirim! Nomor Antrian Anda: ' . $nomorAntrian);
 
         } catch (\Exception $e) {
-            // Pembersih teks error agar SweetAlert tidak crash
             $safeErrorMessage = htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
-            $safeErrorMessage = str_replace(["\r", "\n"], ' ', $safeErrorMessage);
-            
             return redirect()->back()->with('error', 'Terjadi kesalahan sistem: ' . $safeErrorMessage)->withInput();
         }
     }
 
-    /**
-     * Generate nomor antrian unik
-     */
     private function generateNomorAntrian()
     {
-        $prefix = 'AK-' . date('Ymd');
+        // Format wajib Antrian Online: 3 Huruf - 3 Angka - 3 Angka (Contoh: AKT-106-001)
+        $huruf = 'AKT'; // 3 Huruf penanda Akte Kematian
+        
+        // 3 Angka bagian tengah: Mengambil urutan hari dalam setahun (001 - 365)
+        $hariKe = str_pad(date('z') + 1, 3, '0', STR_PAD_LEFT); 
+        
+        // 3 Angka bagian akhir: Urutan pendaftar hari ini
         $count = AkteKematian::whereDate('created_at', now())->count() + 1;
-        return $prefix . '-' . str_pad($count, 3, '0', STR_PAD_LEFT);
+        $urutan = str_pad($count, 3, '0', STR_PAD_LEFT);
+        
+        return "{$huruf}-{$hariKe}-{$urutan}";
     }
 
-    /**
-     * Tampilkan daftar permohonan akte kematian (admin)
-     */
+    // ... method daftar, detail, dan updateStatus tetap sama ...
     public function daftar(Request $request)
     {
         $query = AkteKematian::query();
-        if ($request->status) {
-            $query->where('status', $request->status);
-        }
+        if ($request->status) $query->where('status', $request->status);
         $dataKematian = $query->latest()->get();
         $jumlah = AkteKematian::count();
         $menungguVerifikasi = AkteKematian::where('status', 'Dokumen Diterima')->count();
         $dalamProses = AkteKematian::where('status', 'Proses Cetak')->count();
         $selesai = AkteKematian::where('status', 'Siap Pengambilan')->count();
 
-        return view('admin.penerbitan_akte_kematian', compact(
-            'dataKematian', 'jumlah', 'menungguVerifikasi', 'dalamProses', 'selesai'
-        ));
+        return view('admin.penerbitan_akte_kematian', compact('dataKematian', 'jumlah', 'menungguVerifikasi', 'dalamProses', 'selesai'));
     }
 
-    /**
-     * Tampilkan detail permohonan
-     */
     public function detail($uuid)
     {
         $berkas = AkteKematian::where('uuid', $uuid)->firstOrFail();
         return view('admin.penerbitan_akte_kematian_detail', compact('berkas'));
     }
 
-    /**
-     * Update status permohonan
-     */
     public function updateStatus(Request $request, $uuid)
     {
         $kematian = AkteKematian::where('uuid', $uuid)->firstOrFail();
         $kematian->status = $request->status;
-        if ($request->status == 'Tolak') {
-            $kematian->alasan_penolakan = $request->input('alasan_penolakan');
-        }
+        if ($request->status == 'Tolak') $kematian->alasan_penolakan = $request->input('alasan_penolakan');
         $kematian->save();
         return redirect()->back()->with('success', 'Status berhasil diperbarui');
     }
