@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\AkteLahir;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class AkteLahirController extends Controller
 {
@@ -12,51 +13,18 @@ class AkteLahirController extends Controller
     {
         $request->validate([
             'layanan_id' => 'required|exists:layanan,layanan_id',
-            'nomor_antrian' => 'required|string',
-
-            'nama_pelapor' => 'required|string',
-            'nik_pelapor' => 'required|digits:16',
-            'nomor_dokumen' => 'required|string',
-            'nomor_kk' => 'required|string',
-            'kewarganegaraan_pelapor' => 'required|string',
-
-            'nama_saksi1' => 'required|string',
-            'nik_saksi1' => 'required|digits:16',
-            'nomor_kk_saksi1' => 'required|string',
-            'kewarganegaraan_saksi1' => 'required|string',
-
-            'nama_saksi2' => 'required|string',
-            'nik_saksi2' => 'required|digits:16',
-            'nomor_kk_saksi2' => 'required|string',
-            'kewarganegaraan_saksi2' => 'required|string',
-
-            'nama_ayah' => 'required|string',
-            'nik_ayah' => 'required|digits:16',
-            'tempat_lahir_ayah' => 'required|string',
-            'tanggal_lahir_ayah' => 'required|string',
-            'kewarganegaraan_ayah' => 'required|string',
-
-            'nama_ibu' => 'required|string',
-            'nik_ibu' => 'required|digits:16',
-            'tempat_lahir_ibu' => 'required|string',
-            'tanggal_lahir_ibu' => 'required|string',
-            'kewarganegaraan_ibu' => 'required|string',
-
-            'nama_anak' => 'required|string',
-            'jenis_kelamin' => 'required|string',
-            'tempat_dilahirkan' => 'required|string',
-            'tempat_kelahiran' => 'required|string',
-            'hari_tanggal_lahir' => 'required|string',
-            'pukul' => 'required|string',
-            'jenis_kelahiran' => 'required|string',
-            'kelahiran_ke' => 'required|string',
-            'penolong' => 'required|string',
-            'berat_bayi' => 'required|string',
-            'panjang_bayi' => 'required|string',
-
+            'nomor_registrasi' => 'required|string',
+            'nama_pemohon' => 'required|string',
+            'nik_pemohon' => 'required|digits:16',
+            'nomor_kk_pemohon' => 'required|string',
+            'alamat' => 'required|string',
+            'formulir_f201' => 'required|file|mimes:pdf',
+            'ktp_pemohon' => 'required|file|mimes:pdf',
+            'ktp_saksi1' => 'required|file|mimes:pdf',
+            'ktp_saksi2' => 'required|file|mimes:pdf',
+            'kk_pemohon' => 'required|file|mimes:pdf',
             'file_surat_lahir' => 'required|file|mimes:pdf',
             'file_buku_nikah' => 'required|file|mimes:pdf',
-            'file_kk' => 'required|file|mimes:pdf',
             'file_sptjm_kelahiran' => 'nullable|file|mimes:pdf',
             'file_sptjm_pasutri' => 'nullable|file|mimes:pdf',
             'file_berita_acara_polisi' => 'nullable|file|mimes:pdf',
@@ -65,21 +33,29 @@ class AkteLahirController extends Controller
         $data = $request->all();
         $data['uuid'] = Str::uuid();
         $data['status'] = 'Dokumen Diterima';
-        $data['file_surat_lahir'] = $request->file('file_surat_lahir')->store('aktelahir', 'public');
-        $data['file_buku_nikah'] = $request->file('file_buku_nikah')->store('aktelahir', 'public');
-        $data['file_kk'] = $request->file('file_kk')->store('aktelahir', 'public');
-        if ($request->hasFile('file_sptjm_kelahiran')) {
-            $data['file_sptjm_kelahiran'] = $request->file('file_sptjm_kelahiran')->store('aktelahir', 'public');
-        }
-        if ($request->hasFile('file_sptjm_pasutri')) {
-            $data['file_sptjm_pasutri'] = $request->file('file_sptjm_pasutri')->store('aktelahir', 'public');
-        }
-        if ($request->hasFile('file_berita_acara_polisi')) {
-            $data['file_berita_acara_polisi'] = $request->file('file_berita_acara_polisi')->store('aktelahir', 'public');
+        $data = $request->except([
+            'formulir_f201', 'ktp_pemohon','ktp_saksi1','ktp_saksi2','kk_pemohon', 'file_surat_lahir','file_buku_nikah','file_sptjm_kelahiran','file_sptjm_pasutri','file_berita_acara_polisi'
+        ]);
+        $fileFields = [
+            'formulir_f201', 
+            'ktp_pemohon',
+            'ktp_saksi1',
+            'ktp_saksi2',
+            'kk_pemohon', 
+            'file_surat_lahir',
+            'file_buku_nikah',
+            'file_sptjm_kelahiran',
+            'file_sptjm_pasutri',
+            'file_berita_acara_polisi'
+        ];
+        foreach ($fileFields as $field) {
+            if ($request->hasFile($field)) {
+                $data[$field] = $request->file($field)->store('akte_lahir', 'private');
+            }
         }
         AkteLahir::create($data);
         return redirect()->route('layanan-mandiri')
-            ->with('success', 'Berhasil Ditambahkan');
+            ->with('success', 'Data dan dokumen berhasil dikirim.');
     }
 
     public function daftar_aktelahir(Request $request)
@@ -110,5 +86,14 @@ class AkteLahirController extends Controller
         }
         $akteLahir->save();
         return redirect()->back()->with('success','Status berhasil diperbarui');
+    }
+    public function lihatBerkas($uuid, $field)
+    {
+        $berkas = AkteLahir::where('uuid', $uuid)->firstOrFail();
+        $path = $berkas->$field;
+        if (!$path || !Storage::disk('private')->exists($path)) {
+            abort(404);
+        }
+        return Storage::disk('private')->response($path);
     }
 }

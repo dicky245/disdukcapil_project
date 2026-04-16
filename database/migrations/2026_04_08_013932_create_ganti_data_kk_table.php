@@ -19,14 +19,17 @@ return new class extends Migration
                 column: 'layanan_id'
             )->onDelete('cascade');
             $table->string('nomor_antrian')->unique();
-            $table->string('nama');
-            $table->string('alamat');
-            $table->char('nik', 16);
+            $table->string('nama_pemohon');
+            $table->char('nik_pemohon', 16);
+            $table->string('nomor_kk_pemohon');
+            $table->string('alamat_pemohon');
             $table->string('formulir_f102');
-            $table->string('kk_lama');
+            $table->string('ktp_pemohon');
+            $table->string('kk_pemohon');
             $table->string('formulir_f106');
             $table->string('surat_keterangan_perubahan');
             $table->string('pernyataan_pindah_kk')->nullable();
+            $table->string('foto_wajah')->nullable();
             $table->string('alasan_penolakan')->nullable();
             $table->enum('status',['Dokumen Diterima', 'Verifikasi Data','Proses Cetak', 'Siap Pengambilan','Tolak'])->default('Dokumen Diterima');
             $table->softDeletes();

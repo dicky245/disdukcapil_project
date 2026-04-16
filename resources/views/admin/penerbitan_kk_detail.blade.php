@@ -19,15 +19,15 @@
             <div class="space-y-4 text-sm">
                 <div class="flex justify-between border-b pb-2">
                     <span class="text-gray-500">Nama Pemohon</span>
-                    <span class="font-semibold">{{ $berkas->nama }}</span>
+                    <span class="font-semibold">{{ $berkas->nama_pemohon }}</span>
                 </div>
                 <div class="flex justify-between border-b pb-2">
-                    <span class="text-gray-500">Nomor Registrasi</span>
-                    <span class="font-semibold">{{ $berkas->nomor_registrasi }}</span>
+                    <span class="text-gray-500">Nomor Antrian</span>
+                    <span class="font-semibold">{{ $berkas->nomor_antrian }}</span>
                 </div>
                 <div class="flex justify-between border-b pb-2">
                     <span class="text-gray-500">Alamat</span>
-                    <span class="font-semibold">{{ $berkas->alamat }}</span>
+                    <span class="font-semibold">{{ $berkas->alamat_pemohon }}</span>
                 </div>
                 <div class="flex justify-between border-b pb-2">
                     <span class="text-gray-500">Jenis Layanan</span>
@@ -52,15 +52,18 @@
                 Dokumen Persyaratan
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
                 @if($jenis == 'Perubahan Data')
                     @include('admin.partials.dokumen', [
                         'label' => 'Formulir F-1.02',
                         'field' => 'formulir_f102'
                     ])
                     @include('admin.partials.dokumen', [
-                        'label' => 'KK Lama',
-                        'field' => 'kk_lama'
+                        'label' => 'KTP Pemohon',
+                        'field' => 'ktp_pemohon'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KK Pemohon',
+                        'field' => 'kk_pemohon'
                     ])
                     @include('admin.partials.dokumen', [
                         'label' => 'Formulir F-1.06',
@@ -70,6 +73,7 @@
                         'label' => 'Suket Perubahan',
                         'field' => 'surat_keterangan_perubahan'
                     ])
+
                     @if($berkas->pernyataan_pindah_kk)
                         @include('admin.partials.dokumen', [
                             'label' => 'Pernyataan Pindah KK',
@@ -77,19 +81,25 @@
                         ])
                     @endif
                 @endif
+
                 @if($jenis == 'Ganti Kepala')
                     @include('admin.partials.dokumen', [
                         'label' => 'Formulir F-1.02',
                         'field' => 'formulir_f102'
                     ])
                     @include('admin.partials.dokumen', [
+                        'label' => 'KTP Pemohon',
+                        'field' => 'ktp_pemohon'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KK Pemohon',
+                        'field' => 'kk_pemohon'
+                    ])
+                    @include('admin.partials.dokumen', [
                         'label' => 'Akta Kematian',
                         'field' => 'fotokopi_akta_kematian'
                     ])
-                    @include('admin.partials.dokumen', [
-                        'label' => 'KK Lama',
-                        'field' => 'kk_lama'
-                    ])
+
                     @if($berkas->surat_pernyataan_wali)
                         @include('admin.partials.dokumen', [
                             'label' => 'Surat Pernyataan Wali',
@@ -97,26 +107,34 @@
                         ])
                     @endif
                 @endif
-                @if($jenis == 'Hilang/Rusak')
+
+                @if($jenis == 'Hilang Rusak')
                     @include('admin.partials.dokumen', [
-                        'label' => 'Fotokopi KTP',
-                        'field' => 'fotokopi_ktp'
+                        'label' => 'Formulir F-1.02',
+                        'field' => 'formulir_f102'
                     ])
-                    @if($berkas->fotokopi_izin_tinggal)
-                        @include('admin.partials.dokumen', [
-                            'label' => 'Izin Tinggal',
-                            'field' => 'fotokopi_izin_tinggal'
-                        ])
-                    @endif
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KTP Pemohon',
+                        'field' => 'ktp_pemohon'
+                    ])
                     @include('admin.partials.dokumen', [
                         'label' => 'Surat Kehilangan/Rusak',
                         'field' => 'suket_hilang_rusak'
                     ])
                 @endif
+
                 @if($jenis == 'Pisah KK')
                     @include('admin.partials.dokumen', [
                         'label' => 'Formulir F-1.02',
                         'field' => 'formulir_f102'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KTP Pemohon',
+                        'field' => 'ktp_pemohon'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KK Pemohon',
+                        'field' => 'kk_pemohon'
                     ])
                     @include('admin.partials.dokumen', [
                         'label' => 'Buku Nikah',
@@ -128,6 +146,24 @@
                     ])
                 @endif
             </div>
+            @if($berkas->foto_wajah)
+            <div class="bg-white p-6 rounded-xl shadow border mt-6">
+                <h2 class="text-lg font-semibold mb-4 text-gray-700">
+                    Foto Verifikasi Wajah
+                </h2>
+                <div class="flex items-center gap-6">
+                    <img 
+                        src="{{ route('admin.lihat-berkas', [$berkas->uuid, $jenis, 'foto_wajah']) }}"
+                        alt="Foto Wajah Pemohon"
+                        class="w-40 h-40 rounded-xl object-cover border-2 border-gray-200 shadow"
+                    >
+                    <div class="text-sm text-gray-500">
+                        <p class="font-semibold text-gray-700 mb-1">Foto Verifikasi Liveness</p>
+                        <p class="text-xs text-gray-400 mt-1">Diambil otomatis saat kedipan mata ke-2 terdeteksi.</p>
+                    </div>
+                </div>
+            </div>
+            @endif
         </div>
     </div>
 </div>
