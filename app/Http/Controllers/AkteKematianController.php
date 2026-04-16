@@ -7,6 +7,7 @@ use App\Models\AkteKematian;
 use App\Models\Antrian_Online_Model;
 use App\Models\Lacak_Berkas_Model;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class AkteKematianController extends Controller
 {
@@ -15,65 +16,77 @@ class AkteKematianController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validasi disesuaikan dengan 'name' ACTUAL yang dikirim dari form (Berdasarkan Log)
-        $request->validate([
+        // 1. Validasi dengan struktur yang lebih aman
+        $validator = Validator::make($request->all(), [
             'layanan_id'                => 'required|integer',
-            'nomor_registrasi'          => 'nullable|string',
-            'nama_almarhum'             => 'required|string',
-            'nik_almarhum'              => 'nullable|string|digits:16',
-            'tgl_meninggal'             => 'required|date',
-            'tempat_meninggal'          => 'required|string',
-            'sebab_meninggal'           => 'nullable|string',
-            'yang_menerangkan'          => 'nullable|string',
-            'nik_pelapor'               => 'required|string|digits:16',
-            'nomor_kk_pelapor'          => 'nullable|string',
-            'nama_pelapor'              => 'required|string',
-            'hubungan_pelapor'          => 'required|string',
-            'nik_saksi_1'               => 'nullable|string|digits:16',
-            'nama_saksi_1'              => 'nullable|string',
-            'nik_saksi_2'               => 'nullable|string|digits:16',
-            'nama_saksi_2'              => 'nullable|string',
+            'nomor_antrian'          => 'nullable|string',
+            'nik_pemohon'               => 'required|string|digits:16',
+            'nomor_kk_pemohon'          => 'nullable|string|digits:16',
+            'nama_pemohon'              => 'required|string',
+            'alamat_pemohon'            => 'required|string',
+            'hubungan_pemohon'          => 'required|string',
             
-            // File validation disesuaikan dengan input name dari form
+            // File validation
+            'ktp_pemohon'               => 'nullable|file|mimes:pdf|max:5120',
+            'kartu_keluarga_pemohon'    => 'nullable|file|mimes:pdf|max:5120',
+            'formulir_f201'             => 'nullable|file|mimes:pdf|max:5120',
             'surat_keterangan_kematian' => 'nullable|file|mimes:pdf|max:5120',
             'ktp_almarhum'              => 'nullable|file|mimes:pdf|max:5120',
-            'kartu_keluarga'            => 'nullable|file|mimes:pdf|max:5120',
-            'dokumen_perjalanan'        => 'nullable|file|mimes:pdf|max:5120',
+            'ktp_saksi1'                => 'nullable|file|mimes:pdf|max:5120',
+            'ktp_saksi2'                => 'nullable|file|mimes:pdf|max:5120',
+        ], [
+            'digits' => 'Pastikan nomor NIK/KK tepat 16 angka!',
+            'mimes'  => 'Berkas yang diunggah harus berformat PDF!',
+            'max'    => 'Ukuran berkas maksimal adalah 5MB.'
         ]);
 
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->with('error', 'Validasi Gagal:<br>' . implode('<br>', $validator->errors()->all()))
+                ->withInput();
+        }
+
         try {
-            // 2. Ambil semua data request
-            $data = $request->except(['surat_keterangan_kematian', 'ktp_almarhum', 'kartu_keluarga', 'dokumen_perjalanan']);
+            // 2. Ambil semua data teks
+            $data = $request->except([
+                'ktp_pemohon', 'kartu_keluarga_pemohon', 'formulir_f201', 
+                'surat_keterangan_kematian', 'ktp_almarhum', 'ktp_saksi1', 'ktp_saksi2'
+            ]);
             $data['status'] = 'Dokumen Diterima';
 
             // 3. Handle file uploads (Simpan ke storage/app/public/akte_kematian)
-            if ($request->hasFile('surat_keterangan_kematian')) {
-                $data['surat_keterangan_kematian'] = $request->file('surat_keterangan_kematian')->store('akte_kematian/surat', 'public');
-            }
-            if ($request->hasFile('ktp_almarhum')) {
-                $data['ktp_almarhum'] = $request->file('ktp_almarhum')->store('akte_kematian/identitas', 'public');
-            }
-            if ($request->hasFile('kartu_keluarga')) {
-                $data['kartu_keluarga'] = $request->file('kartu_keluarga')->store('akte_kematian/kk', 'public');
-            }
-            if ($request->hasFile('dokumen_perjalanan')) {
-                $data['dokumen_perjalanan'] = $request->file('dokumen_perjalanan')->store('akte_kematian/dokumen', 'public');
+            $fileUploads = [
+                'ktp_pemohon'               => 'akte_kematian/pemohon',
+                'kartu_keluarga_pemohon'    => 'akte_kematian/kk',
+                'formulir_f201'             => 'akte_kematian/formulir',
+                'surat_keterangan_kematian' => 'akte_kematian/surat',
+                'ktp_almarhum'              => 'akte_kematian/almarhum',
+                'ktp_saksi1'                => 'akte_kematian/saksi',
+                'ktp_saksi2'                => 'akte_kematian/saksi',
+            ];
+
+            foreach ($fileUploads as $inputName => $storagePath) {
+                if ($request->hasFile($inputName)) {
+                    $data[$inputName] = $request->file($inputName)->store($storagePath, 'public');
+                }
             }
 
             // 4. Simpan ke database Akte Kematian
-            // (Karena nama input dari form sudah SAMA PERSIS dengan nama kolom DB, kita bisa langsung pakai $data)
             $akteKematian = AkteKematian::create($data);
 
             // 5. Generate nomor antrian
             $nomorAntrian = $this->generateNomorAntrian();
 
-            // 6. Create antrian online record
+            // 6. Create antrian online record (PERBAIKAN ERROR "CANNOT BE NULL" DI SINI)
             $antrian = Antrian_Online_Model::create([
                 'layanan_id'     => $request->layanan_id,
                 'nomor_antrian'  => $nomorAntrian,
-                'nama_lengkap'   => $request->nama_pelapor,
-                'nik'            => $request->nik_pelapor,
-                'alamat'         => 'Belum diisi',
+                
+                // Variabel disesuaikan dengan yang ada di log/form
+                'nama_lengkap'   => $request->nama_pemohon, 
+                'nik'            => $request->nik_pemohon,
+                'alamat'         => $request->alamat_pemohon, 
+                
                 'tanggal_lahir'  => null,
                 'status_antrian' => 'Menunggu',
             ]);
@@ -95,7 +108,11 @@ class AkteKematianController extends Controller
             return redirect()->back()->with('success', 'Permohonan Akte Kematian berhasil dikirim! Nomor Antrian Anda: ' . $nomorAntrian);
 
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage())->withInput();
+            // Pembersih teks error agar SweetAlert tidak crash
+            $safeErrorMessage = htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+            $safeErrorMessage = str_replace(["\r", "\n"], ' ', $safeErrorMessage);
+            
+            return redirect()->back()->with('error', 'Terjadi kesalahan sistem: ' . $safeErrorMessage)->withInput();
         }
     }
 

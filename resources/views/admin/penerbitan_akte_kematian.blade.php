@@ -53,8 +53,8 @@
             <thead>
                 <tr class="bg-blue-700 text-white">
                     <th class="p-4 font-semibold uppercase text-xs">No</th>
-                    <th class="p-4 font-semibold uppercase text-xs">Nama Almarhum</th>
-                    <th class="p-4 font-semibold uppercase text-xs">Pelapor</th>
+                    <th class="p-4 font-semibold uppercase text-xs">Nama Pemohon</th>
+                    <th class="p-4 font-semibold uppercase text-xs">NIK Pemohon</th>
                     <th class="p-4 font-semibold uppercase text-xs">Tgl Pengajuan</th>
                     <th class="p-4 font-semibold uppercase text-xs text-center">Status</th>
                     <th class="p-4 font-semibold uppercase text-xs text-center">Aksi</th>
@@ -64,8 +64,8 @@
                 @forelse ($dataKematian as $data)
                 <tr class="hover:bg-gray-50 transition-colors">
                     <td class="p-4 text-sm text-gray-700">{{ $loop->iteration }}</td>
-                    <td class="p-4 text-sm font-bold text-gray-800">{{ $data->nama_almarhum }}</td>
-                    <td class="p-4 text-sm text-gray-700">{{ $data->nama_pelapor }}</td>
+                    <td class="p-4 text-sm font-bold text-gray-800">{{ $data->nama_pemohon }}</td>
+                    <td class="p-4 text-sm text-gray-700">{{ $data->nik_pemohon }}</td>
                     <td class="p-4 text-sm text-gray-700">{{ $data->created_at->format('d M Y') }}</td>
                     <td class="p-4 text-center">
                         @php
@@ -85,8 +85,8 @@
                     <td class="p-4">
                         <div class="flex flex-col gap-1 items-center">
                             <a href="{{ route('admin.akte-kematian.detail', $data->uuid) }}"
-                            class="w-28 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-xs font-semibold text-center">
-                                Detail
+                            class="w-28 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-xs font-semibold text-center">
+                                Cek Berkas
                             </a>
                             @if($data->status == 'Dokumen Diterima')
                                 <form action="{{ route('admin.akte-kematian.status', $data->uuid) }}" method="POST">

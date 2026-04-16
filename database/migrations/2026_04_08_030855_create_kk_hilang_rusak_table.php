@@ -18,7 +18,7 @@ return new class extends Migration
                 table: 'layanan',
                 column: 'layanan_id'
             )->onDelete('cascade');
-            $table->string('nomor_registrasi')->unique();
+            $table->string('nomor_antrian')->unique();
             $table->string('nama');
             $table->string('alamat');
             $table->char('nik', 16);

@@ -17,7 +17,7 @@ class KartKeluargaController extends Controller
     {
         $request->validate([
             'layanan_id' => 'required|integer',
-            'nomor_registrasi' => 'required|string',
+            'nomor_antrian' => 'required|string',
             'nama' => 'required|string',
             'alamat' => 'required|string',
             'nik' => 'required|digits:16',
@@ -54,7 +54,7 @@ class KartKeluargaController extends Controller
     {
         $request->validate([
             'layanan_id' => 'required|integer',
-            'nomor_registrasi' => 'required|string',
+            'nomor_antrian' => 'required|string',
             'nama' => 'required|string',
             'alamat' => 'required|string',
             'nik' => 'required|digits:16',
@@ -89,7 +89,7 @@ class KartKeluargaController extends Controller
     {
         $request->validate([
             'layanan_id' => 'required|integer',
-            'nomor_registrasi' => 'required|string',
+            'nomor_antrian' => 'required|string',
             'nama' => 'required|string',
             'alamat' => 'required|string',
             'nik' => 'required|digits:16',
@@ -122,7 +122,7 @@ class KartKeluargaController extends Controller
     {
         $request->validate([
             'layanan_id' => 'required|integer',
-            'nomor_registrasi' => 'required|string',
+            'nomor_antrian' => 'required|string',
             'nama' => 'required|string',
             'alamat' => 'required|string',
             'nik' => 'required|digits:16',

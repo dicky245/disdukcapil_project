@@ -17,25 +17,25 @@ class AkteKematian extends Model
         'uuid',
         'layanan_id',
         'antrian_online_id',
-        'nomor_registrasi',
-        'nama_almarhum',
-        'nik_almarhum',
-        'tgl_meninggal',
-        'tempat_meninggal',
-        'sebab_meninggal',
-        'yang_menerangkan',
-        'nik_pelapor',
-        'nomor_kk_pelapor',
-        'nama_pelapor',
-        'hubungan_pelapor',
-        'nik_saksi_1',
-        'nama_saksi_1',
-        'nik_saksi_2',
-        'nama_saksi_2',
+        'nomor_antrian',
+        
+        // Data Pemohon
+        'nik_pemohon',
+        'nomor_kk_pemohon',
+        'nama_pemohon',
+        'alamat_pemohon',
+        'hubungan_pemohon',
+        
+        // Data Berkas
+        'ktp_pemohon',
+        'kartu_keluarga_pemohon',
+        'formulir_f201',
         'surat_keterangan_kematian',
         'ktp_almarhum',
-        'kartu_keluarga',
-        'dokumen_perjalanan',
+        'ktp_saksi1',
+        'ktp_saksi2',
+        
+        // Status
         'status',
         'alasan_penolakan',
     ];
@@ -50,10 +50,8 @@ class AkteKematian extends Model
     public function getNikFields(): array
     {
         return [
-            'nik_almarhum',
-            'nik_pelapor',
-            'nik_saksi_1',
-            'nik_saksi_2',
+            'nik_pemohon',
+            'nomor_kk_pemohon',
         ];
     }
 

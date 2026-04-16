@@ -11,103 +11,84 @@ use Illuminate\Support\Facades\Validator;
 
 class LahirMatiController extends Controller
 {
-    /**
-     * Simpan permohonan lahir mati dari layanan mandiri dengan sinkronisasi antrian online
-     */
     public function store(Request $request)
     {
-        // 1. VALIDASI MANUAL (Lebih aman dan bisa ditangkap SweetAlert)
+        // 1. Validasi Sesuai Konsep Baru
         $validator = Validator::make($request->all(), [
-            'layanan_id'          => 'required|integer',
-            'nomor_registrasi'    => 'nullable|string',
-            'nik_pelapor'         => 'required|string|digits:16',
-            'nama_pelapor'        => 'required|string',
-            'hubungan_pelapor'    => 'required|string',
+            'layanan_id'                  => 'required|integer',
+            'nomor_antrian'            => 'nullable|string',
+            'nik_pemohon'                 => 'required|string|digits:16',
+            'nomor_kk_pemohon'            => 'nullable|string|digits:16',
+            'nama_pemohon'                => 'required|string',
+            'alamat_pemohon'              => 'required|string',
+            'hubungan_pemohon'            => 'required|string',
             
-            'tgl_lahir'           => 'required|date',
-            'tempat_lahir'        => 'required|string',
-            'lama_kandungan'      => 'nullable|string',
-            'penolong_persalinan' => 'nullable|string',
-            
-            // Tambahan Data Bayi yang sebelumnya terlewat
-            'nama_bayi'           => 'nullable|string',
-            'jenis_kelamin'       => 'nullable|string|in:Laki-laki,Perempuan',
-            
-            'nik_ayah'            => 'required|string|digits:16',
-            'nama_ayah'           => 'required|string',
-            'nik_ibu'             => 'required|string|digits:16',
-            'nama_ibu'            => 'required|string',
-            
-            'nik_saksi_1'         => 'nullable|string|digits:16',
-            'nama_saksi_1'        => 'nullable|string',
-            'nik_saksi_2'         => 'nullable|string|digits:16',
-            'nama_saksi_2'        => 'nullable|string',
-            
+            // File validation
+            'ktp_pemohon'                 => 'nullable|file|mimes:pdf|max:5120',
+            'kartu_keluarga_pemohon'      => 'nullable|file|mimes:pdf|max:5120',
+            'ktp_saksi1'                  => 'nullable|file|mimes:pdf|max:5120',
+            'ktp_saksi2'                  => 'nullable|file|mimes:pdf|max:5120',
+            'formulir_f201'               => 'nullable|file|mimes:pdf|max:5120',
             'surat_keterangan_lahir_mati' => 'nullable|file|mimes:pdf|max:5120',
-            'ktp_ayah'            => 'nullable|file|mimes:pdf|max:5120',
-            'ktp_ibu'             => 'nullable|file|mimes:pdf|max:5120',
-            'kk_orangtua'         => 'nullable|file|mimes:pdf|max:5120',
         ], [
-            'digits' => 'Pastikan nomor NIK tepat 16 angka!',
+            'digits' => 'Pastikan nomor NIK/KK tepat 16 angka!',
             'mimes'  => 'Berkas yang diunggah harus berformat PDF!',
             'max'    => 'Ukuran berkas maksimal adalah 5MB.'
         ]);
 
-        // Cegat jika validasi gagal, lalu lempar ke SweetAlert dengan aman
         if ($validator->fails()) {
-            $errorList = implode('<br>', $validator->errors()->all());
             return redirect()->back()
-                ->with('error', $errorList)
+                ->with('error', 'Validasi Gagal:<br>' . implode('<br>', $validator->errors()->all()))
                 ->withInput();
         }
 
         try {
-            // 2. Ambil data
-            $data = $request->except(['surat_keterangan_lahir_mati', 'ktp_ayah', 'ktp_ibu', 'kk_orangtua']);
+            // 2. Ambil data teks
+            $data = $request->except([
+                'ktp_pemohon', 'kartu_keluarga_pemohon', 'ktp_saksi1', 
+                'ktp_saksi2', 'formulir_f201', 'surat_keterangan_lahir_mati'
+            ]);
             $data['status'] = 'Dokumen Diterima';
 
-            // 3. Handle file uploads 
-            if ($request->hasFile('surat_keterangan_lahir_mati')) {
-                $data['surat_keterangan_lahir_mati'] = $request->file('surat_keterangan_lahir_mati')->store('lahir_mati/surat', 'public');
-            }
-            if ($request->hasFile('ktp_ayah')) {
-                $data['ktp_ayah'] = $request->file('ktp_ayah')->store('lahir_mati/identitas', 'public');
-            }
-            if ($request->hasFile('ktp_ibu')) {
-                $data['ktp_ibu'] = $request->file('ktp_ibu')->store('lahir_mati/identitas', 'public');
-            }
-            if ($request->hasFile('kk_orangtua')) {
-                $data['kk_orangtua'] = $request->file('kk_orangtua')->store('lahir_mati/kk', 'public');
-            }
-            
-            // 4. Bersihkan teks "Bulan" pada lama kandungan
-            if (!empty($data['lama_kandungan'])) {
-                $data['lama_kandungan'] = (int) preg_replace('/[^0-9]/', '', $data['lama_kandungan']);
+            // 3. Handle file uploads dengan Looping
+            $fileUploads = [
+                'ktp_pemohon'                 => 'lahir_mati/pemohon',
+                'kartu_keluarga_pemohon'      => 'lahir_mati/kk',
+                'ktp_saksi1'                  => 'lahir_mati/saksi',
+                'ktp_saksi2'                  => 'lahir_mati/saksi',
+                'formulir_f201'               => 'lahir_mati/formulir',
+                'surat_keterangan_lahir_mati' => 'lahir_mati/surat',
+            ];
+
+            foreach ($fileUploads as $inputName => $storagePath) {
+                if ($request->hasFile($inputName)) {
+                    $data[$inputName] = $request->file($inputName)->store($storagePath, 'public');
+                }
             }
 
-            // 5. Simpan ke Database
+            // 4. Simpan ke Database
             $lahirMati = LahirMati::create($data);
 
-            // 6. Generate nomor antrian
+            // 5. Generate nomor antrian
             $nomorAntrian = $this->generateNomorAntrian();
 
-            // 7. Create antrian online record
+            // 6. Create antrian online record
             $antrian = Antrian_Online_Model::create([
                 'layanan_id'     => $request->layanan_id,
                 'nomor_antrian'  => $nomorAntrian,
-                'nama_lengkap'   => $request->nama_ayah, 
-                'nik'            => $request->nik_ayah,
-                'alamat'         => 'Belum diisi',
-                'tanggal_lahir'  => $request->tgl_lahir,
+                'nama_lengkap'   => $request->nama_pemohon, 
+                'nik'            => $request->nik_pemohon,
+                'alamat'         => $request->alamat_pemohon,
+                'tanggal_lahir'  => null,
                 'status_antrian' => 'Menunggu',
             ]);
 
-            // 8. Update record Lahir Mati dengan UUID relasi antrian
+            // 7. Update record Lahir Mati
             $lahirMati->update([
                 'antrian_online_id' => $antrian->antrian_online_id,
             ]);
 
-            // 9. Create lacak berkas record
+            // 8. Create lacak berkas record
             Lacak_Berkas_Model::create([
                 'antrian_online_id' => $antrian->antrian_online_id,
                 'status'            => 'Dokumen Diterima',
@@ -115,21 +96,14 @@ class LahirMatiController extends Controller
                 'keterangan'        => 'Permohonan Pencatatan Lahir Mati diterima dan sedang menunggu verifikasi petugas.',
             ]);
 
-            // 10. Return success
             return redirect()->back()->with('success', 'Permohonan Lahir Mati berhasil dikirim! Nomor Antrian Anda: ' . $nomorAntrian);
 
         } catch (\Exception $e) {
-            // BERSIHKAN TANDA KUTIP AGAR JAVASCRIPT SWEETALERT TIDAK CRASH
             $safeErrorMessage = htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
-            $safeErrorMessage = str_replace(["\r", "\n"], ' ', $safeErrorMessage);
-            
             return redirect()->back()->with('error', 'Gagal menyimpan data: ' . $safeErrorMessage)->withInput();
         }
     }
 
-    /**
-     * Generate nomor antrian unik
-     */
     private function generateNomorAntrian()
     {
         $prefix = 'LM-' . date('Ymd');
@@ -137,9 +111,6 @@ class LahirMatiController extends Controller
         return $prefix . '-' . str_pad($count, 3, '0', STR_PAD_LEFT);
     }
 
-    /**
-     * Tampilkan daftar permohonan lahir mati (admin)
-     */
     public function daftar(Request $request)
     {
         $query = LahirMati::query();
@@ -157,18 +128,12 @@ class LahirMatiController extends Controller
         ));
     }
 
-    /**
-     * Tampilkan detail permohonan
-     */
     public function detail($uuid)
     {
         $berkas = LahirMati::where('uuid', $uuid)->firstOrFail();
         return view('admin.penerbitan_lahir_mati_detail', compact('berkas'));
     }
 
-    /**
-     * Update status permohonan
-     */
     public function updateStatus(Request $request, $uuid)
     {
         $lahirMati = LahirMati::where('uuid', $uuid)->firstOrFail();

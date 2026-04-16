@@ -17,29 +17,24 @@ class LahirMati extends Model
         'uuid',
         'layanan_id',
         'antrian_online_id',
-        'nomor_registrasi',
-        'nik_pelapor',
-        'nama_pelapor',
-        'hubungan_pelapor',
-        'nama_bayi',
-        'jenis_kelamin',
-        'tgl_lahir',
-        'tempat_lahir',
-        'lama_kandungan',
-        'penolong_persalinan',
-        'nama_ayah',
-        'nik_ayah',
-        'nama_ibu',
-        'nik_ibu',
-        'nik_saksi_1',
-        'nama_saksi_1',
-        'nik_saksi_2',
-        'nama_saksi_2',
-        'keterangan',
+        'nomor_antrian',
+        
+        // Data Pemohon (Sesuai Konsep Baru)
+        'nik_pemohon',
+        'nomor_kk_pemohon',
+        'nama_pemohon',
+        'alamat_pemohon',
+        'hubungan_pemohon',
+        
+        // Data Berkas
+        'ktp_pemohon',
+        'kartu_keluarga_pemohon',
+        'ktp_saksi1',
+        'ktp_saksi2',
+        'formulir_f201',
         'surat_keterangan_lahir_mati',
-        'ktp_ayah',
-        'ktp_ibu',
-        'kk_orangtua',
+        
+        'keterangan',
         'status',
         'alasan_penolakan',
     ];
@@ -49,34 +44,24 @@ class LahirMati extends Model
     ];
 
     /**
-     * Override getNikFields untuk menentukan field NIK yang di-encrypt
-     *
-     * @return array
+     * Tentukan field NIK yang akan dienkripsi secara otomatis
      */
     public function getNikFields(): array
     {
         return [
-            'nik_ayah',
-            'nik_ibu',
-            'nik_pelapor',
-            'nik_saksi_1',
-            'nik_saksi_2',
+            'nik_pemohon',
+            'nomor_kk_pemohon',
         ];
     }
 
-    // CATATAN PERBAIKAN:
-    // Menghapus public $incrementing = false; dan protected $keyType = 'string';
-    // Karena ID utama tabel ini adalah Angka (Auto Increment), bukan string.
-
     /**
-     * Boot function from Laravel.
+     * Boot function untuk menangani pembuatan UUID secara otomatis
      */
     protected static function boot()
     {
         parent::boot();
         self::creating(function ($model) {
-            // CATATAN PERBAIKAN:
-            // Masukkan UUID ke kolom 'uuid', BUKAN ke kolom 'id'
+            // Memasukkan UUID ke kolom 'uuid'
             if (empty($model->uuid)) {
                 $model->uuid = (string) Str::uuid();
             }
@@ -85,8 +70,6 @@ class LahirMati extends Model
 
     /**
      * Relasi dengan antrian online
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function antrian_online()
     {
@@ -95,8 +78,6 @@ class LahirMati extends Model
 
     /**
      * Relasi dengan layanan
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function layanan()
     {

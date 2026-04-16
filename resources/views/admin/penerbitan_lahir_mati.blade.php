@@ -29,8 +29,7 @@
     <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex items-center gap-4">
         <div class="flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
             </svg>
             <span class="font-semibold text-gray-700">Filter:</span>
         </div>
@@ -42,9 +41,7 @@
             <option value="Siap Pengambilan" {{ request('status') == 'Siap Pengambilan' ? 'selected' : '' }}>Siap Pengambilan</option>
             <option value="Tolak" {{ request('status') == 'Tolak' ? 'selected' : '' }}>Ditolak</option>
         </select>
-        <button class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm">
-            Terapkan
-        </button>
+        <button class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm">Terapkan</button>
     </div>
     </form>
 
@@ -53,9 +50,8 @@
             <thead>
                 <tr class="bg-blue-700 text-white">
                     <th class="p-4 font-semibold uppercase text-xs">No</th>
-                    <th class="p-4 font-semibold uppercase text-xs">Nama Bayi</th>
-                    <th class="p-4 font-semibold uppercase text-xs">Nama Ayah</th>
-                    <th class="p-4 font-semibold uppercase text-xs">Nama Ibu</th>
+                    <th class="p-4 font-semibold uppercase text-xs">Nama Pemohon</th>
+                    <th class="p-4 font-semibold uppercase text-xs">NIK Pemohon</th>
                     <th class="p-4 font-semibold uppercase text-xs">Tgl Pengajuan</th>
                     <th class="p-4 font-semibold uppercase text-xs text-center">Status</th>
                     <th class="p-4 font-semibold uppercase text-xs text-center">Aksi</th>
@@ -65,9 +61,8 @@
                 @forelse ($dataLahirMati as $data)
                 <tr class="hover:bg-gray-50 transition-colors">
                     <td class="p-4 text-sm text-gray-700">{{ $loop->iteration }}</td>
-                    <td class="p-4 text-sm font-bold text-gray-800">{{ $data->nama_bayi }}</td>
-                    <td class="p-4 text-sm text-gray-700">{{ $data->nama_ayah }}</td>
-                    <td class="p-4 text-sm text-gray-700">{{ $data->nama_ibu }}</td>
+                    <td class="p-4 text-sm font-bold text-gray-800">{{ $data->nama_pemohon }}</td>
+                    <td class="p-4 text-sm text-gray-700">{{ $data->nik_pemohon }}</td>
                     <td class="p-4 text-sm text-gray-700">{{ $data->created_at->format('d M Y') }}</td>
                     <td class="p-4 text-center">
                         @php
@@ -87,41 +82,33 @@
                     <td class="p-4">
                         <div class="flex flex-col gap-1 items-center">
                             <a href="{{ route('admin.lahir-mati.detail', $data->uuid) }}"
-                            class="w-28 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-xs font-semibold text-center">
-                                Detail
+                            class="w-28 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-xs font-semibold text-center">
+                                Cek Berkas
                             </a>
                             @if($data->status == 'Dokumen Diterima')
                                 <form action="{{ route('admin.lahir-mati.status', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Verifikasi Data">
-                                    <button class="w-28 bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
-                                        Verifikasi
-                                    </button>
+                                    <button class="w-28 bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">Verifikasi</button>
                                 </form>
                                 <form action="{{ route('admin.lahir-mati.status', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Tolak">
-                                    <button class="w-28 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
-                                        Tolak
-                                    </button>
+                                    <button class="w-28 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">Tolak</button>
                                 </form>
                             @endif
                             @if($data->status == 'Verifikasi Data')
                                 <form action="{{ route('admin.lahir-mati.status', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Proses Cetak">
-                                    <button class="w-28 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
-                                        Proses Cetak
-                                    </button>
+                                    <button class="w-28 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">Proses Cetak</button>
                                 </form>
                             @endif
                             @if($data->status == 'Proses Cetak')
                                 <form action="{{ route('admin.lahir-mati.status', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Siap Pengambilan">
-                                    <button class="w-28 bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
-                                        Siap Diambil
-                                    </button>
+                                    <button class="w-28 bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">Siap Diambil</button>
                                 </form>
                             @endif
                         </div>
@@ -129,7 +116,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="p-8 text-center text-gray-400">
+                    <td colspan="6" class="p-8 text-center text-gray-400">
                         <div class="text-4xl mb-2"><i class="fas fa-clipboard-list"></i></div>
                         <p class="font-semibold">Belum ada permohonan lahir mati</p>
                     </td>

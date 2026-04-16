@@ -12,7 +12,7 @@ class AkteLahirController extends Controller
     {
         $request->validate([
             'layanan_id' => 'required|exists:layanan,layanan_id',
-            'nomor_registrasi' => 'required|string',
+            'nomor_antrian' => 'required|string',
 
             'nama_pelapor' => 'required|string',
             'nik_pelapor' => 'required|digits:16',

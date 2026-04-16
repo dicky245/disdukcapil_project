@@ -23,35 +23,23 @@ return new class extends Migration
             $table->uuid('antrian_online_id')->nullable();
             
             // Form fields
-            $table->string('nomor_registrasi')->nullable();
+            $table->string('nomor_antrian')->nullable();
             
-            // Data Pelapor
-            $table->string('nik_pelapor')->index();
-            $table->string('nomor_kk_pelapor')->nullable();
-            $table->string('nama_pelapor');
-            $table->string('hubungan_pelapor');
+            // Data Pemohon (Sesuai dengan controller baru)
+            $table->string('nik_pemohon')->index();
+            $table->string('nomor_kk_pemohon')->nullable();
+            $table->string('nama_pemohon');
+            $table->text('alamat_pemohon'); // Menggunakan text karena alamat bisa panjang
+            $table->string('hubungan_pemohon');
             
-            // Identitas Jenazah
-            $table->string('nik_almarhum')->nullable()->index();
-            $table->string('nama_almarhum');
-            
-            // Rincian Kematian
-            $table->date('tgl_meninggal');
-            $table->string('tempat_meninggal');
-            $table->text('sebab_meninggal')->nullable();
-            $table->string('yang_menerangkan')->nullable();
-            
-            // Data Saksi
-            $table->string('nik_saksi_1')->nullable();
-            $table->string('nama_saksi_1')->nullable();
-            $table->string('nik_saksi_2')->nullable();
-            $table->string('nama_saksi_2')->nullable();
-            
-            // File uploads
+            // File uploads (Semua data jenazah & saksi dialihkan ke unggahan dokumen F-2.01)
+            $table->string('ktp_pemohon')->nullable();
+            $table->string('kartu_keluarga_pemohon')->nullable();
+            $table->string('formulir_f201')->nullable();
             $table->string('surat_keterangan_kematian')->nullable();
             $table->string('ktp_almarhum')->nullable();
-            $table->string('kartu_keluarga')->nullable();
-            $table->string('dokumen_perjalanan')->nullable();
+            $table->string('ktp_saksi1')->nullable();
+            $table->string('ktp_saksi2')->nullable();
             
             // Status dan metadata
             $table->enum('status', ['Dokumen Diterima', 'Verifikasi Data', 'Proses Cetak', 'Siap Pengambilan', 'Tolak'])
@@ -62,7 +50,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             
-            // Indexes (nik_pelapor & nik_almarhum already indexed inline above)
+            // Indexes
             $table->index('status');
             $table->index('created_at');
         });
