@@ -33,7 +33,7 @@ class SecurityQuestionSeeder extends Seeder
         $this->command->info('');
         $this->command->info('PERTANYAAN KEAMANAN:');
         foreach ($questions as $index => $question) {
-            $this->command->info('  ' . ($index + 1) . '. ' . $question);
+            $this->command->info(' '.($index + 1).'. '.$question);
         }
         $this->command->info('========================================');
     }

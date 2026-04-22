@@ -15,6 +15,8 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    @stack('head')
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -164,8 +166,8 @@
 
         /* Logo Animation */
         .loading-logo {
-            width: 120px;
-            height: 120px;
+            width: 80px;
+            height: 80px;
             position: relative;
             animation: logoFloat 3s ease-in-out infinite;
         }
@@ -173,10 +175,10 @@
         .loading-logo::before {
             content: '';
             position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             animation: pulseRing 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
@@ -185,10 +187,10 @@
         .loading-logo::after {
             content: '';
             position: absolute;
-            top: -20px;
-            left: -20px;
-            right: -20px;
-            bottom: -20px;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 50%;
             animation: pulseRing 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
@@ -200,7 +202,7 @@
                 transform: translateY(0px) scale(1);
             }
             50% {
-                transform: translateY(-20px) scale(1.05);
+                transform: translateY(-10px) scale(1.02);
             }
         }
 
@@ -217,13 +219,13 @@
 
         /* Loading Spinner */
         .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.2);
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
             border-top-color: white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-top: 20px;
+            margin-top: 16px;
         }
 
         @keyframes spin {
@@ -235,29 +237,29 @@
         /* Loading Text */
         .loading-text {
             color: white;
-            font-size: 1.25rem;
+            font-size: 1.125rem;
             font-weight: 600;
-            margin-top: 24px;
+            margin-top: 20px;
             animation: fadeInUp 0.8s ease-out;
         }
 
         .loading-subtext {
             color: rgba(255, 255, 255, 0.8);
-            font-size: 0.875rem;
-            margin-top: 8px;
+            font-size: 0.8125rem;
+            margin-top: 6px;
             animation: fadeInUp 0.8s ease-out 0.2s backwards;
         }
 
         /* Loading Dots */
         .loading-dots {
             display: flex;
-            gap: 8px;
-            margin-top: 16px;
+            gap: 6px;
+            margin-top: 12px;
         }
 
         .loading-dots span {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             background: white;
             border-radius: 50%;
             animation: bounceDots 1.4s infinite ease-in-out both;

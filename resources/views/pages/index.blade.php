@@ -1,10 +1,6 @@
 @extends('layouts.user')
 
 @section('content')
-@php
-    use Illuminate\Support\Str;
-@endphp
-
 <main class="pt-0">
     {{-- Page Loading with Animated Logo --}}
     <div id="pageLoading" class="page-loading">
@@ -63,16 +59,6 @@
                     Layanan pendaftaran, pencatatan sipil, dan informasi kependudukan yang
                     modern, transparan, dan dapat diakses kapan saja, di mana saja.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style="animation-delay: 0.3s;">
-                    <a href="{{ route('layanan-mandiri') }}" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-blue-700 rounded-xl font-semibold hover:bg-blue-50 transition-all hover:scale-105 shadow-lg">
-                        <i class="fas fa-rocket"></i>
-                        Layanan Mandiri
-                    </a>
-                    <a href="{{ route('statistik') }}" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-500/30 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-blue-500/50 transition-all hover:scale-105">
-                        <i class="fas fa-chart-line"></i>
-                        Lihat Statistik
-                    </a>
-                </div>
             </div>
         </div>
 
@@ -391,7 +377,71 @@
             </div>
         </div>
     </section>
+
+    {{-- Berita & Pengumuman --}}
+    <section id="berita" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 reveal">
+                <span class="text-blue-600 font-semibold text-sm uppercase tracking-wider">Kabar Terkini</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Berita & Pengumuman</h2>
+                <p class="text-gray-600 mt-3 max-w-2xl mx-auto">
+                    Informasi terbaru seputar layanan dan kegiatan Disdukcapil Kabupaten Toba
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 reveal">
+                @forelse ($beritas as $item)
+                    <div class="news-card-large bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+                         role="button"
+                         tabindex="0"
+                         onclick="openNewsModal({{ $item->id }})"
+                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openNewsModal({{ $item->id }});}">
+                        <div class="p-6">
+                            <div class="flex items-start justify-between gap-3 mb-4">
+                                <span class="px-3 py-1 berita-badge rounded-full text-xs font-semibold whitespace-nowrap max-w-[65%] truncate">
+                                    {{ $item->judul }}
+                                </span>
+                                <span class="text-gray-500 text-sm whitespace-nowrap">
+                                    {{ ($item->published_at ?? $item->created_at)->locale('id')->translatedFormat('d M Y') }}
+                                </span>
+                            </div>
+
+                            <h3 class="text-xl font-bold text-gray-800 mb-2 line-clamp-2">{{ $item->judul }}</h3>
+                            <p class="text-gray-600 text-sm mb-5 line-clamp-4">
+                                {{ \Illuminate\Support\Str::limit(trim(strip_tags($item->konten)), 160) }}
+                            </p>
+
+                            <span class="inline-flex items-center gap-2 text-blue-600 font-semibold text-sm hover:gap-3 transition-all">
+                                Baca Selengkapnya <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </div>
+                    </div>
+                @empty
+                    <p class="md:col-span-3 text-center text-gray-500 py-12 text-lg">
+                        Belum ada berita yang dipublikasikan. Silakan cek kembali nanti.
+                    </p>
+                @endforelse
+            </div>
+        </div>
+    </section>
 </main>
+
+    {{-- Modal baca berita --}}
+    <div class="news-modal-overlay" id="newsModalOverlay" onclick="closeNewsModal()">
+        <div class="news-modal" onclick="event.stopPropagation()">
+            <div class="p-6 border-b border-gray-100 flex items-center justify-between gap-4">
+                <span class="px-4 py-2 berita-badge rounded-full text-sm font-semibold shrink-0 max-w-[60%] truncate" id="modalCategory">Kategori</span>
+                <button type="button" onclick="closeNewsModal()" class="w-10 h-10 hover:bg-gray-100 rounded-lg flex items-center justify-center transition shrink-0" aria-label="Tutup">
+                    <i class="fas fa-times text-gray-500"></i>
+                </button>
+            </div>
+            <div class="p-8">
+                <span class="text-gray-500 text-sm" id="modalDate">Tanggal</span>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mt-2 mb-6" id="modalTitle">Judul Berita</h2>
+                <div class="prose max-w-none text-gray-700" id="modalContent"></div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('styles')
@@ -463,16 +513,92 @@
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-20px); }
     }
+
+    /* News modal (beranda) */
+    .news-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
+        z-index: 10000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .news-modal-overlay.active {
+        display: flex;
+    }
+
+    .news-modal {
+        background: white;
+        border-radius: 24px;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
+        width: 100%;
+        animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes modalSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .berita-badge {
+        background: #FEF7E0;
+        color: #B06000;
+    }
 </style>
 @endpush
 
 @push('scripts')
 <script>
+    const newsData = @json($newsForModal);
+
     // Hide loading after page loads
     window.addEventListener('load', function() {
         const loading = document.getElementById('pageLoading');
         if (loading) {
             loading.classList.add('hidden');
+        }
+    });
+
+    function openNewsModal(newsId) {
+        const overlay = document.getElementById('newsModalOverlay');
+        if (!overlay) return;
+        const news = newsData[String(newsId)] || newsData[newsId];
+        if (!news) return;
+
+        document.getElementById('modalCategory').textContent = news.category;
+        document.getElementById('modalDate').textContent = news.date;
+        document.getElementById('modalTitle').textContent = news.title;
+        document.getElementById('modalContent').innerHTML = news.content;
+
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeNewsModal() {
+        const overlay = document.getElementById('newsModalOverlay');
+        if (!overlay) return;
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeNewsModal();
         }
     });
 

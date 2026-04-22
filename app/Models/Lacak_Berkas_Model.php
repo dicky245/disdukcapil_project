@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Str;
 
 class Lacak_Berkas_Model extends Model
 {
@@ -32,7 +31,7 @@ class Lacak_Berkas_Model extends Model
     public $incrementing = true;
 
     /**
-     * The "type" of the auto-incrementing ID.
+     * The "type" of the auto-increment ID.
      *
      * @var string
      */

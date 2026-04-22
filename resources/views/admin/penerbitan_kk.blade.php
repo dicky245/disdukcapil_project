@@ -45,6 +45,7 @@
                     <th class="p-4 text-left">No</th>
                     <th class="p-4 text-left">Nama</th>
                     <th class="p-4 text-left">Jenis</th>
+                    <th class="p-4 text-left">Alamat</th>
                     <th class="p-4 text-center">Status</th>
                     <th class="p-4 text-center">Aksi</th>
                 </tr>
@@ -68,19 +69,19 @@
                     </td>
                     <td class="p-4 text-center">
                         <div class="flex flex-col gap-2 items-center">
-                            <a href="{{ route('admin.detail', ['uuid' => $data->uuid,'jenis' => $data->jenis]) }}"
+                            <a href="{{ route('admin.detail', ['uuid' => $data->uuid, 'jenis' => $data->jenis]) }}"
                                class="w-28 bg-blue-600 text-white px-3 py-1 rounded text-xs">
                                Detail
                             </a>
                             @if($data->status == 'Dokumen Diterima')
-                            <form action="{{ route('admin.status', ['uuid' => $data->uuid,'jenis' => $data->jenis]) }}" method="POST">
+                            <form action="{{ route('admin.status', ['uuid' => $data->uuid, 'jenis' => $data->jenis]) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="status" value="Verifikasi Data">
                                 <button type="button" class="btn-status w-28 bg-green-500 text-white px-3 py-1 rounded text-xs">
                                     Verifikasi
                                 </button>
                             </form>
-                            <form action="{{ route('admin.status', ['uuid' => $data->uuid,'jenis' => $data->jenis]) }}" method="POST">
+                            <form action="{{ route('admin.status', ['uuid' => $data->uuid, 'jenis' => $data->jenis]) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="status" value="Tolak">
                                 <input type="hidden" name="alasan" class="input-alasan">
@@ -90,7 +91,7 @@
                             </form>
                             @endif
                             @if($data->status == 'Verifikasi Data')
-                            <form action="{{ route('admin.status', ['uuid' => $data->uuid,'jenis' => $data->jenis]) }}" method="POST">
+                            <form action="{{ route('admin.status', ['uuid' => $data->uuid, 'jenis' => $data->jenis]) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="status" value="Proses Cetak">
                                 <button type="button" class="btn-status w-28 bg-yellow-500 text-white px-3 py-1 rounded text-xs">
@@ -99,7 +100,7 @@
                             </form>
                             @endif
                             @if($data->status == 'Proses Cetak')
-                            <form action="{{ route('admin.status', ['uuid' => $data->uuid,'jenis' => $data->jenis]) }}" method="POST">
+                            <form action="{{ route('admin.status', ['uuid' => $data->uuid, 'jenis' => $data->jenis]) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="status" value="Siap Pengambilan">
                                 <button type="button" class="btn-status w-28 bg-purple-500 text-white px-3 py-1 rounded text-xs">

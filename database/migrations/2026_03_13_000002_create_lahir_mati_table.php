@@ -29,6 +29,16 @@ return new class extends Migration
             $table->text('alamat_pemohon');
             $table->string('hubungan_pemohon');
             
+            // Data Bayi (dari remote)
+            $table->string('nama_bayi');
+            $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
+            $table->datetime('tgl_lahir');
+            $table->string('tempat_lahir');
+            $table->string('nama_ayah');
+            $table->text('nik_ayah')->nullable();
+            $table->string('nama_ibu');
+            $table->text('nik_ibu')->nullable();
+            
             // File uploads
             $table->string('ktp_pemohon')->nullable();
             $table->string('kartu_keluarga_pemohon')->nullable();
