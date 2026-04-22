@@ -2,130 +2,339 @@
 
 @section('content')
 @php
-    // Mapping layanan ke icon, warna, dan field form yang dibutuhkan
-    $serviceConfig = [
-
-    1 => [ // KK
-        'icon' => 'fa-address-card',
-        'color' => 'blue',
-        'id' => 'kk',
-        'fields' => [
-            ['name' => 'layanan_id', 'value' => '1', 'type' => 'hidden'],
-            ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi', 'placeholder' => 'Masukkan Nomor Reqistrasi', 'type' => 'text'],
-            ['name' => 'nama', 'label' => 'Nama Kepala Keluarga', 'placeholder' => 'Masukkan Nama Kepala Keluarga','type' => 'text'],
-            ['name' => 'alamat', 'label' => 'Alamat', 'placeholder' => 'Masukkan Alamat','type' => 'textarea'],
-            ['name' => 'kutipan_perkawinan', 'label' => 'Kutipan Perkawinan', 'placeholder' => 'Masukkan Kutipan Perkawinan','type' => 'text'],
-            ['name' => 'keterangan_pindah', 'label' => 'Keterangan Pindah', 'placeholder' => 'Masukkan Keterangan Pindah','type' => 'text'],
-            ['name' => 'kk_lama', 'label' => 'Kartu Keluarga Sebelumnya', 'placeholder' => 'Masukkan Kartu Keluarga Sebelumnya', 'type' => 'file'],
-            ['name' => 'surat_keterangan_pengganti', 'label' => 'Surat Keterangan Pengganti', 'type' => 'file'],
-            ['name' => 'salinan_kepres', 'label' => 'Salinan Kepres', 'type' => 'file'],
-            ['name' => 'izin_tinggal_asing', 'label' => 'Surat Izin Tinggal Bagi Asing', 'type' => 'file'],
-        ]
+$serviceConfig = [
+    // 1. KARTU KELUARGA 
+    1 => [
+        'icon'         => 'fa-address-card',
+        'color'        => 'blue',
+        'id'           => 'kk',
+        'persyaratan'  => [
+            'Formulir F-1.02 (Formulir Pendaftaran Peristiwa Kependudukan)<a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
+            'KTP Pemohon dengan Ukuran Berkas Maksimal 200 mb Berformat PDF',
+            'Kartu Keluarga Pemohon dengan Ukuran Berkas Maksimal 200 mb Berformat PDF',
+            'Surat keterangan/bukti perubahan Peristiwa Kependudukan (cth: Paspor, SKPWNI) dan Peristiwa Penting.',
+            'Formulir F-1.06 (Formulir Pernyataan Perubahan Elemen Data Kependudukan)',
+        ],
+        'penjelasan'   => [
+            'Penduduk mengisi F1.02',
+            'Penduduk melampirkan KK',
+            'Penduduk mengisi F1.06 karena perubahan elemen data dalam KK',
+            'Penduduk melampirkan fotokopi bukti peristiwa kependudukan dan peristiwa penting',
+            'Dinas menerbitkan KK Baru',
+        ],
+        'fields'       => [
+            ['name' => 'layanan_id',       'value' => '1', 'type' => 'hidden'],
+            ['type' => 'heading',          'label' => 'Informasi Pendaftaran'],
+            ['name' => 'nomor_antrian',    'label' => 'Nomor Antrian (Opsional)', 'placeholder' => 'Nomor Antrian', 'type' => 'text', 'required' => false],
+            ['type' => 'heading',          'label' => 'Data Pemohon'],
+            ['name' => 'nama_pemohon',     'label' => 'Nama Pemohon', 'placeholder' => 'Nama Pemohon', 'type' => 'text'],
+            ['name' => 'nik_pemohon',      'label' => 'Nomor Induk Kependudukan', 'placeholder' => '16 Digit NIK Pemohon', 'type' => 'text'],
+            ['name' => 'nomor_kk_pemohon', 'label' => 'Nomor Kartu Keluarga', 'placeholder' => 'Nomor Kartu Keluarga', 'type' => 'text'],
+            ['name' => 'alamat_pemohon',   'label' => 'Alamat', 'placeholder' => 'Alamat Lengkap', 'type' => 'textarea'],
+        ],
+        'files' => [
+            ['name' => 'formulir_f102',              'label' => 'Formulir F1.02'],
+            ['name' => 'ktp_pemohon',                'label' => 'KTP Pemohon'],
+            ['name' => 'kk_pemohon',                 'label' => 'KK Pemohon'],
+            ['name' => 'formulir_f106',              'label' => 'Formulir F1.06'],
+            ['name' => 'surat_keterangan_perubahan', 'label' => 'Surat Keterangan Bukti Peristiwa Kependudukan dan Peristiwa Penting'],
+            ['name' => 'pernyataan_pindah_kk',       'label' => 'Surat Pernyataan Pengasuhan/Wali (Diwajibkan Jika Pindah KK)', 'required' => false],
+        ],
     ],
+
+    // 6. GANTI KEPALA KK 
+    6 => [
+        'icon'         => 'fa-user-edit',
+        'color'        => 'blue',
+        'id'           => 'ganti_kepala_kk',
+        'persyaratan'  => [
+            'Formulir F-1.02 (Formulir Pendaftaran Peristiwa Kependudukan)<a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
+            'KTP Pemohon dengan Ukuran Berkas Maksimal 200 mb Berformat PDF',
+            'Kartu Keluarga Pemohon dengan Ukuran Berkas Maksimal 200 mb Berformat PDF',
+            'Akte Kematian Kepala Keluarga',
+            'Surat Pernyataan Bersedia Menjadi Wali',
+        ],
+        'penjelasan'   => [
+            'Penduduk mengisi formulir F-1.02',
+            'Melampirkan akta kematian jika kepala keluarga meninggal',
+            'Melampirkan KTP dan KK pemohon',
+            'Dalam hal seluruh anggota keluarga masih berusia di bawah 17 tahun, diperlukan kepala keluarga yang telah dewasa.',
+            'Dinas menerbitkan KK Baru.',
+        ],
+        'fields'       => [
+            ['name' => 'layanan_id',       'value' => '6', 'type' => 'hidden'],
+            ['type' => 'heading',          'label' => 'Informasi Pendaftaran'],
+            ['name' => 'nomor_antrian',    'label' => 'Nomor Antrian (Opsional)', 'placeholder' => 'Nomor Antrian', 'type' => 'text', 'required' => false],
+            ['type' => 'heading',          'label' => 'Data Pemohon'],
+            ['name' => 'nama_pemohon',     'label' => 'Nama Pemohon', 'placeholder' => 'Nama Pemohon', 'type' => 'text'],
+            ['name' => 'nik_pemohon',      'label' => 'Nomor Induk Kependudukan', 'placeholder' => '16 Digit NIK Pemohon', 'type' => 'text'],
+            ['name' => 'nomor_kk_pemohon', 'label' => 'Nomor Kartu Keluarga', 'placeholder' => 'Nomor Kartu Keluarga', 'type' => 'text'],
+            ['name' => 'alamat_pemohon',   'label' => 'Alamat', 'placeholder' => 'Alamat Lengkap', 'type' => 'textarea'],
+        ],
+        'files' => [
+            ['name' => 'formulir_f102',         'label' => 'Formulir F1.02'],
+            ['name' => 'ktp_pemohon',           'label' => 'KTP Pemohon'],
+            ['name' => 'kk_pemohon',            'label' => 'KK Pemohon'],
+            ['name' => 'akta_kematian',         'label' => 'Akte Kematian Kepala Keluarga Sebelumnya'],
+            ['name' => 'surat_pernyataan_wali', 'label' => 'Surat Pernyataan Wali (Jika semua anggota dibawah 17 tahun)', 'required' => false],
+        ],
+    ],
+
+    // 7. KK HILANG/RUSAK
+    7 => [
+        'icon'         => 'fa-file-medical-alt',
+        'color'        => 'blue',
+        'id'           => 'kk_hilang_rusak',
+        'persyaratan'  => [
+            'Formulir F-1.02 (Formulir Pendaftaran Peristiwa Kependudukan) <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
+            'KTP Pemohon dengan Ukuran Berkas Maksimal 200 mb Berformat PDF',
+            'Surat kehilangan dari kepolisian (jika hilang) atau KK yang rusak',
+        ],
+        'penjelasan'   => [
+            'Penduduk mengisi F.1.02',
+            'Penduduk menyerahkan dokumen KK yang rusak/surat keterangan kehilangan dari kepolisian',
+        ],
+        'fields'       => [
+            ['name' => 'layanan_id',       'value' => '7', 'type' => 'hidden'],
+            ['type' => 'heading',          'label' => 'Informasi Pengajuan'],
+            ['name' => 'nomor_antrian',    'label' => 'Nomor Antrian (Opsional)', 'placeholder' => 'Nomor Antrian', 'type' => 'text', 'required' => false],
+            ['type' => 'heading',          'label' => 'Data Pemohon'],
+            ['name' => 'nama_pemohon',     'label' => 'Nama Pemohon', 'placeholder' => 'Nama Pemohon', 'type' => 'text'],
+            ['name' => 'nik_pemohon',      'label' => 'Nomor Induk Kependudukan', 'placeholder' => '16 Digit NIK Pemohon', 'type' => 'text'],
+            ['name' => 'nomor_kk_pemohon', 'label' => 'Nomor Kartu Keluarga', 'placeholder' => 'Nomor Kartu Keluarga', 'type' => 'text'],
+            ['name' => 'alamat_pemohon',   'label' => 'Alamat', 'placeholder' => 'Alamat Lengkap', 'type' => 'textarea'],
+        ],
+        'files' => [
+            ['name' => 'formulir_f102',      'label' => 'Formulir F1.02'],
+            ['name' => 'ktp_pemohon',        'label' => 'KTP Pemohon'],
+            ['name' => 'suket_hilang_rusak', 'label' => 'Surat Kehilangan Kepolisian / Foto KK Rusak'],
+        ],
+    ],
+
+    // 8. PISAH KK
+    8 => [
+        'icon'         => 'fa-people-arrows',
+        'color'        => 'blue',
+        'id'           => 'pisah_kk',
+        'persyaratan'  => [
+            'Formulir F-1.02 (Formulir Pendaftaran Peristiwa Kependudukan)<a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
+            'KK lama',
+            'Berumur sekurang-kurangnya 17 (tujuh belas) tahun atau sudah kawin.',
+        ],
+        'penjelasan'   => [
+            'Penduduk mengisi F-1.02',
+            'Penduduk melampirkan fotokopi buku nikah atau akta perceraian (jika disebabkan pernikahan atau perceraian)',
+            'Penduduk melampirkan KK lama',
+        ],
+        'fields'       => [
+            ['name' => 'layanan_id',       'value' => '8', 'type' => 'hidden'],
+            ['type' => 'heading',          'label' => 'Informasi Pengajuan'],
+            ['name' => 'nomor_antrian',    'label' => 'Nomor Antrian (Opsional)', 'placeholder' => 'Nomor Antrian', 'type' => 'text', 'required' => false],
+            ['type' => 'heading',          'label' => 'Data Pemohon'],
+            ['name' => 'nama_pemohon',     'label' => 'Nama Pemohon', 'placeholder' => 'Nama Pemohon', 'type' => 'text'],
+            ['name' => 'nik_pemohon',      'label' => 'Nomor Induk Kependudukan', 'placeholder' => '16 Digit NIK Pemohon', 'type' => 'text'],
+            ['name' => 'nomor_kk_pemohon', 'label' => 'Nomor Kartu Keluarga', 'placeholder' => 'Nomor Kartu Keluarga', 'type' => 'text'],
+            ['name' => 'alamat_pemohon',   'label' => 'Alamat', 'placeholder' => 'Alamat Lengkap', 'type' => 'textarea'],
+        ],
+        'files' => [
+            ['name' => 'formulir_f102',       'label' => 'Formulir F1.02'],
+            ['name' => 'ktp_pemohon',         'label' => 'KTP Pemohon'],
+            ['name' => 'kk_pemohon',          'label' => 'KK Pemohon'],
+            ['name' => 'fotokopi_buku_nikah', 'label' => 'Buku nikah / akta cerai (Jika karena pernikahan/perceraian)'],
+            ['name' => 'kk_lama',             'label' => 'Scan/Foto Asli KK Lama'],
+        ],
+    ],
+
+    // 2. AKTE KELAHIRAN
     2 => [
-        'icon' => 'fa-baby',
-        'color'=> 'blue',
-        'id'=>'akte_kelahiran',
-        'fields'=>[
-            ['name' => 'layanan_id', 'value' => '2', 'type' => 'hidden'],
-            ['name' => 'nomor_registrasi', 'label' => 'Nomor Registrasi', 'placeholder' => 'Masukkan Nomor Reqistrasi', 'type' => 'text'],
-            ['name' => 'nama', 'label' => 'Nama Kepala Keluarga', 'placeholder' => 'Masukkan Nama Kepala Keluarga','type' => 'text'],
-            ['name' => 'alamat', 'label' => 'Alamat', 'placeholder' => 'Masukkan Alamat','type' => 'textarea'],
-            ['name' => 'fotokopi_buku_nikah','label'=>'Foto Buku Nikah Orang Tua', 'type'=>'file'],
-            ['name' => 'surat_bidan','label'=>'Surat Keterangan dari Bidan', 'type'=>'file'],
-            ['name' => 'ktp_orangtua','label'=>'Foto KTP Orang Tua', 'type'=>'file'],
-            ['name' => 'fotokopi_kk','label'=>'Foto Kartu Keluarga', 'type'=>'file'],
-            ['name' => 'identitas_saksi','label'=>'Identitas Saksi', 'placeholder' => 'Masukkan Data Identitas Saksi', 'type'=>'text'],
-        ]
-    ],
-    3 => [ // Akte Kematian
-        'icon' => 'fa-user-times',
-        'color' => 'blue',
-        'id' => 'akte_kematian',
-        'fields' => [
-            ['name' => 'layanan_id', 'value' => '3', 'type' => 'hidden'],
-            ['name' => 'nama_almarhum', 'label' => 'Nama Lengkap Almarhum', 'type' => 'text', 'placeholder' => 'Sesuai KTP'],
-            ['name' => 'nik_almarhum', 'label' => 'NIK Almarhum', 'type' => 'nik', 'placeholder' => '16 digit NIK'],
-            ['name' => 'tgl_meninggal', 'label' => 'Tanggal Meninggal', 'type' => 'date'],
-            ['name' => 'tempat_meninggal', 'label' => 'Tempat Meninggal', 'type' => 'text', 'placeholder' => 'Rumah sakit/lokasi'],
-            ['name' => 'sebab_meninggal', 'label' => 'Sebab Meninggal', 'type' => 'textarea', 'placeholder' => 'Jelaskan penyebab kematian'],
-            ['name' => 'nik_pelapor', 'label' => 'NIK Pelapor', 'type' => 'nik', 'placeholder' => '16 digit NIK'],
-            ['name' => 'nama_pelapor', 'label' => 'Nama Pelapor', 'type' => 'text', 'placeholder' => 'Nama lengkap pelapor'],
-            ['name' => 'hubungan_pelapor', 'label' => 'Hubungan dengan Almarhum', 'type' => 'select', 'options' => ['Ayah', 'Ibu', 'Suami', 'Istri', 'Anak', 'Saudara Kandung', 'Lainnya']],
-            ['name' => 'surat_keterangan_kematian', 'label' => 'Surat Keterangan Kematian (RS/Kelurahan)', 'type' => 'file'],
-            ['name' => 'ktp_almarhum', 'label' => 'KTP Almarhum', 'type' => 'file'],
-            ['name' => 'kartu_keluarga', 'label' => 'Kartu Keluarga', 'type' => 'file'],
-            ['name' => 'ktp_pelapor', 'label' => 'KTP Pelapor', 'type' => 'file'],
-            ['name' => 'surat_keterangan_rs', 'label' => 'Surat Keterangan RS (jika meninggal di RS)', 'type' => 'file'],
-        ]
-    ],
-    4 => [ // Lahir Mati
-        'icon' => 'fa-exclamation-triangle',
-        'color' => 'blue',
-        'id' => 'lahir_mati',
-        'fields' => [
-            ['name' => 'layanan_id', 'value' => '4', 'type' => 'hidden'],
-            ['name' => 'nama_bayi', 'label' => 'Nama Bayi', 'type' => 'text', 'placeholder' => 'Nama lengkap bayi'],
-            ['name' => 'jenis_kelamin', 'label' => 'Jenis Kelamin', 'type' => 'select', 'options' => ['Laki-laki', 'Perempuan']],
-            ['name' => 'tgl_lahir', 'label' => 'Tanggal & Waktu Lahir', 'type' => 'datetime-local'],
-            ['name' => 'tempat_lahir', 'label' => 'Tempat Lahir', 'type' => 'text', 'placeholder' => 'Nama RS/Klinik/Rumah'],
-            ['name' => 'nama_ayah', 'label' => 'Nama Ayah', 'type' => 'text', 'placeholder' => 'Nama lengkap ayah'],
-            ['name' => 'nik_ayah', 'label' => 'NIK Ayah', 'type' => 'nik', 'placeholder' => '16 digit NIK ayah'],
-            ['name' => 'nama_ibu', 'label' => 'Nama Ibu', 'type' => 'text', 'placeholder' => 'Nama lengkap ibu'],
-            ['name' => 'nik_ibu', 'label' => 'NIK Ibu', 'type' => 'nik', 'placeholder' => '16 digit NIK ibu'],
-            ['name' => 'keterangan', 'label' => 'Keterangan', 'type' => 'textarea', 'placeholder' => 'Keterangan tambahan'],
-            ['name' => 'surat_keterangan_lahir_mati', 'label' => 'Surat Keterangan Lahir Mati', 'type' => 'file'],
-            ['name' => 'ktp_ayah', 'label' => 'KTP Ayah', 'type' => 'file'],
-            ['name' => 'ktp_ibu', 'label' => 'KTP Ibu', 'type' => 'file'],
-        ]
-    ],
-        'Penerbitan Akte Kematian' => [
-            'icon' => 'fa-user-times',
-            'color' => 'orange',
-            'id' => 'akta-kematian',
-            'fields' => [
-                ['name' => 'nama_almarhum', 'label' => 'Nama Lengkap Almarhum', 'type' => 'text', 'placeholder' => 'Sesuai KTP'],
-                ['name' => 'tgl_meninggal', 'label' => 'Tanggal Meninggal', 'type' => 'date'],
-                ['name' => 'tempat_meninggal', 'label' => 'Tempat Meninggal', 'type' => 'text', 'placeholder' => 'Rumah sakit/lokasi'],
-                ['name' => 'sebab_meninggal', 'label' => 'Sebab Meninggal', 'type' => 'textarea', 'placeholder' => 'Jelaskan penyebab'],
-                ['name' => 'nik_pelapor', 'label' => 'NIK Pelapor', 'type' => 'text', 'placeholder' => '16 digit NIK'],
-                ['name' => 'hubungan_pelapor', 'label' => 'Hubungan dengan Almarhum', 'type' => 'select', 'options' => ['Ayah', 'Ibu', 'Suami', 'Istri', 'Anak', 'Lainnya']],
-            ]
+        'icon'         => 'fa-baby',
+        'color'        => 'green',
+        'id'           => 'akte_kelahiran',
+        'persyaratan'  => [
+            'Formulir F-2.01 <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
+            'Surat keterangan kelahiran dari rumah sakit/Puskesmas/bidan/kepala desa.',
+            'Buku nikah/kutipan akta perkawinan orang tua',
+            'KK dan KTP orang tua',
         ],
-        'Penerbitan Akte Lahir Mati' => [
-            'icon' => 'fa-exclamation-triangle',
-            'color' => 'red',
-            'id' => 'lahir-mati',
-            'fields' => [
-                ['name' => 'nama_bayi', 'label' => 'Nama Bayi', 'type' => 'text', 'placeholder' => 'Nama lengkap bayi'],
-                ['name' => 'tgl_lahir', 'label' => 'Tanggal Lahir', 'type' => 'datetime-local'],
-                ['name' => 'nama_ayah', 'label' => 'Nama Ayah', 'type' => 'text', 'placeholder' => 'Nama lengkap ayah'],
-                ['name' => 'nama_ibu', 'label' => 'Nama Ibu', 'type' => 'text', 'placeholder' => 'Nama lengkap ibu'],
-                ['name' => 'nik_ayah', 'label' => 'NIK Ayah', 'type' => 'text', 'placeholder' => '16 digit NIK ayah'],
-                ['name' => 'keterangan', 'label' => 'Keterangan', 'type' => 'textarea', 'placeholder' => 'Keterangan tambahan'],
-            ]
+        'penjelasan'   => [
+            'Mengisi formulir F-2.01',
+            'Untuk pelayanan online/daring, persyaratan yang discan/difoto untuk diunggah harus aslinya',
         ],
-        5 => [
-            'icon' => 'fa-ring',
-            'color' => 'blue',
-            'id' => 'layanan-pernikahan',
-            'fields' => [
-                ['name' => 'nomor_antrian', 'label' => 'Kode Antrian', 'type' => 'text', 'placeholder' => 'Masukkan kode antrian Anda', 'required' => true],
-                ['name' => 'tanggal_perkawinan', 'label' => 'Tanggal Perkawinan', 'type' => 'date', 'required' => true],
-                ['name' => 'nama_lengkap_suami', 'label' => 'Nama Suami Lengkap', 'type' => 'text', 'placeholder' => 'Nama sesuai KTP', 'required' => true],
-                ['name' => 'nik_suami', 'label' => 'NIK Suami', 'type' => 'number', 'placeholder' => '16 digit NIK', 'required' => true],
-                ['name' => 'nama_lengkap_istri', 'label' => 'Nama Istri Lengkap', 'type' => 'text', 'placeholder' => 'Nama sesuai KTP', 'required' => true],
-                ['name' => 'nik_istri', 'label' => 'NIK Istri', 'type' => 'number', 'placeholder' => '16 digit NIK', 'required' => true],
-                ['name' => 'akta_pernikahan', 'label' => 'Upload Akta Pernikahan (Opsional)', 'type' => 'file', 'required' => false],
-            ]
+        'fields'       => [
+            ['name' => 'layanan_id',       'value' => '2', 'type' => 'hidden'],
+            ['type' => 'heading',          'label' => 'Informasi Pengajuan'],
+            ['name' => 'nomor_antrian',    'label' => 'Nomor Antrian (Opsional)', 'placeholder' => 'Nomor Antrian', 'type' => 'text', 'required' => false],
+            ['type' => 'heading',          'label' => 'Akte Kelahiran'],
+            ['name' => 'nama_pemohon',     'label' => 'Nama Pemohon', 'placeholder' => 'Masukkan Nama Pemohon', 'type' => 'text'],
+            ['name' => 'nik_pemohon',      'label' => 'NIK Pemohon', 'placeholder' => 'Masukkan NIK Pemohon', 'type' => 'text'],
+            ['name' => 'nomor_kk_pemohon', 'label' => 'Nomor KK Pemohon', 'placeholder' => 'Nomor KK Pemohon', 'type' => 'text'],
+            ['name' => 'alamat',           'label' => 'Alamat Pemohon', 'placeholder' => 'Alamat Pemohon', 'type' => 'textarea'],
         ],
-    ];
+        'files' => [
+            ['name' => 'formulir_f201',            'label' => 'Formulir F2.01 yang Telah Diisi'],
+            ['name' => 'ktp_pemohon',              'label' => 'KTP Pemohon'],
+            ['name' => 'ktp_saksi1',               'label' => 'KTP Saksi 1'],
+            ['name' => 'ktp_saksi2',               'label' => 'KTP Saksi 2'],
+            ['name' => 'file_surat_lahir',         'label' => 'Surat Keterangan Lahir (RS/Bidan/Nakhoda/Kades)'],
+            ['name' => 'file_buku_nikah',          'label' => 'Buku Nikah / Akta Perkawinan'],
+            ['name' => 'file_sptjm_kelahiran',     'label' => 'SPTJM Kebenaran Data Kelahiran (F-2.03) - Jika tidak ada surat lahir', 'required' => false],
+            ['name' => 'file_sptjm_pasutri',       'label' => 'SPTJM Kebenaran Pasangan Suami Istri (F-2.04) - Jika tidak ada buku nikah', 'required' => false],
+            ['name' => 'file_berita_acara_polisi', 'label' => 'Berita Acara Kepolisian - Untuk anak tidak diketahui asal usulnya', 'required' => false],
+        ],
+    ],
 
-    $layananList = \App\Models\Layanan_Model::take(5)->get();
+    // 3. AKTE KEMATIAN
+    3 => [
+        'icon'         => 'fa-user-times',
+        'color'        => 'blue',
+        'id'           => 'akte_kematian',
+        'persyaratan'  => [
+            'Formulir F-2.01 (Wajib diisi) <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
+            'Fotokopi surat kematian dari dokter atau kepala desa/lurah',
+            'Fotokopi KTP & KK Pemohon.',
+            'Fotokopi KTP yang meninggal dunia.',
+            'Fotokopi KTP Saksi.'
+        ],
+        'penjelasan'   => [
+            'WNI melampirkan fotokopi KK untuk verifikasi data.',
+            'Untuk pelayanan online/Daring, persyaratan yang discan/ difoto untuk diunggah harus aslinya.',
+            'Seluruh informasi terkait jenazah dan saksi dilampirkan melalui isian Formulir F-2.01.', 
+        ],
+        'template_url' => '#',
+        'fields'       => [ 
+            ['name' => 'layanan_id',       'value' => '3', 'type' => 'hidden'],
+            ['type' => 'heading',          'label' => 'Informasi Pengajuan'],
+            ['name' => 'nomor_antrian',    'label' => 'Nomor Antrian', 'placeholder' => 'Masukkan Nomor Antrian', 'type' => 'text', 'required' => false],
+            ['type' => 'heading',          'label' => 'Data Pemohon'],
+            ['name' => 'nik_pemohon',      'label' => 'NIK Pemohon', 'placeholder' => '16 digit NIK Pemohon', 'type' => 'text'],
+            ['name' => 'nomor_kk_pemohon', 'label' => 'Nomor KK Pemohon', 'placeholder' => '16 digit Nomor KK', 'type' => 'text'],
+            ['name' => 'nama_pemohon',     'label' => 'Nama Lengkap Pemohon', 'placeholder' => 'Masukkan Nama Lengkap Pemohon', 'type' => 'text'],
+            ['name' => 'alamat_pemohon',   'label' => 'Alamat Pemohon', 'placeholder' => 'Alamat Domisili', 'type' => 'textarea'],
+            ['name' => 'hubungan_pemohon', 'label' => 'Hubungan dengan Jenazah', 'placeholder' => 'Contoh: Anak / Suami / Istri / Ketua RT', 'type' => 'text'],
+        ],
+        'files'        => [
+            ['name' => 'formulir_f201',             'label' => 'Scan/Foto Asli Formulir F-2.01 yang telah diisi'],
+            ['name' => 'surat_keterangan_kematian', 'label' => 'Scan/Foto Asli Surat Keterangan Kematian (Dokter/Kades)'],
+            ['name' => 'ktp_pemohon',               'label' => 'Scan/Foto Asli KTP Pemohon'],
+            ['name' => 'kartu_keluarga_pemohon',    'label' => 'Scan/Foto Asli KK Pemohon'],
+            ['name' => 'ktp_almarhum',              'label' => 'Scan/Foto Asli KTP Almarhum'],
+            ['name' => 'ktp_saksi1',                'label' => 'Scan/Foto Asli KTP Saksi 1'],
+            ['name' => 'ktp_saksi2',                'label' => 'Scan/Foto Asli KTP Saksi 2'],
+        ],
+    ],
+
+    // 4. LAHIR MATI
+    4 => [
+        'icon'         => 'fa-exclamation-triangle',
+        'color'        => 'blue',
+        'id'           => 'lahir_mati',
+        'persyaratan'  => [
+            'Formulir F-2.01 (Wajib diisi) <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
+            'Pemohon Merupakan Orang Tua Kandung dari Bayi yang Lahir Mati.',
+            'Fotokopi surat keterangan lahir mati (RS/Bidan/Kades).',
+            'Fotokopi KTP & KK Orang Tua.',
+            'Fotokopi KTP Saksi.',
+        ],
+        'penjelasan'   => [
+            'WNI melampirkan fotokopi KK untuk verifikasi data.',
+            'Untuk pelayanan online/Daring, persyaratan yang discan/ difoto untuk diunggah harus aslinya.',
+            'Seluruh informasi terkait jenazah (bayi) dan orang tua dilampirkan melalui isian Formulir F-2.01.',
+        ],
+        'template_url' => '#',
+        'fields'       => [
+            ['name' => 'layanan_id',       'value' => '4', 'type' => 'hidden'],
+            ['type' => 'heading',          'label' => 'Informasi Pengajuan'],
+            ['name' => 'nomor_antrian',    'label' => 'Nomor Antrian', 'placeholder' => 'Masukkan Nomor Antrian', 'type' => 'text', 'required' => false],
+            ['type' => 'heading',          'label' => 'Data Pemohon'],
+            ['name' => 'nik_pemohon',      'label' => 'NIK Pemohon', 'placeholder' => '16 digit NIK Pemohon', 'type' => 'text'],
+            ['name' => 'nomor_kk_pemohon', 'label' => 'Nomor KK Pemohon', 'placeholder' => '16 digit Nomor KK', 'type' => 'text'],
+            ['name' => 'nama_pemohon',     'label' => 'Nama Lengkap Pemohon', 'placeholder' => 'Masukkan Nama Lengkap Pemohon', 'type' => 'text'],
+            ['name' => 'alamat_pemohon',   'label' => 'Alamat Pemohon', 'placeholder' => 'Alamat Domisili', 'type' => 'textarea'],
+            ['name' => 'hubungan_pemohon', 'label' => 'Hubungan dengan Jenazah Bayi', 'placeholder' => 'Contoh: Ayah / Ibu / Bidan', 'type' => 'text'],
+        ],
+        'files'        => [
+            ['name' => 'formulir_f201',               'label' => 'Scan/Foto Asli Formulir F-2.01 yang telah diisi'],
+            ['name' => 'surat_keterangan_lahir_mati', 'label' => 'Scan/Foto Asli Surat Ket. Lahir Mati (RS/Bidan/Kades)'],
+            ['name' => 'ktp_pemohon',                 'label' => 'Scan/Foto Asli KTP Pemohon'],
+            ['name' => 'kartu_keluarga_pemohon',      'label' => 'Scan/Foto Asli KK Pemohon'],
+            ['name' => 'ktp_saksi1',                  'label' => 'Scan/Foto Asli KTP Saksi 1'],
+            ['name' => 'ktp_saksi2',                  'label' => 'Scan/Foto Asli KTP Saksi 2'],
+        ],
+    ],
+
+    // 5. PERKAWINAN 
+    5 => [
+        'icon'         => 'fa-ring',
+        'color'        => 'blue',
+        'id'           => 'layanan-pernikahan',
+        'persyaratan'  => [
+            'Kutipan akta kelahiran masing-masing pihak',
+            'Surat keterangan belum pernah kawin dari Kepala Desa/Lurah',
+            'KTP dan KK kedua calon mempelai',
+            'Pas foto berdampingan 4x6 sebanyak 5 lembar',
+        ],
+        'penjelasan'   => [
+            'Penduduk mengisi formulir permohonan pencatatan perkawinan',
+            'Melampirkan semua persyaratan yang ditentukan',
+            'Dinas menerbitkan Kutipan Akta Perkawinan',
+        ],
+        'template_url' => '#',
+        'fields'       => [
+            ['name' => 'layanan_id',         'value' => '5', 'type' => 'hidden'],
+            ['type' => 'heading',            'label' => 'Informasi Pendaftaran'],
+            ['name' => 'nomor_antrian',      'label' => 'Kode Antrian', 'type' => 'text', 'placeholder' => 'Masukkan kode antrian'],
+            ['name' => 'tanggal_perkawinan', 'label' => 'Tanggal Perkawinan', 'type' => 'date'],
+            ['type' => 'heading',            'label' => 'Data Mempelai Pria (Suami)'],
+            ['name' => 'nama_lengkap_suami', 'label' => 'Nama Suami Lengkap', 'type' => 'text', 'placeholder' => 'Nama sesuai KTP'],
+            ['name' => 'nik_suami',          'label' => 'NIK Suami', 'type' => 'text', 'placeholder' => '16 digit NIK Suami'],
+            ['type' => 'heading',            'label' => 'Data Mempelai Wanita (Istri)'],
+            ['name' => 'nama_lengkap_istri', 'label' => 'Nama Istri Lengkap', 'type' => 'text', 'placeholder' => 'Nama sesuai KTP'],
+            ['name' => 'nik_istri',          'label' => 'NIK Istri', 'type' => 'text', 'placeholder' => '16 digit NIK Istri'],
+        ],
+        'files'        => [
+            ['name' => 'akta_pernikahan', 'label' => 'Upload Akta Pernikahan (Opsional)', 'required' => false],
+        ],
+    ],
+];
+
+$kategoriLayanan = [
+    'Kartu Keluarga (KK)' => [
+        'icon'    => 'fa-id-card',
+        'emoji'   => '👨‍👩‍👧',
+        'color'   => 'blue',
+        'layanan' => [1, 6, 7, 8],
+    ],
+    'Akte Kelahiran' => [
+        'icon'    => 'fa-baby',
+        'emoji'   => '👶',
+        'color'   => 'green',
+        'layanan' => [2],
+    ],
+    'Akte Kematian' => [
+        'icon'    => 'fa-file-medical',
+        'emoji'   => '🕯️',
+        'color'   => 'orange',
+        'layanan' => [3, 4],
+    ],
+    'Akte Perkawinan' => [
+        'icon'    => 'fa-ring',
+        'emoji'   => '💍',
+        'color'   => 'purple',
+        'layanan' => [5],
+    ],
+];
+
+$colorMap = [
+    'blue'   => ['bg' => '#EFF6FF', 'text' => '#1D4ED8', 'border' => '#93C5FD', 'badge_bg' => '#DBEAFE', 'badge_text' => '#1E40AF', 'icon_bg' => '#E6F1FB'],
+    'green'  => ['bg' => '#F0FDF4', 'text' => '#15803D', 'border' => '#86EFAC', 'badge_bg' => '#DCFCE7', 'badge_text' => '#166534', 'icon_bg' => '#EAF3DE'],
+    'orange' => ['bg' => '#FFF7ED', 'text' => '#C2410C', 'border' => '#FDB97D', 'badge_bg' => '#FFEDD5', 'badge_text' => '#9A3412', 'icon_bg' => '#FAEEDA'],
+    'purple' => ['bg' => '#FAF5FF', 'text' => '#7E22CE', 'border' => '#D8B4FE', 'badge_bg' => '#F3E8FF', 'badge_text' => '#6B21A8', 'icon_bg' => '#FBEAF0'],
+];
+
+$layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategoriLayanan)->pluck('layanan')->flatten()->toArray())->get()->keyBy('layanan_id');
 @endphp
 
 <main class="pt-0">
-    {{-- Page Loading --}}
     <div id="pageLoading" class="page-loading">
         <div class="loading-logo bg-white rounded-2xl shadow-2xl overflow-hidden flex items-center justify-center">
             <img src="{{ asset('images/logo_toba.jpeg') }}" alt="Logo Kabupaten Toba" class="w-full h-full object-contain p-3">
@@ -133,30 +342,22 @@
         <div class="loading-spinner"></div>
         <div class="loading-text">Disdukcapil Kabupaten Toba</div>
         <div class="loading-subtext">Memuat layanan mandiri...</div>
-        <div class="loading-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
+        <div class="loading-dots"><span></span><span></span><span></span></div>
     </div>
 
     {{-- Hero Section --}}
-    <section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-800 text-white py-20">
+    <section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-cyan-800 text-white py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-3xl mx-auto">
-                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium mb-6">
-                    <i class="fas fa-rocket"></i>
-                    Layanan Mandiri
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium mb-4">
+                    <i class="fas fa-rocket"></i> Layanan Mandiri
                 </div>
-                <h1 class="text-4xl md:text-5xl font-extrabold mb-6">
-                    Pilih Jenis Layanan
-                </h1>
-                <p class="text-lg text-blue-100 mb-8">
-                    Pilih jenis layanan yang Anda butuhkan dan isi form pendaftaran secara online.
+                <h1 class="text-3xl md:text-4xl font-extrabold mb-4">Pilih Jenis Layanan</h1>
+                <p class="text-base text-blue-100 mb-6">
+                    Pilih kategori layanan yang Anda butuhkan dan isi form pendaftaran secara online.
                 </p>
             </div>
         </div>
-
         <div class="absolute bottom-0 left-0 right-0">
             <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#f9fafb"/>
@@ -164,468 +365,345 @@
         </div>
     </section>
 
-    {{-- Services Section --}}
+    {{-- Kategori Grid 2x2 --}}
     <section class="py-12 bg-gray-50 -mt-6 relative z-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            
-            {{-- Info Box (Sekarang di Atas Grid) --}}
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            {{-- Panduan --}}
             <div class="mb-8 bg-blue-50 border border-blue-200 rounded-2xl p-5 reveal shadow-sm">
                 <div class="flex items-start gap-4">
-                    <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-200">
-                        <i class="fas fa-info-circle text-xl text-white"></i>
+                    <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-200">
+                        <i class="fas fa-info-circle text-lg text-white"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-gray-800 text-base mb-1">Panduan Pengajuan</h4>
+                        <h4 class="font-bold text-gray-800 text-sm mb-1">Panduan Pengajuan</h4>
                         <p class="text-gray-600 text-sm leading-relaxed">
-                            Silakan pilih salah satu kartu layanan di bawah ini. Pastikan Anda menyiapkan data pendukung yang diperlukan sebelum mengisi formulir untuk mempercepat proses verifikasi oleh petugas Disdukcapil.
+                            Pilih kategori layanan, lalu pilih jenis layanan yang sesuai kebutuhan Anda.
+                            Pastikan dokumen pendukung sudah disiapkan sebelum mengisi formulir.
                         </p>
                     </div>
                 </div>
             </div>
 
-            {{-- Services Grid --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6">
-                @foreach($layananList as $layanan)
+            {{-- Grid Kategori --}}
+            <div class="grid grid-cols-2 gap-4 reveal">
+                @foreach($kategoriLayanan as $namaKategori => $kategoriConfig)
                     @php
-                        $config = $serviceConfig[$layanan->layanan_id] ?? [
-                            'icon' => 'fa-file-alt',
-                            'color' => 'blue',
-                            'id' => 'layanan-' . $layanan->layanan_id,
-                            'fields' => []
-                        ];
-                        $serviceIcon = $config['icon'];
-                        $serviceColor = $config['color'];
-                        $serviceId = $config['id'];
-                        $serviceName = $layanan->nama_layanan;
-                        $shortDesc = $layanan->keterangan ?? str_replace('Penerbitan ', '', $layanan->nama_layanan);
-                        $fieldsJson = json_encode($config['fields']);
+                        $c = $colorMap[$kategoriConfig['color']] ?? $colorMap['blue'];
+                        $jumlah = count($kategoriConfig['layanan']);
+                        $layananList = [];
+                        foreach ($kategoriConfig['layanan'] as $lid) {
+                            $layanan = $layananById[$lid] ?? null;
+                            $config  = $serviceConfig[$lid] ?? null;
+                            if (!$layanan || !$config) continue;
+                            $layananList[] = [
+                                'lid'    => $lid,
+                                'name'   => $layanan->nama_layanan,
+                                'desc'   => $layanan->keterangan ?? str_replace('Penerbitan ', '', $layanan->nama_layanan),
+                                'icon'   => $config['icon'],
+                                'config' => $config,
+                            ];
+                        }
                     @endphp
 
-                    <div class="reveal" style="animation-delay: {{ $loop->index * 100 }}ms">
-                        <button onclick="openServiceForm('{{ $serviceId }}', '{{ $serviceName }}', '{{ $serviceColor }}', {{ $fieldsJson }})"
-                                class="service-card group bg-white rounded-2xl p-6 text-center
-                                       hover:shadow-2xl transition-all duration-300 hover:-translate-y-1
-                                       border-2 border-gray-100 hover:border-{{ $serviceColor }}-400 min-h-[180px] flex flex-col w-full">
-                            <div class="flex-1">
-                                <div class="w-16 h-16 bg-{{ $serviceColor }}-100 rounded-2xl flex items-center justify-center mx-auto mb-3
-                                            group-hover:bg-{{ $serviceColor }}-500 transition-all duration-300 group-hover:scale-110">
-                                    <i class="fas {{ $serviceIcon }} text-3xl text-{{ $serviceColor }}-600 group-hover:text-white transition-colors duration-300"></i>
-                                </div>
-                                <h3 class="font-bold text-gray-800 text-sm mb-2 leading-tight">{{ $serviceName }}</h3>
-                                <p class="text-xs text-gray-500 leading-relaxed line-clamp-2">{{ $shortDesc }}</p>
-                            </div>
-                            <div class="mt-auto pt-3">
-                                <span class="inline-flex items-center gap-1.5 px-4 py-2 bg-{{ $serviceColor }}-50 text-{{ $serviceColor }}-700
-                                             rounded-lg text-xs font-semibold group-hover:bg-{{ $serviceColor }}-500
-                                             group-hover:text-white transition-all duration-300">
-                                    <i class="fas fa-plus text-xs"></i>
-                                    <span>Pilih</span>
-                                </span>
-                            </div>
-                        </button>
-                    </div>
+                    <button onclick='openKategoriModal({{ json_encode($layananList) }}, {{ json_encode($namaKategori) }}, {{ json_encode($c) }}, {{ json_encode($kategoriConfig["icon"]) }})'
+                        class="group bg-white rounded-2xl p-5 text-left border-2 border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col"
+                        style="min-height: 140px;"
+                        onmouseover="this.style.borderColor='{{ $c['border'] }}'"
+                        onmouseout="this.style.borderColor='#F3F4F6'">
+
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 flex-shrink-0"
+                             style="background: {{ $c['icon_bg'] }}">
+                            <i class="fas {{ $kategoriConfig['icon'] }} text-xl" style="color: {{ $c['text'] }}"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-800 text-sm mb-1 leading-tight">{{ $namaKategori }}</h3>
+                            <p class="text-xs text-gray-400">{{ $jumlah }} layanan tersedia</p>
+                        </div>
+                        <div class="mt-3">
+                            <span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold"
+                                  style="background: {{ $c['badge_bg'] }}; color: {{ $c['badge_text'] }}">
+                                Pilih <i class="fas fa-arrow-right text-[10px]"></i>
+                            </span>
+                        </div>
+                    </button>
                 @endforeach
-            </div>
-        </div>
-    </section>
-
-    {{-- Benefits Section --}}
-    <section class="py-12 bg-white">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-10 reveal">
-                <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Keuntungan Layanan Mandiri</h2>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6 reveal">
-                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 text-center border border-blue-200">
-                    <div class="w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3">
-                        <i class="fas fa-clock text-2xl text-white"></i>
-                    </div>
-                    <h3 class="font-bold text-gray-800 mb-2">Hemat Waktu</h3>
-                    <p class="text-gray-600 text-sm">Tanpa antri di kantor dukcapil</p>
-                </div>
-
-                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 text-center border border-purple-200">
-                    <div class="w-14 h-14 bg-purple-600 rounded-xl flex items-center justify-center mx-auto mb-3">
-                        <i class="fas fa-home text-2xl text-white"></i>
-                    </div>
-                    <h3 class="font-bold text-gray-800 mb-2">Dari Mana Saja</h3>
-                    <p class="text-gray-600 text-sm">Proses online 24 jam</p>
-                </div>
-
-                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 text-center border border-green-200">
-                    <div class="w-14 h-14 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-3">
-                        <i class="fas fa-check-circle text-2xl text-white"></i>
-                    </div>
-                    <h3 class="font-bold text-gray-800 mb-2">Pantau Status</h3>
-                    <p class="text-gray-600 text-sm">Update status secara real-time</p>
-                </div>
             </div>
         </div>
     </section>
 </main>
 
-{{-- Modal Form Pendaftaran --}}
-<div id="serviceModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
-    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+{{-- MODAL 1: PILIH LAYANAN --}}
+<div id="kategoriModal" class="fixed inset-0 z-40 hidden overflow-y-auto">
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" onclick="closeKategoriModal()"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform transition-all relative z-10" id="modalContent">
-            <div id="modalHeader" class="sticky top-0 z-20 bg-white p-6 border-b">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md relative z-10 overflow-hidden" style="animation: popIn 0.2s ease;">
+            <div id="km-header" class="p-5 border-b border-gray-100">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div id="modalIcon" class="w-12 h-12 rounded-xl flex items-center justify-center"></div>
+                        <div id="km-icon" class="w-10 h-10 rounded-xl flex items-center justify-center"></div>
                         <div>
-                            <h3 id="modalTitle" class="text-xl font-bold text-gray-800"></h3>
-                            <p id="modalSubtitle" class="text-sm text-gray-500"></p>
+                            <h3 id="km-title" class="text-base font-bold text-gray-800"></h3>
+                            <p id="km-sub" class="text-xs text-gray-400 mt-0.5"></p>
                         </div>
                     </div>
-                    <button onclick="closeModal()" class="w-10 h-10 rounded-xl flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition">
-                        <i class="fas fa-times text-gray-600"></i>
+                    <button onclick="closeKategoriModal()" class="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition">
+                        <i class="fas fa-times text-gray-500 text-sm"></i>
                     </button>
                 </div>
             </div>
-            @if ($errors->any())
-                <div class="bg-red-100 border border-red-300 text-red-700 p-4 rounded mb-4">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-            <div class="p-6" id="modalBody">
-                {{-- Auto-fill dari Antrian Online --}}
-                <div id="antrianOnlineSection" class="mb-6">
-                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-5 border border-green-200">
-                        <div class="flex items-start gap-4">
-                            <div class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-ticket-alt text-xl text-white"></i>
-                            </div>
-                            <div class="flex-1">
-                                <h4 class="font-bold text-gray-800 mb-2">Isi Form Otomatis dari Antrian Online</h4>
-                                <p class="text-sm text-gray-600 mb-3">Sudah punya nomor antrian online? Masukkan nomor antrian untuk mengisi form secara otomatis.</p>
+            <div id="km-list" class="p-3 space-y-1 max-h-[60vh] overflow-y-auto"></div>
+        </div>
+    </div>
+</div>
 
-                                <div class="flex gap-3">
-                                    <input type="text" id="nomorAntrianInput"
-                                           placeholder="Contoh: ABC-123-456"
-                                           class="flex-1 px-4 py-3 border-2 border-green-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-base uppercase">
-                                    <button type="button" onclick="fetchAntrianData()"
-                                            class="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all shadow-lg">
-                                        <i class="fas fa-download mr-2"></i>
-                                        Ambil Data
-                                    </button>
-                                </div>
-
-                                <div id="antrianLoading" class="hidden mt-3">
-                                    <div class="flex items-center gap-2 text-green-600">
-                                        <i class="fas fa-spinner fa-spin"></i>
-                                        <span class="text-sm font-medium">Mengambil data antrian...</span>
-                                    </div>
-                                </div>
-
-                                <div id="antrianSuccess" class="hidden mt-3">
-                                    <div class="flex items-center gap-2 text-green-600">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span class="text-sm font-medium">Data antrian berhasil diambil!</span>
-                                    </div>
-                                </div>
-
-                                <div id="antrianError" class="hidden mt-3">
-                                    <div class="flex items-center gap-2 text-red-600">
-                                        <i class="fas fa-exclamation-circle"></i>
-                                        <span class="text-sm" id="antrianErrorMessage"></span>
-                                    </div>
-                                </div>
-                            </div>
+{{-- MODAL 2: FORM STEPPER --}}
+<div id="serviceModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[92vh] overflow-y-auto transform transition-all relative z-10" id="modalContent">
+            <div id="modalHeader" class="sticky top-0 z-20 bg-white p-5 border-b border-gray-100 rounded-t-3xl">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div id="modalIcon" class="w-11 h-11 rounded-xl flex items-center justify-center"></div>
+                        <div>
+                            <h3 id="modalTitle" class="text-lg font-bold text-gray-800"></h3>
+                            <p id="modalStepLabel" class="text-xs text-gray-400 font-medium"></p>
                         </div>
                     </div>
+                    <button onclick="closeModal()" class="w-9 h-9 rounded-xl flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition flex-shrink-0">
+                        <i class="fas fa-times text-gray-500 text-sm"></i>
+                    </button>
+                </div>
+                {{-- Steps --}}
+                <div class="flex items-center gap-1">
+                    @foreach(['Informasi','Data','Berkas','Verifikasi','Konfirmasi'] as $i => $stepName)
+                        <div class="flex-1 flex flex-col items-center">
+                            <div class="step-indicator w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold mb-1 transition-all duration-300"
+                                 id="stepDot{{ $i+1 }}" data-step="{{ $i+1 }}">{{ $i+1 }}</div>
+                            <span class="text-[9px] font-semibold step-label text-gray-400" id="stepLabel{{ $i+1 }}">{{ $stepName }}</span>
+                        </div>
+                        @if($i < 4)
+                            <div class="flex-1 h-0.5 bg-gray-200 rounded mb-5" id="stepLine{{ $i+1 }}"></div>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
+
+            <form id="serviceForm" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="foto_wajah" id="foto_wajah">
+
+                {{-- Step 1 --}}
+                <div id="step1" class="step-content p-5 space-y-5">
+                    <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4">
+                        <div class="flex items-center gap-2 mb-2">
+                            <i class="fas fa-info-circle text-blue-600"></i>
+                            <h4 class="font-bold text-blue-800 text-sm">Informasi Layanan</h4>
+                        </div>
+                        <p id="infoLayanan" class="text-sm text-blue-700 leading-relaxed"></p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 text-sm mb-3">Persyaratan Dokumen</h4>
+                        <ul id="listPersyaratan" class="space-y-2"></ul>
+                    </div>
+                    <button type="button" onclick="goToStep(2)" class="w-full py-3 bg-blue-600 text-white rounded-xl font-bold">Selanjutnya</button>
                 </div>
 
-                <form id="serviceForm" method="POST" enctype="multipart/form-data" class="space-y-5">
-                    @csrf
+                {{-- Step 2: Data --}}
+                <div id="step2" class="step-content p-5 hidden">
                     <div id="formFields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-                    <div class="mt-6 pt-6 border-t border-gray-100">
-                        <button type="submit" class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg">
-                            <i class="fas fa-paper-plane mr-2"></i>
-                            Kirim Pengajuan
-                        </button>
+                    <div class="flex gap-3 mt-6">
+                        <button type="button" onclick="goToStep(1)" class="flex-1 py-3 border rounded-xl font-bold">Kembali</button>
+                        <button type="button" onclick="validateAndGoStep3()" class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold">Selanjutnya</button>
                     </div>
-                </form>
-            </div>
+                </div>
+
+                {{-- Step 3: Berkas --}}
+                <div id="step3" class="step-content p-5 hidden">
+                    <div id="fileFields" class="space-y-4"></div>
+                    <div class="flex gap-3 mt-6">
+                        <button type="button" onclick="goToStep(2)" class="flex-1 py-3 border rounded-xl font-bold">Kembali</button>
+                        <button type="button" onclick="validateAndGoStep4()" class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold">Selanjutnya</button>
+                    </div>
+                </div>
+
+                {{-- Step 4: Verifikasi --}}
+                <div id="step4" class="step-content p-5 hidden">
+                    <div class="relative rounded-2xl overflow-hidden border bg-black aspect-video mb-4">
+                        <video id="video" autoplay playsinline muted class="w-full h-full object-cover"></video>
+                        <canvas id="canvas" class="hidden"></canvas>
+                        <div id="liveness-overlay" class="absolute bottom-0 inset-x-0 bg-black/60 text-white text-center py-2 text-xs">Aktifkan Kamera</div>
+                    </div>
+                    <div id="blink-status" class="text-center text-sm font-bold text-gray-700 mb-4">Kedipan: <span id="blinkCount">0</span>/2</div>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="goToStep(3); stopCamera();" class="flex-1 py-3 border rounded-xl font-bold">Kembali</button>
+                        <button type="button" id="btnStartLiveness" onclick="startLiveness()" class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold">Mulai Kamera</button>
+                    </div>
+                </div>
+
+                {{-- Step 5: Konfirmasi --}}
+                <div id="step5" class="step-content p-5 hidden">
+                    <div id="summaryData" class="space-y-2 border p-4 rounded-xl bg-gray-50 text-sm"></div>
+                    <button type="submit" class="w-full py-3 bg-green-600 text-white rounded-xl font-bold mt-6">Kirim Pengajuan</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 @push('styles')
 <style>
-    /* Service Card & Animation */
-    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s ease-out; }
+    .reveal { opacity: 0; transform: translateY(20px); transition: all 0.5s ease-out; }
     .reveal.active { opacity: 1; transform: translateY(0); }
-    .service-card { position: relative; overflow: hidden; }
-    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    
-    /* Safelist Tailwind colors for dynamic usage */
-    .bg-purple-100 { background-color: #f3e8ff; } .text-purple-600 { color: #9333ea; } .bg-purple-500 { background-color: #a855f7; } .border-purple-400 { border-color: #c084fc; }
-    .bg-blue-100 { background-color: #dbeafe; } .text-blue-600 { color: #2563eb; } .bg-blue-500 { background-color: #3b82f6; } .border-blue-400 { border-color: #60a5fa; }
-    .bg-orange-100 { background-color: #ffedd5; } .text-orange-600 { color: #ea580c; } .bg-orange-500 { background-color: #f97316; } .border-orange-400 { border-color: #fb923c; }
-    .bg-red-100 { background-color: #fee2e2; } .text-red-600 { color: #dc2626; } .bg-red-500 { background-color: #ef4444; } .border-red-400 { border-color: #f87171; }
-    .bg-pink-100 { background-color: #fce7f3; } .text-pink-600 { color: #db2777; } .bg-pink-500 { background-color: #ec4899; } .border-pink-400 { border-color: #f472b6; }
+    .step-indicator { background: #e5e7eb; color: #9ca3af; }
+    .step-indicator.active { background: #2563eb; color: #fff; }
+    .step-indicator.done { background: #16a34a; color: #fff; }
+    .form-input { width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.75rem; outline: none; }
+    .form-input:focus { border-color: #3b82f6; }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    .layanan-item:hover { background: #f9fafb; }
 </style>
 @endpush
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 <script>
-    // Reveal animation logic
-    function reveal() {
-        const reveals = document.querySelectorAll('.reveal');
-        reveals.forEach(element => {
-            const windowHeight = window.innerHeight;
-            const elementTop = element.getBoundingClientRect().top;
-            if (elementTop < windowHeight - 50) {
-                element.classList.add('active');
-            }
-        });
-    }
-    window.addEventListener('scroll', reveal);
-    window.addEventListener('load', reveal);
+let currentStep = 1, currentConfig = {}, mpCamera = null, faceMeshInstance = null;
+let blinkCount = 0, eyeClosed = false, livenessStarted = false;
+const BLINK_THRESHOLD = 0.25, BLINK_TARGET = 2;
 
-    let currentServiceId = null;
-
-    // Modal logic
-    function openServiceForm(serviceId, serviceName, serviceColor, fields) {
-        const modal = document.getElementById('serviceModal');
-        const formFields = document.getElementById('formFields');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalSubtitle = document.getElementById('modalSubtitle');
-        const modalIcon = document.getElementById('modalIcon');
-        const form = document.getElementById('serviceForm');
-        const antrianOnlineSection = document.getElementById('antrianOnlineSection');
-
-        // Simpan service ID
-        currentServiceId = serviceId;
-
-        modalTitle.textContent = serviceName;
-        modalSubtitle.textContent = 'Formulir pengajuan online';
-        modalIcon.className = `w-12 h-12 rounded-xl flex items-center justify-center bg-${serviceColor}-100`;
-        modalIcon.innerHTML = `<i class="fas ${getIconById(serviceId)} text-2xl text-${serviceColor}-600"></i>`;
-
-        // Show antrian online section untuk semua layanan
-        if (antrianOnlineSection) {
-            antrianOnlineSection.classList.remove('hidden');
-            resetAntrianForm();
-        }
-
-        if(serviceId === 'kk'){
-            form.action = "{{ route('kk.store') }}";
-        }
-        formFields.innerHTML = fields.length > 0 ? fields.map(field => {
-            if(field.type === 'hidden'){
-                return `<input type="hidden" name="${field.name}" value="${field.value}">`;
-            }
-            return `
-                <div class="${field.type === 'textarea' ? 'md:col-span-2' : ''} mb-4">
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">
-                        ${field.label} ${field.required !== false ? '<span class="text-red-500">*</span>' : ''}
-                    </label>
-                    ${renderInput(field)}
-                </div>
-            `;
-        }).join('') : '<p class="text-center col-span-2 py-4 text-gray-400">Form belum tersedia</p>';
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-
-        document.getElementById('serviceForm').onsubmit = function() {
-        Swal.fire({
-        title: 'Memproses...',
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading()
-    });
+const routeMap = {
+    'kk': "{{ route('kk.store') }}",
+    'akte_kelahiran': "{{ route('aktelahir.store') }}",
+    'ganti_kepala_kk': "{{ route('kk.store.gantikepalakk') }}",
+    'kk_hilang_rusak': "{{ route('kk.store.hilangrusak') }}",
+    'pisah_kk': "{{ route('kk.store.pisahkk') }}",
+    'akte_kematian': "{{ route('akte-kematian.store') }}",
+    'lahir_mati': "{{ route('lahir-mati.store') }}"
 };
+
+function reveal() {
+    document.querySelectorAll('.reveal').forEach(el => {
+        if (el.getBoundingClientRect().top < window.innerHeight - 50) el.classList.add('active');
+    });
+}
+window.addEventListener('scroll', reveal);
+window.addEventListener('load', reveal);
+
+function openKategoriModal(list, title, colors, icon) {
+    document.getElementById('km-title').textContent = title;
+    document.getElementById('km-sub').textContent = list.length + ' layanan';
+    const iconEl = document.getElementById('km-icon');
+    iconEl.style.background = colors.icon_bg;
+    iconEl.innerHTML = `<i class="fas ${icon} text-lg" style="color:${colors.text}"></i>`;
+    
+    document.getElementById('km-list').innerHTML = list.map(item => `
+        <div class="layanan-item flex items-center gap-3 p-3 rounded-xl cursor-pointer border border-transparent hover:border-gray-200"
+             onclick='selectLayanan(${JSON.stringify(item.config)}, ${JSON.stringify(item.name)})'>
+            <i class="fas ${item.icon} text-blue-500"></i>
+            <span class="text-sm font-bold text-gray-800">${item.name}</span>
+        </div>`).join('');
+    document.getElementById('kategoriModal').classList.remove('hidden');
+}
+
+function closeKategoriModal() { document.getElementById('kategoriModal').classList.add('hidden'); }
+
+function selectLayanan(config, name) { closeKategoriModal(); openServiceModal(config, name); }
+
+function openServiceModal(config, name) {
+    currentConfig = config;
+    document.getElementById('modalTitle').textContent = name;
+    document.getElementById('serviceForm').action = routeMap[config.id] || '#';
+    document.getElementById('infoLayanan').textContent = `Pengajuan ${name} diproses dalam 2-3 hari kerja.`;
+    
+    document.getElementById('listPersyaratan').innerHTML = config.persyaratan.map(p => 
+        `<li class="text-sm text-gray-600 flex gap-2"><i class="fas fa-check text-green-500 mt-1"></i><span>${p}</span></li>`).join('');
+
+    const textFields = config.fields.filter(f => f.type !== 'file');
+    document.getElementById('formFields').innerHTML = textFields.map(f => {
+        if (f.type === 'hidden') return `<input type="hidden" name="${f.name}" value="${f.value}">`;
+        if (f.type === 'heading') return `<div class="col-span-full border-b font-bold text-xs pt-4">${f.label}</div>`;
+        return `<div><label class="block text-xs font-bold mb-1">${f.label}</label>
+                <input type="${f.type}" name="${f.name}" class="form-input" placeholder="${f.placeholder||''}" required></div>`;
+    }).join('');
+
+    document.getElementById('fileFields').innerHTML = config.files.map(f => `
+        <div class="border-2 border-dashed p-4 rounded-xl text-center">
+            <label class="block text-xs font-bold mb-2">${f.label}</label>
+            <input type="file" name="${f.name}" accept=".pdf" class="text-xs" onchange="handleFile(this, '${f.name}')">
+            <div id="status-${f.name}" class="text-[10px] mt-1 text-blue-600 hidden font-bold">Terpilih</div>
+        </div>`).join('');
+
+    resetLiveness(); goToStep(1);
+    document.getElementById('serviceModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function handleFile(input, name) {
+    document.getElementById('status-' + name).classList.toggle('hidden', !input.files.length);
+}
+
+function goToStep(s) {
+    currentStep = s;
+    document.querySelectorAll('.step-content').forEach(c => c.classList.add('hidden'));
+    document.getElementById('step' + s).classList.remove('hidden');
+    for (let i = 1; i <= 5; i++) {
+        const dot = document.getElementById('stepDot' + i);
+        dot.className = `step-indicator w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold mb-1 ` + 
+                        (i < s ? 'done' : (i === s ? 'active' : ''));
     }
+    if (s === 5) buildSummary();
+}
 
-    function renderInput(field) {
-        const req = field.required !== false ? 'required' : '';
-        const baseClass = "w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition";
-        
-        if(field.type === 'textarea') return `<textarea name="${field.name}" ${req} placeholder="${field.placeholder}" class="${baseClass} h-24 resize-none"></textarea>`;
-        if(field.type === 'select') return `<select name="${field.name}" ${req} class="${baseClass}"><option value="">Pilih...</option>${field.options.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`;
-        return `<input type="${field.type}" name="${field.name}" ${req} placeholder="${field.placeholder || ''}" class="${baseClass}">`;
-    }
+function validateAndGoStep3() { goToStep(3); }
+function validateAndGoStep4() { goToStep(4); }
 
-    function getIconById(id) {
-        const map = { 'kk': 'fa-address-card', 'akta-lahir': 'fa-baby', 'akta-kematian': 'fa-user-times', 'lahir-mati': 'fa-exclamation-triangle', 'akta-perkawinan': 'fa-ring' };
-        return map[id] || 'fa-file-alt';
-    }
+function buildSummary() {
+    let h = '';
+    currentConfig.fields.forEach(f => {
+        if (f.type === 'heading' || f.type === 'hidden') return;
+        const val = document.querySelector(`[name="${f.name}"]`)?.value || '-';
+        h += `<div class="flex justify-between border-b py-1"><span>${f.label}</span><span class="font-bold">${val}</span></div>`;
+    });
+    document.getElementById('summaryData').innerHTML = h;
+}
 
-    function closeModal() {
-        document.getElementById('serviceModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }
+function startLiveness() {
+    livenessStarted = true;
+    const video = document.getElementById('video');
+    faceMeshInstance = new FaceMesh({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}` });
+    faceMeshInstance.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.5 });
+    faceMeshInstance.onResults(res => {
+        if (res.multiFaceLandmarks?.length) detectBlink(res.multiFaceLandmarks[0]);
+    });
+    mpCamera = new Camera(video, { onFrame: async () => { await faceMeshInstance.send({ image: video }); }, width: 640, height: 480 });
+    mpCamera.start();
+    document.getElementById('liveness-overlay').textContent = "Kedipkan mata 2x...";
+}
 
-    function handleSubmission(name) {
-        Swal.fire({ title: 'Memproses...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-        setTimeout(() => {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: `Pengajuan ${name} telah kami terima.`,
-                confirmButtonColor: '#2563eb'
-            }).then(() => closeModal());
-        }, 1500);
-    }
-
-    // ========== ANTRIAN ONLINE AUTO-FILL FUNCTIONS ==========
-
-    // Fetch data dari antrian online
-    async function fetchAntrianData() {
-        const nomorAntrianInput = document.getElementById('nomorAntrianInput');
-        const nomorAntrian = nomorAntrianInput.value.trim().toUpperCase();
-
-        // Validate nomor antrian
-        if (!nomorAntrian) {
-            showAntrianError('Masukkan nomor antrian');
-            return;
-        }
-
-        // Format: ABC-123-456
-        const antrianPattern = /^[A-Z]{3}-\d{3}-\d{3}$/;
-        if (!antrianPattern.test(nomorAntrian)) {
-            showAntrianError('Format nomor antrian tidak valid. Contoh: ABC-123-456');
-            return;
-        }
-
-        // Show loading
-        showAntrianLoading();
-        hideAntrianError();
-
-        try {
-            const response = await fetch(`/antrian-online/get-data/${nomorAntrian}`, {
-                method: 'GET',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
-                }
-            });
-
-            const result = await response.json();
-
-            if (result.success && result.data) {
-                // Auto-fill form dengan data antrian
-                autoFillFormFromAntrian(result.data);
-
-                // Show success
-                showAntrianSuccess();
-            } else {
-                showAntrianError(result.message || 'Antrian tidak ditemukan');
-            }
-
-        } catch (error) {
-            console.error('Error fetching antrian data:', error);
-            showAntrianError('Terjadi kesalahan saat mengambil data antrian');
-        } finally {
-            hideAntrianLoading();
-        }
-    }
-
-    // Auto-fill form dari data antrian online
-    function autoFillFormFromAntrian(data) {
-        // Fill nama_lengkap field
-        if (data.nama_lengkap) {
-            const namaInput = document.querySelector('input[name="nama"]');
-            if (!namaInput) {
-                namaInput = document.querySelector('input[name="nama_lengkap"]');
-            }
-            if (!namaInput) {
-                namaInput = document.querySelector('input[name="nama_kepala_keluarga"]');
-            }
-            if (!namaInput) {
-                namaInput = document.querySelector('input[name="nama_almarhum"]');
-            }
-            if (!namaInput) {
-                namaInput = document.querySelector('input[name="nama_ayah"]');
-            }
-            if (!namaInput) {
-                namaInput = document.querySelector('input[name="nama_ibu"]');
-            }
-
-            if (namaInput) {
-                namaInput.value = data.nama_lengkap;
-                namaInput.dispatchEvent(new Event('input', { bubbles: true }));
-                namaInput.dispatchEvent(new Event('change', { bubbles: true }));
-
-                // Add visual indicator
-                namaInput.classList.add('border-green-500', 'bg-green-50');
-                setTimeout(() => {
-                    namaInput.classList.remove('border-green-500', 'bg-green-50');
-                }, 3000);
-            }
-        }
-
-        // Fill alamat field
-        if (data.alamat) {
-            const alamatInput = document.querySelector('textarea[name="alamat"]');
-            if (alamatInput) {
-                alamatInput.value = data.alamat;
-                alamatInput.dispatchEvent(new Event('input', { bubbles: true }));
-                alamatInput.dispatchEvent(new Event('change', { bubbles: true }));
-
-                alamatInput.classList.add('border-green-500', 'bg-green-50');
-                setTimeout(() => {
-                    alamatInput.classList.remove('border-green-500', 'bg-green-50');
-                }, 3000);
-            }
+function detectBlink(lm) {
+    const d = (a, b) => Math.hypot(lm[a].x - lm[b].x, lm[a].y - lm[b].y);
+    const ear = (d(160, 153) + d(158, 144)) / (2 * d(33, 133));
+    if (ear < BLINK_THRESHOLD && !eyeClosed) eyeClosed = true;
+    else if (ear >= BLINK_THRESHOLD && eyeClosed) {
+        eyeClosed = false; blinkCount++;
+        document.getElementById('blinkCount').textContent = blinkCount;
+        if (blinkCount >= BLINK_TARGET) {
+            document.getElementById('liveness_passed').value = "1";
+            stopCamera();
+            goToStep(5);
         }
     }
+}
 
-    // Show antrian loading
-    function showAntrianLoading() {
-        const loading = document.getElementById('antrianLoading');
-        if (loading) loading.classList.remove('hidden');
-    }
+function stopCamera() { if (mpCamera) { mpCamera.stop(); mpCamera = null; } }
 
-    // Hide antrian loading
-    function hideAntrianLoading() {
-        const loading = document.getElementById('antrianLoading');
-        if (loading) loading.classList.add('hidden');
-    }
+function resetLiveness() { blinkCount = 0; livenessStarted = false; document.getElementById('blinkCount').textContent = 0; }
 
-    // Show antrian success
-    function showAntrianSuccess() {
-        const success = document.getElementById('antrianSuccess');
-        if (success) {
-            success.classList.remove('hidden');
-            setTimeout(() => success.classList.add('hidden'), 5000);
-        }
-    }
+function closeModal() { stopCamera(); document.getElementById('serviceModal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
 
-    // Show antrian error
-    function showAntrianError(message) {
-        const error = document.getElementById('antrianError');
-        const errorMessage = document.getElementById('antrianErrorMessage');
-
-        if (error && errorMessage) {
-            errorMessage.textContent = message;
-            error.classList.remove('hidden');
-            setTimeout(() => error.classList.add('hidden'), 5000);
-        }
-    }
-
-    // Hide antrian error
-    function hideAntrianError() {
-        const error = document.getElementById('antrianError');
-        if (error) error.classList.add('hidden');
-    }
-
-    // Reset antrian form
-    function resetAntrianForm() {
-        const nomorAntrianInput = document.getElementById('nomorAntrianInput');
-        const success = document.getElementById('antrianSuccess');
-        const error = document.getElementById('antrianError');
-
-        if (nomorAntrianInput) nomorAntrianInput.value = '';
-        if (success) success.classList.add('hidden');
-        if (error) error.classList.add('hidden');
-    }
-
+function showToast(m, t) { alert(m); }
 </script>
 @endpush
 @endsection

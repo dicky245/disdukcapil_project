@@ -34,6 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'ip.whitelist' => \App\Http\Middleware\IPWhitelistMiddleware::class,
             'secure.upload' => \App\Http\Middleware\SecureFileUploadMiddleware::class,
             'audit.log' => \App\Http\Middleware\AuditLogMiddleware::class,
+            'camera.policy' => \App\Http\Middleware\CameraPermissionPolicy::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

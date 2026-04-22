@@ -22,7 +22,6 @@ class Antrian_Online_Seeder extends Seeder
             return;
         }
 
-        // Buat beberapa data antrian dummy untuk testing
         $antrian_data = [
             [
                 'nomor_antrian' => 'ABC-001-001',

@@ -10,123 +10,133 @@
             Kembali
         </a>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {{-- Informasi Bayi --}}
-        <div class="bg-white p-6 rounded-xl shadow border">
-            <h2 class="text-lg font-semibold mb-6 text-gray-700">
-                Informasi Bayi
-            </h2>
-            <div class="space-y-4 text-sm">
-                <div class="flex justify-between border-b pb-2">
-                    <span class="text-gray-500">Nama Bayi</span>
-                    <span class="font-semibold">{{ $berkas->nama_bayi }}</span>
+    
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <i class="fas fa-info-circle text-blue-500"></i>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-blue-700 font-semibold">
+                    Semua rincian jenazah bayi, orang tua, dan saksi tersedia secara lengkap pada dokumen "Formulir F-2.01" yang diunggah oleh pemohon.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {{-- Kolom Kiri: Informasi Pemohon & Status --}}
+        <div class="lg:col-span-1 space-y-6">
+            
+            {{-- Informasi Pemohon --}}
+            <div class="bg-white p-6 rounded-xl shadow border">
+                <h2 class="text-lg font-semibold mb-6 text-gray-700">
+                    Informasi Pemohon
+                </h2>
+                <div class="space-y-4 text-sm">
+                    <div class="border-b pb-2">
+                        <p class="text-gray-500 text-xs mb-1">Nama Pemohon</p>
+                        <p class="font-semibold text-base text-gray-800">{{ $berkas->nama_pemohon }}</p>
+                    </div>
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-500">NIK Pemohon</span>
+                        <span class="font-semibold">{{ $berkas->nik_pemohon }}</span>
+                    </div>
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-500">No. KK Pemohon</span>
+                        <span class="font-semibold">{{ $berkas->nomor_kk_pemohon ?? '-' }}</span>
+                    </div>
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-500">Hubungan dg Bayi</span>
+                        <span class="font-semibold">{{ $berkas->hubungan_pemohon }}</span>
+                    </div>
+                    <div class="border-b pb-2">
+                        <p class="text-gray-500 text-xs mb-1">Alamat Pemohon</p>
+                        <p class="font-semibold">{{ $berkas->alamat_pemohon }}</p>
+                    </div>
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-500">No. Antrian</span>
+                        <span class="font-semibold text-blue-600">{{ $berkas->nomor_antrian ?? '-' }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Tgl Pengajuan</span>
+                        <span class="font-semibold">{{ $berkas->created_at->format('d M Y - H:i') }}</span>
+                    </div>
                 </div>
-                <div class="flex justify-between border-b pb-2">
-                    <span class="text-gray-500">Jenis Kelamin</span>
-                    <span class="font-semibold">{{ $berkas->jenis_kelamin }}</span>
+            </div>
+
+            {{-- Status --}}
+            <div class="bg-white p-6 rounded-xl shadow border">
+                <h2 class="text-lg font-semibold mb-4 text-gray-700">
+                    Status Pengajuan
+                </h2>
+                <div class="text-center p-3 rounded-lg border 
+                    {{ $berkas->status == 'Tolak' ? 'bg-red-50 border-red-200 text-red-700' : 'bg-blue-50 border-blue-200 text-blue-700' }}">
+                    <p class="text-xs uppercase tracking-wider mb-1">Status Terkini</p>
+                    <p class="text-lg font-bold">{{ $berkas->status }}</p>
                 </div>
-                <div class="flex justify-between border-b pb-2">
-                    <span class="text-gray-500">Tanggal & Waktu Lahir</span>
-                    <span class="font-semibold">{{ \Carbon\Carbon::parse($berkas->tgl_lahir)->format('d M Y H:i') }}</span>
+                @if($berkas->status == 'Tolak')
+                <div class="mt-4 p-3 bg-red-100 rounded-lg text-sm text-red-800">
+                    <strong>Alasan Penolakan:</strong><br>
+                    {{ $berkas->alasan_penolakan }}
                 </div>
-                <div class="flex justify-between border-b pb-2">
-                    <span class="text-gray-500">Tempat Lahir</span>
-                    <span class="font-semibold">{{ $berkas->tempat_lahir }}</span>
-                </div>
-                <div class="flex justify-between border-b pb-2">
-                    <span class="text-gray-500">Keterangan</span>
-                    <span class="font-semibold">{{ $berkas->keterangan ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between border-b pb-2">
-                    <span class="text-gray-500">Tanggal Pengajuan</span>
-                    <span class="font-semibold">{{ $berkas->created_at->format('d M Y') }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-500">Status</span>
-                    <span class="px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-700 font-semibold">
-                        {{ $berkas->status }}
-                    </span>
+                @endif
+            </div>
+
+        </div>
+
+        {{-- Kolom Kanan: Dokumen Persyaratan --}}
+        <div class="lg:col-span-2">
+            <div class="bg-white p-6 rounded-xl shadow border h-full">
+                <h2 class="text-lg font-semibold mb-6 text-gray-700">
+                    Dokumen Persyaratan (Klik untuk Buka di Tab Baru)
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    @php
+                        $dokumen = [
+                            ['label' => 'Formulir F-2.01 (Wajib)', 'field' => 'formulir_f201', 'icon' => 'fa-file-signature', 'color' => 'blue'],
+                            ['label' => 'Suket Lahir Mati (Wajib)', 'field' => 'surat_keterangan_lahir_mati', 'icon' => 'fa-file-medical', 'color' => 'red'],
+                            ['label' => 'KTP Pemohon (Wajib)', 'field' => 'ktp_pemohon', 'icon' => 'fa-id-card', 'color' => 'green'],
+                            ['label' => 'KK Pemohon (Wajib)', 'field' => 'kartu_keluarga_pemohon', 'icon' => 'fa-users', 'color' => 'green'],
+                            ['label' => 'KTP Saksi 1 (Wajib) ', 'field' => 'ktp_saksi1', 'icon' => 'fa-user-check', 'color' => 'gray'],
+                            ['label' => 'KTP Saksi 2 (Wajib) ', 'field' => 'ktp_saksi2', 'icon' => 'fa-user-check', 'color' => 'gray'],
+                        ];
+                    @endphp
+                    
+                    @foreach($dokumen as $dok)
+                    <div class="border rounded-xl p-4 flex flex-col justify-between hover:shadow-md transition bg-gray-50">
+                        <div class="flex items-start gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center bg-{{ $dok['color'] }}-100 text-{{ $dok['color'] }}-600 flex-shrink-0">
+                                <i class="fas {{ $dok['icon'] }}"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-gray-800">{{ $dok['label'] }}</p>
+                                @if($berkas->{$dok['field']})
+                                    <p class="text-xs text-green-600 mt-1"><i class="fas fa-check-circle mr-1"></i> Terunggah</p>
+                                @else
+                                    <p class="text-xs text-red-500 mt-1"><i class="fas fa-times-circle mr-1"></i> Tidak Ada</p>
+                                @endif
+                            </div>
+                        </div>
+                        
+                        @if($berkas->{$dok['field']})
+                            <a href="{{ asset('storage/'.$berkas->{$dok['field']}) }}" target="_blank"
+                            class="w-full bg-white border-2 border-blue-500 text-blue-600 hover:bg-blue-50 py-2 rounded-lg text-sm font-semibold transition text-center flex items-center justify-center">
+                                <i class="fas fa-external-link-alt mr-2"></i> Buka Dokumen
+                            </a>
+                        @else
+                            <button disabled class="w-full bg-gray-200 text-gray-400 py-2 rounded-lg text-sm font-semibold cursor-not-allowed">
+                                Berkas Kosong
+                            </button>
+                        @endif
+                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
 
-        {{-- Informasi Orang Tua + Dokumen --}}
-        <div class="bg-white p-6 rounded-xl shadow border">
-            <h2 class="text-lg font-semibold mb-6 text-gray-700">
-                Informasi Orang Tua
-            </h2>
-            <div class="space-y-4 text-sm">
-                <div class="flex justify-between border-b pb-2">
-                    <span class="text-gray-500">Nama Ayah</span>
-                    <span class="font-semibold">{{ $berkas->nama_ayah }}</span>
-                </div>
-                <div class="flex justify-between border-b pb-2">
-                    <span class="text-gray-500">NIK Ayah</span>
-                    <span class="font-semibold">{{ $berkas->nik_ayah }}</span>
-                </div>
-                <div class="flex justify-between border-b pb-2">
-                    <span class="text-gray-500">Nama Ibu</span>
-                    <span class="font-semibold">{{ $berkas->nama_ibu }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-500">NIK Ibu</span>
-                    <span class="font-semibold">{{ $berkas->nik_ibu }}</span>
-                </div>
-            </div>
-
-            <h2 class="text-lg font-semibold mt-8 mb-6 text-gray-700">
-                Dokumen Persyaratan
-            </h2>
-            <div class="grid grid-cols-1 gap-4">
-                @php
-                    $dokumen = [
-                        ['label' => 'Surat Keterangan Lahir Mati', 'field' => 'surat_keterangan_lahir_mati'],
-                        ['label' => 'KTP Ayah', 'field' => 'ktp_ayah'],
-                        ['label' => 'KTP Ibu', 'field' => 'ktp_ibu'],
-                    ];
-                @endphp
-                @foreach($dokumen as $dok)
-                <div class="border rounded-lg p-4 text-center">
-                    <p class="text-sm font-semibold mb-3">{{ $dok['label'] }}</p>
-                    @if($berkas->{$dok['field']})
-                        <button onclick="openPreview('{{ asset('storage/'.$berkas->{$dok['field']}) }}')"
-                        class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-sm">
-                            Lihat Berkas
-                        </button>
-                    @else
-                        <span class="text-gray-400 text-sm">Tidak diupload</span>
-                    @endif
-                </div>
-                @endforeach
-            </div>
-        </div>
     </div>
 </div>
-
-{{-- Preview Modal --}}
-<div id="previewModal"
-class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50">
-    <div class="bg-white w-11/12 md:w-3/4 h-5/6 rounded-xl relative p-4">
-        <button onclick="closePreview()"
-        class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
-            Tutup
-        </button>
-        <iframe id="previewFrame"
-        class="w-full h-full rounded-lg"></iframe>
-    </div>
-</div>
-<script>
-function openPreview(fileUrl){
-    document.getElementById("previewFrame").src = fileUrl;
-    const modal = document.getElementById("previewModal");
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-}
-function closePreview(){
-    const modal = document.getElementById("previewModal");
-    modal.classList.remove("flex");
-    modal.classList.add("hidden");
-    document.getElementById("previewFrame").src = "";
-}
-</script>
 @endsection

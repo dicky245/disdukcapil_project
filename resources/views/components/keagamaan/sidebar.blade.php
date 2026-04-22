@@ -1,13 +1,9 @@
-{{-- Tambahkan Style di bagian paling atas file --}}
 <style>
     /* Indikator visual saat menu aktif */
     .sidebar-link.active {
         background-color: #f0fdfa !important;
-        /* Hijau teal sangat muda */
         color: #0d9488 !important;
-        /* Warna teal utama */
         border-right: 4px solid #0d9488;
-        /* Garis penanda di samping */
     }
 
     .sidebar-link.active i {
@@ -24,9 +20,6 @@
 <aside class="sidebar fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 z-50 shadow-lg">
     {{-- Logo --}}
     <div class="h-16 flex items-center px-6 border-b border-gray-100">
-        <div
-            class="w-10 h-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-xl flex items-center justify-center flex-shrink-0">
-            <span class="text-lg">🕌</span>
         <div class="w-10 h-10 bg-gradient-to-br from-teal-600 to-teal-700 rounded-xl flex items-center justify-center flex-shrink-0">
             <i class="fas fa-mosque text-white text-lg"></i>
         </div>
@@ -75,8 +68,6 @@
 
         <form method="POST" action="{{ route('logout') }}" id="logoutForm" class="inline">
             @csrf
-            <button type="submit"
-                class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50">
             <button type="button" onclick="handleKeagamaanSidebarLogout(event)"
                 class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-all">
                 <i class="fas fa-sign-out-alt w-5"></i>
@@ -98,7 +89,6 @@
             mainContent.classList.toggle('expanded');
         });
     }
-</script>
 
     // Logout Handler - SweetAlert Confirmation
     function handleKeagamaanSidebarLogout(event) {

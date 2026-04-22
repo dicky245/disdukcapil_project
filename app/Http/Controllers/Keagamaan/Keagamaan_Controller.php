@@ -58,20 +58,13 @@ class Keagamaan_Controller extends Controller
         ];
 
         // Kirim variabel $antrian ke view
-        return view('keagamaan.antrian_kalender', compact('antrian', 'stats'));
+        return view('keagamaan.antrian-kalender', compact('antrian', 'stats'));
     }
 
     /**
      * Tampilkan halaman sinkronisasi dukcapil
      */
-    public function sinkronisasi_dukcapil()
-    {
-        if (!Auth::user()->hasRole('Keagamaan')) {
-            abort(403, 'Anda tidak memiliki akses.');
-        }
-
-        return view('keagamaan.sinkronisasi-dukcapil');
-    }
+   
 
     /**
      * Tampilkan halaman manajemen dokumen
@@ -82,9 +75,18 @@ class Keagamaan_Controller extends Controller
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        return view('keagamaan.manajemen_dokumen');
+        return view('keagamaan.manajemen-dokumen');
     }
 
+
+    public function sinkronisasi_dukcapil()
+    {
+        if (!Auth::user()->hasRole('Keagamaan')) {
+            abort(403, 'Anda tidak memiliki akses.');
+        }
+
+        return view('keagamaan.sinkronisasi-dukcapil');
+    }
     /**
      * Tampilkan halaman lacak berkas
      */

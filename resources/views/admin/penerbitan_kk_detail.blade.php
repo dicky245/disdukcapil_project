@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+
 @section('content')
 <div class="container-fluid p-6">
     <div class="flex justify-between items-center mb-6">
@@ -18,15 +19,19 @@
             <div class="space-y-4 text-sm">
                 <div class="flex justify-between border-b pb-2">
                     <span class="text-gray-500">Nama Pemohon</span>
-                    <span class="font-semibold">{{ $berkas->nama }}</span>
+                    <span class="font-semibold">{{ $berkas->nama_pemohon }}</span>
                 </div>
                 <div class="flex justify-between border-b pb-2">
-                    <span class="text-gray-500">Nomor Registrasi</span>
-                    <span class="font-semibold">{{ $berkas->nomor_registrasi }}</span>
+                    <span class="text-gray-500">Nomor Antrian</span>
+                    <span class="font-semibold">{{ $berkas->nomor_antrian }}</span>
                 </div>
                 <div class="flex justify-between border-b pb-2">
                     <span class="text-gray-500">Alamat</span>
-                    <span class="font-semibold">{{ $berkas->alamat }}</span>
+                    <span class="font-semibold">{{ $berkas->alamat_pemohon }}</span>
+                </div>
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-gray-500">Jenis Layanan</span>
+                    <span class="font-semibold">{{ $jenis }}</span>
                 </div>
                 <div class="flex justify-between border-b pb-2">
                     <span class="text-gray-500">Tanggal Pengajuan</span>
@@ -46,70 +51,120 @@
             <h2 class="text-lg font-semibold mb-6 text-gray-700">
                 Dokumen Persyaratan
             </h2>
-            <div class="grid grid-cols-2 md:grid-cols-2 gap-4">
-                <div class="border rounded-lg p-4 text-center">
-                    <p class="text-sm font-semibold mb-3">
-                        Kartu Keluarga Lama
-                    </p>
-                    <button onclick="openPreview('{{ asset('storage/'.$berkas->kk_lama) }}')"
-                    class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-sm">
-                        Lihat Berkas
-                    </button>
-                </div>
-                <div class="border rounded-lg p-4 text-center">
-                    <p class="text-sm font-semibold mb-3">
-                        Surat Keterangan Pengganti
-                    </p>
-                    <button onclick="openPreview('{{ asset('storage/'.$berkas->surat_keterangan_pengganti) }}')"
-                    class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-sm">
-                        Lihat Berkas
-                    </button>
-                </div>
-                <div class="border rounded-lg p-4 text-center">
-                    <p class="text-sm font-semibold mb-3">
-                        Salinan Kepres
-                    </p>
-                    <button onclick="openPreview('{{ asset('storage/'.$berkas->salinan_kepres) }}')"
-                    class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-sm">
-                        Lihat Berkas
-                    </button>
-                </div>
-                <div class="border rounded-lg p-4 text-center">
-                    <p class="text-sm font-semibold mb-3">
-                        Izin Tinggal Asing
-                    </p>
-                    <button onclick="openPreview('{{ asset('storage/'.$berkas->izin_tinggal_asing) }}')"
-                    class="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-sm">
-                        Lihat Berkas
-                    </button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @if($jenis == 'Perubahan Data')
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Formulir F-1.02',
+                        'field' => 'formulir_f102'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KTP Pemohon',
+                        'field' => 'ktp_pemohon'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KK Pemohon',
+                        'field' => 'kk_pemohon'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Formulir F-1.06',
+                        'field' => 'formulir_f106'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Suket Perubahan',
+                        'field' => 'surat_keterangan_perubahan'
+                    ])
+
+                    @if($berkas->pernyataan_pindah_kk)
+                        @include('admin.partials.dokumen', [
+                            'label' => 'Pernyataan Pindah KK',
+                            'field' => 'pernyataan_pindah_kk'
+                        ])
+                    @endif
+                @endif
+
+                @if($jenis == 'Ganti Kepala')
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Formulir F-1.02',
+                        'field' => 'formulir_f102'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KTP Pemohon',
+                        'field' => 'ktp_pemohon'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KK Pemohon',
+                        'field' => 'kk_pemohon'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Akta Kematian',
+                        'field' => 'fotokopi_akta_kematian'
+                    ])
+
+                    @if($berkas->surat_pernyataan_wali)
+                        @include('admin.partials.dokumen', [
+                            'label' => 'Surat Pernyataan Wali',
+                            'field' => 'surat_pernyataan_wali'
+                        ])
+                    @endif
+                @endif
+
+                @if($jenis == 'Hilang Rusak')
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Formulir F-1.02',
+                        'field' => 'formulir_f102'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KTP Pemohon',
+                        'field' => 'ktp_pemohon'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Surat Kehilangan/Rusak',
+                        'field' => 'suket_hilang_rusak'
+                    ])
+                @endif
+
+                @if($jenis == 'Pisah KK')
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Formulir F-1.02',
+                        'field' => 'formulir_f102'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KTP Pemohon',
+                        'field' => 'ktp_pemohon'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KK Pemohon',
+                        'field' => 'kk_pemohon'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'Buku Nikah',
+                        'field' => 'fotokopi_buku_nikah'
+                    ])
+                    @include('admin.partials.dokumen', [
+                        'label' => 'KK Lama',
+                        'field' => 'kk_lama'
+                    ])
+                @endif
+            </div>
+            @if($berkas->foto_wajah)
+            <div class="bg-white p-6 rounded-xl shadow border mt-6">
+                <h2 class="text-lg font-semibold mb-4 text-gray-700">
+                    Foto Verifikasi Wajah
+                </h2>
+                <div class="flex items-center gap-6">
+                    <img 
+                        src="{{ route('admin.lihat-berkas', [$berkas->uuid, $jenis, 'foto_wajah']) }}"
+                        alt="Foto Wajah Pemohon"
+                        class="w-40 h-40 rounded-xl object-cover border-2 border-gray-200 shadow"
+                    >
+                    <div class="text-sm text-gray-500">
+                        <p class="font-semibold text-gray-700 mb-1">Foto Verifikasi Liveness</p>
+                        <p class="text-xs text-gray-400 mt-1">Diambil otomatis saat kedipan mata ke-2 terdeteksi.</p>
+                    </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
 </div>
-<div id="previewModal"
-class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50">
-    <div class="bg-white w-11/12 md:w-3/4 h-5/6 rounded-xl relative p-4">
-        <button onclick="closePreview()"
-        class="absolute top-3 right-3 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
-            Tutup
-        </button>
-        <iframe id="previewFrame"
-        class="w-full h-full rounded-lg"></iframe>
-    </div>
-</div>
-<script>
-function openPreview(fileUrl){
-    document.getElementById("previewFrame").src = fileUrl;
-    const modal = document.getElementById("previewModal");
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-}
-function closePreview(){
-    const modal = document.getElementById("previewModal");
-    modal.classList.remove("flex");
-    modal.classList.add("hidden");
-    document.getElementById("previewFrame").src = "";
-}
-</script>
 @endsection

@@ -140,15 +140,12 @@ class Admin_Controller extends Controller
 
     public function manajemen_akun()
     {
-        // Proteksi Role Admin
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
-        // PERBAIKAN: Hanya ambil user yang memiliki role 'Keagamaan' melalui tabel Spatie
-        // Admin tidak akan muncul karena Admin tidak memiliki role 'Keagamaan'
+        // Ambil user dengan role Keagamaan dan relasinya
         $users = User::role('Keagamaan')->with('detail_keagamaan.jenis_keagamaan')->get();
-
         $list_agama = Jenis_Keagamaan_Model::all();
 
         return view('admin.manajemen_akun', compact('users', 'list_agama'));
@@ -156,71 +153,56 @@ class Admin_Controller extends Controller
 
     public function store_akun(Request $request)
     {
+        // Validasi
         $request->validate([
-            'name'     => 'required|string',
-            'username' => 'required|unique:users,username,' . $request->accountId,
+            'name'     => 'required|string|max:255',
+            'username' => 'required|string|unique:users,username,' . $request->accountId,
             'agama'    => 'required',
             'alamat'   => 'required',
-            'password' => 'nullable|required_if:accountId,null|min:6|confirmed',
+            'password' => $request->accountId ? 'nullable|min:6|confirmed' : 'required|min:6|confirmed',
         ]);
 
         DB::beginTransaction();
         try {
-            // 1. Simpan/Update ke tabel 'users'
-            $userData = [
-                'name'     => $request->name,
-                'username' => $request->username,
-            ];
+            // PERBAIKAN: Cek apakah accountId null, kosong, atau string "null"
+            $id = $request->accountId;
 
-            // Hanya update password jika diisi
-            if ($request->filled('password')) {
-                $userData['password'] = Hash::make($request->password);
+            if ($id == null || $id == "" || $id == "null") {
+                // PROSES TAMBAH BARU
+                $user = new User();
+                $user->password = Hash::make($request->password);
+            } else {
+                // PROSES EDIT
+                $user = User::findOrFail($id);
+                if ($request->password) {
+                    $user->password = Hash::make($request->password);
+                }
             }
 
-            $user = User::updateOrCreate(['id' => $request->accountId], $userData);
+            $user->name = $request->name;
+            $user->username = $request->username;
+            $user->save(); // UUID otomatis dibuat di sini oleh Model Boot
 
-            // PENTING: Hubungkan user dengan role 'Keagamaan' di tabel model_has_roles (Spatie)
-            // Ini yang membuat user muncul di tabel daftar akun saat di-filter
+            // Sinkronisasi Role Spatie
             $user->syncRoles(['Keagamaan']);
 
-            // 2. Simpan/Update ke tabel 'keagamaan' (Detail Profil)
-            // Status selalu 'aktif' secara default
+            // Update Detail & Status - Pastikan status 'aktif' untuk akun baru
             $user->detail_keagamaan()->updateOrCreate(
                 ['user_id' => $user->id],
                 [
                     'jenis_keagamaan_id' => $request->agama,
                     'alamat'             => $request->alamat,
-                    'status'             => 'aktif', // Selalu aktif secara default
+                    'status'             => $id ? ($request->status ?? 'aktif') : 'aktif', // Untuk akun baru, selalu aktif
                 ]
             );
 
             DB::commit();
-            // Mengirim session success untuk memicu pop-up SweetAlert2 di View
-            return redirect()->back()->with('success', 'Akun Keagamaan Berhasil Disimpan!');
+            return redirect()->back()->with('success', 'Akun berhasil disimpan! Akun dapat langsung digunakan untuk login.');
         } catch (\Exception $e) {
             DB::rollback();
-
-            // Format error untuk user
-            $errorInfo = DatabaseException::formatForUser($e);
-
-            Log::error('Admin save account failed', [
-                'error_code' => $errorInfo['error_code'],
-                'error' => $e->getMessage(),
-                'location' => $errorInfo['location'],
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            // Mengirim session error untuk memicu pop-up SweetAlert2 di View
-            return redirect()->back()
-                ->withInput()
-                ->with('error', $errorInfo['user_message'])
-                ->with('error_detail', $errorInfo['technical_detail'])
-                ->with('error_location', $errorInfo['location'])
-                ->with('error_solution', $errorInfo['solution'])
-                ->with('error_code', $errorInfo['error_code']);
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
         }
     }
-
     /**
      * Tampilkan halaman penerbitan KK
      */

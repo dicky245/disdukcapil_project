@@ -29,26 +29,22 @@ class Lacak_Berkas_Model extends Model
      *
      * @var bool
      */
-    public $incrementing = false;
+    public $incrementing = true;
 
     /**
      * The "type" of the auto-incrementing ID.
      *
      * @var string
      */
-    protected $keyType = 'string';
+    protected $keyType = 'integer';
 
     /**
-     * Boot function from Laravel.
+     * Boot function - removed UUID generation as lacak_berkas_id uses auto_increment
      */
     protected static function boot()
     {
         parent::boot();
-        self::creating(function ($model) {
-            if (empty($model->lacak_berkas_id)) {
-                $model->lacak_berkas_id = (string) Str::uuid();
-            }
-        });
+        // Auto_increment ID is handled by database
     }
 
     /**

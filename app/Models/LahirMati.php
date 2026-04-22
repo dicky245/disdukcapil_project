@@ -14,20 +14,29 @@ class LahirMati extends Model
     protected $table = 'lahir_mati';
 
     protected $fillable = [
+        'uuid',
         'layanan_id',
-        'nama_bayi',
-        'jenis_kelamin',
-        'tgl_lahir',
-        'tempat_lahir',
-        'nama_ayah',
-        'nik_ayah',
-        'nama_ibu',
-        'nik_ibu',
-        'keterangan',
+        'antrian_online_id',
+        'nomor_antrian',
+        
+        // Data Pemohon (Sesuai Konsep Baru)
+        'nik_pemohon',
+        'nomor_kk_pemohon',
+        'nama_pemohon',
+        'alamat_pemohon',
+        'hubungan_pemohon',
+        
+        // Data Berkas
+        'ktp_pemohon',
+        'kartu_keluarga_pemohon',
+        'ktp_saksi1',
+        'ktp_saksi2',
+        'formulir_f201',
         'surat_keterangan_lahir_mati',
-        'ktp_ayah',
-        'ktp_ibu',
+        
+        'keterangan',
         'status',
+        'alasan_penolakan',
     ];
 
     protected $hidden = [
@@ -35,49 +44,40 @@ class LahirMati extends Model
     ];
 
     /**
-     * Override getNikFields untuk menentukan field NIK yang di-encrypt
-     *
-     * @return array
+     * Tentukan field NIK yang akan dienkripsi secara otomatis
      */
     public function getNikFields(): array
     {
         return [
-            'nik_ayah',
-            'nik_ibu',
+            'nik_pemohon',
+            'nomor_kk_pemohon',
         ];
     }
 
     /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
-    public $incrementing = false;
-
-    /**
-     * The "type" of the auto-incrementing ID.
-     *
-     * @var string
-     */
-    protected $keyType = 'string';
-
-    /**
-     * Boot function from Laravel.
+     * Boot function untuk menangani pembuatan UUID secara otomatis
      */
     protected static function boot()
     {
         parent::boot();
         self::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = (string) Str::uuid();
+            // Memasukkan UUID ke kolom 'uuid'
+            if (empty($model->uuid)) {
+                $model->uuid = (string) Str::uuid();
             }
         });
     }
 
     /**
+     * Relasi dengan antrian online
+     */
+    public function antrian_online()
+    {
+        return $this->belongsTo(Antrian_Online_Model::class, 'antrian_online_id', 'antrian_online_id');
+    }
+
+    /**
      * Relasi dengan layanan
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function layanan()
     {

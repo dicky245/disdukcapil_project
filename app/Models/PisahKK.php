@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class KartuKeluarga extends Model
+class PisahKK extends Model
 {
-    protected $table = 'ganti_data_kk';
+    protected $table = 'pisah_kk';
     protected $fillable =[
         'uuid',
         'layanan_id',
@@ -19,9 +19,8 @@ class KartuKeluarga extends Model
         'formulir_f102',
         'ktp_pemohon',
         'kk_pemohon',
-        'formulir_f106',
-        'surat_keterangan_perubahan',
-        'pernyataan_pindah_kk',
+        'fotokopi_buku_nikah',
+        'kk_lama',
         'foto_wajah',
         'alasan_penolakan',
         'status',
