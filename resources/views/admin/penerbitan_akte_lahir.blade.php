@@ -49,7 +49,7 @@
                 <tr class="bg-blue-700 text-white">
                     <th class="p-4 font-semibold uppercase text-xs">No</th>
                     <th class="p-4 font-semibold uppercase text-xs">Nama Pemohon</th>
-                    <th class="p-4 font-semibold uppercase text-xs">Nomor Registrasi</th>
+                    <th class="p-4 font-semibold uppercase text-xs">Nomor Antrian</th>
                     <th class="p-4 font-semibold uppercase text-xs text-center">Status</th>
                     <th class="p-4 font-semibold uppercase text-xs text-center">Aksi</th>
                 </tr>
@@ -59,7 +59,7 @@
                 <tr class="hover:bg-gray-50 transition-colors">
                     <td class="p-4 text-sm text-gray-700">{{ $loop->iteration }}</td>
                     <td class="p-4 text-sm font-bold text-gray-800">{{ $data->nama_pemohon }}</td>
-                    <td class="p-4 text-sm text-gray-700">{{ $data->nomor_registrasi }}</td>
+                    <td class="p-4 text-sm text-gray-700">{{ $data->nomor_antrian }}</td>
                     <td class="p-4 text-center">
                         <span class="px-3 py-1 rounded-full text-xs font-bold border 
                             {{ $data->status == 'Tolak' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-orange-50 text-orange-600 border-orange-100' }}">

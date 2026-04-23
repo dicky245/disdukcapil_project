@@ -190,10 +190,10 @@ Route::prefix('admin')->group(function () {
 
         // Akte Kelahiran
         Route::prefix('penerbitan-akte-lahir')->group(function(){
-             Route::get('/', [AkteLahirController::class, 'daftar_aktelahir'])->name('admin.penerbitan-akte-lahir');
-             Route::get('/detail/{uuid}',[AkteLahirController::class, 'detail'])->name('admin.detail.aktelahir');
+            Route::get('/', [AkteLahirController::class, 'daftar_aktelahir'])->name('admin.penerbitan-akte-lahir');
+            Route::get('/detail/{uuid}',[AkteLahirController::class, 'detail'])->name('admin.detail.aktelahir');
             Route::post('/{uuid}/status',[AkteLahirController::class, 'updateStatus'])->name('admin.status.aktelahir');
-            Route::get('/admin/berkas/{uuid}/lihat/{field}',[AkteLahirController::class, 'lihatBerkas'])->name('admin.lihat-berkas');
+            Route::get('/berkas/{uuid}/lihat/{field}',[AkteLahirController::class, 'lihatBerkas'])->name('admin.lihat-berkas-akta-lahir');
         });
         Route::get('/penerbitan-pernikahan', [Admin_Controller::class, 'penerbitan_pernikahan'])->name('admin.penerbitan-pernikahan');
         // Manajemen Akun

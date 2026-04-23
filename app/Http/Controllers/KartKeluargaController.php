@@ -17,7 +17,7 @@ class KartKeluargaController extends Controller
     {
         $request->validate([
             'layanan_id' => 'required|integer',
-            'nomor_antrian' => 'required|string',
+            'nomor_antrian' => 'required|string|unique:ganti_data_kk,nomor_antrian',
             'nama_pemohon' => 'required|string',
             'nik_pemohon' => 'required|digits:16',
             'nomor_kk_pemohon' => 'required|integer',
@@ -29,6 +29,8 @@ class KartKeluargaController extends Controller
             'surat_keterangan_perubahan' => 'required|file|mimes:pdf|max:500',
             'pernyataan_pindah_kk' => 'nullable|file|mimes:pdf|max:500',
             'status' => 'nullable|string'
+        ],[
+            'nomor_antrian.unique' => 'Nomor antrian ini sudah terdaftar di sistem.',
         ]);
         $data = $request->except([
             'formulir_f102', 'ktp_pemohon','kk_pemohon','formulir_f106','surat_keterangan_perubahan', 'pernyataan_pindah_kk','foto_wajah'
@@ -108,7 +110,7 @@ class KartKeluargaController extends Controller
     {
         $request->validate([
             'layanan_id' => 'required|integer',
-            'nomor_antrian' => 'required|string',
+            'nomor_antrian' => 'required|string|unique:kk_hilang_rusak,nomor_antrian',
             'nama_pemohon' => 'required|string',
             'nik_pemohon' => 'required|digits:16',
             'nomor_kk_pemohon' => 'required|integer',
@@ -117,6 +119,9 @@ class KartKeluargaController extends Controller
             'ktp_pemohon' => 'required|file|mimes:pdf|max:500',
             'suket_hilang_rusak' => 'required|file|mimes:pdf|max:500',
             'status' => 'nullable|string'
+        ], [
+            'nomor_antrian.unique' => 'Nomor antrian ini sudah terdaftar di sistem kami.',
+            'nomor_antrian.required' => 'Nomor antrian tidak boleh kosong.',
         ]);
         $data = $request->except([
             'formulir_f102','ktp_pemohon','suket_hilang_rusak','foto_wajah'

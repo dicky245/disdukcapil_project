@@ -13,7 +13,7 @@ class AkteLahirController extends Controller
     {
         $request->validate([
             'layanan_id' => 'required|exists:layanan,layanan_id',
-            'nomor_registrasi' => 'required|string',
+            'nomor_antrian' => 'required|string',
             'nama_pemohon' => 'required|string',
             'nik_pemohon' => 'required|digits:16',
             'nomor_kk_pemohon' => 'required|string',
@@ -31,11 +31,11 @@ class AkteLahirController extends Controller
         ]);
 
         $data = $request->all();
+        $data = $request->except([
+            'formulir_f201', 'ktp_pemohon','ktp_saksi1','ktp_saksi2','kk_pemohon', 'file_surat_lahir','file_buku_nikah','file_sptjm_kelahiran','file_sptjm_pasutri','file_berita_acara_polisi','foto_wajah'
+        ]);
         $data['uuid'] = Str::uuid();
         $data['status'] = 'Dokumen Diterima';
-        $data = $request->except([
-            'formulir_f201', 'ktp_pemohon','ktp_saksi1','ktp_saksi2','kk_pemohon', 'file_surat_lahir','file_buku_nikah','file_sptjm_kelahiran','file_sptjm_pasutri','file_berita_acara_polisi'
-        ]);
         $fileFields = [
             'formulir_f201', 
             'ktp_pemohon',
@@ -52,6 +52,13 @@ class AkteLahirController extends Controller
             if ($request->hasFile($field)) {
                 $data[$field] = $request->file($field)->store('akte_lahir', 'private');
             }
+        }
+        if ($request->filled('foto_wajah')) {
+            $base64   = preg_replace('/^data:image\/\w+;base64,/', '', $request->foto_wajah);
+            $decoded  = base64_decode($base64);
+            $filename = 'wajah_' . uniqid() . '_' . time() . '.jpg';
+            Storage::disk('private')->put("akte_lahir/{$filename}", $decoded);
+            $data['foto_wajah'] = "akte_lahir/{$filename}";
         }
         AkteLahir::create($data);
         return redirect()->route('layanan-mandiri')

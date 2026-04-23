@@ -8,9 +8,10 @@ $serviceConfig = [
         'color'        => 'blue',
         'id'           => 'kk',
         'persyaratan'  => [
+            'Wajib Mengambil Nomor Antrian',
             'Formulir F-1.02 (Formulir Pendaftaran Peristiwa Kependudukan)',
-            'KTP Pemohon dengan Ukuran Berkas Maksimal 200 mb Berformat PDF',
-            'Kartu Keluarga Pemohon dengan Ukuran Berkas Maksimal 200 mb Berformat PDF',
+            'KTP Pemohon dengan Ukuran Berkas Maksimal 200 KB Berformat PDF',
+            'Kartu Keluarga Pemohon dengan Ukuran Berkas Maksimal 200 KB Berformat PDF',
             'Surat keterangan/bukti perubahan Peristiwa Kependudukan (cth: Paspor, SKPWNI) dan Peristiwa Penting.',
             'Formulir F-1.06 (Formulir Pernyataan Perubahan Elemen Data Kependudukan)',
         ],
@@ -24,7 +25,7 @@ $serviceConfig = [
         'fields'       => [
             ['name' => 'layanan_id', 'value' => '1',  'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pendaftaran'],
-            ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian (Opsional)', 'placeholder' => 'Nomor Antrian', 'type' => 'text', 'required' => false],
+            ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Nomor Antrian', 'type' => 'text'],
             ['type' => 'heading', 'label' => 'Data Pemohon'],
             ['name' => 'nama_pemohon', 'label' => 'Nama Pemohon', 'placeholder' => 'Nama Pemohon', 'type' => 'text'],
             ['name' => 'nik_pemohon', 'label' => 'Nomor Induk Kependudukan', 'placeholder' => '16 Digit NIK Pemohon', 'type' => 'text'],
@@ -45,9 +46,10 @@ $serviceConfig = [
         'color'        => 'blue',
         'id'           => 'ganti_kepala_kk',
         'persyaratan'  => [
+            'Wajib Mengambil Nomor Antrian',
             'Formulir F-1.02 (Formulir Pendaftaran Peristiwa Kependudukan)',
-            'KTP Pemohon dengan Ukuran Berkas Maksimal 200 mb Berformat PDF',
-            'Kartu Keluarga Pemohon dengan Ukuran Berkas Maksimal 200 mb Berformat PDF',
+            'KTP Pemohon dengan Ukuran Berkas Maksimal 200 KB Berformat PDF',
+            'Kartu Keluarga Pemohon dengan Ukuran Berkas Maksimal 200 KB Berformat PDF',
             'Akte Kematian Kepala Keluarga',
             'Surat Pernyataan Bersedia Menjadi Wali',
         ],
@@ -61,7 +63,7 @@ $serviceConfig = [
         'fields'       => [
             ['name' => 'layanan_id', 'value' => '6', 'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pendaftaran'],
-            ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian (Opsional)', 'placeholder' => 'Nomor Antrian', 'type' => 'text', 'required' => false],
+            ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Nomor Antrian', 'type' => 'text'],
             ['type' => 'heading', 'label' => 'Data Pemohon'],
             ['name' => 'nama_pemohon', 'label' => 'Nama Pemohon', 'placeholder' => 'Nama Pemohon', 'type' => 'text'],
             ['name' => 'nik_pemohon', 'label' => 'Nomor Induk Kependudukan', 'placeholder' => '16 Digit NIK Pemohon', 'type' => 'text'],
@@ -81,8 +83,9 @@ $serviceConfig = [
         'color'        => 'blue',
         'id'           => 'kk_hilang_rusak',
         'persyaratan'  => [
+            'Wajib Mengambil Nomor Antrian',
             'Formulir F-1.02 (Formulir Pendaftaran Peristiwa Kependudukan)',
-            'KTP Pemohon dengan Ukuran Berkas Maksimal 200 mb Berformat PDF',
+            'KTP Pemohon dengan Ukuran Berkas Maksimal 200 KB Berformat PDF',
             'Surat kehilangan dari kepolisian (jika hilang) atau KK yang rusak',
         ],
         'penjelasan'   => [
@@ -92,7 +95,7 @@ $serviceConfig = [
         'fields'       => [
             ['name' => 'layanan_id', 'value' => '7', 'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pengajuan'],
-            ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian (Opsional)', 'placeholder' => 'Nomor Antrian', 'type' => 'text', 'required' => false],
+            ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Nomor Antrian', 'type' => 'text'],
             ['type' => 'heading', 'label' => 'Data Pemohon'],
             ['name' => 'nama_pemohon', 'label' => 'Nama Pemohon', 'placeholder' => 'Nama Pemohon', 'type' => 'text'],
             ['name' => 'nik_pemohon', 'label' => 'Nomor Induk Kependudukan', 'placeholder' => '16 Digit NIK Pemohon', 'type' => 'text'],
@@ -110,6 +113,7 @@ $serviceConfig = [
         'color'        => 'blue',
         'id'           => 'pisah_kk',
         'persyaratan'  => [
+            'Wajib Mengambil Nomor Antrian',
             'KK lama',
             'Berumur sekurang-kurangnya 17 (tujuh belas) tahun atau sudah kawin.',
         ],
@@ -121,7 +125,7 @@ $serviceConfig = [
         'fields'       => [
             ['name' => 'layanan_id', 'value' => '8', 'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pengajuan'],
-            ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian (Opsional)', 'placeholder' => 'Nomor Antrian', 'type' => 'text', 'required' => false],
+            ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Nomor Antrian', 'type' => 'text'],
             ['type' => 'heading', 'label' => 'Data Pemohon'],
             ['name' => 'nama_pemohon', 'label' => 'Nama Pemohon', 'placeholder' => 'Nama Pemohon', 'type' => 'text'],
             ['name' => 'nik_pemohon', 'label' => 'Nomor Induk Kependudukan', 'placeholder' => '16 Digit NIK Pemohon', 'type' => 'text'],
@@ -141,6 +145,7 @@ $serviceConfig = [
         'color'        => 'green',
         'id'           => 'akte_kelahiran',
         'persyaratan'  => [
+            'Wajib Mengambil Nomor Antrian',
             'Surat keterangan kelahiran dari rumah sakit/Puskesmas/bidan/kepala desa.',
             'Buku nikah/kutipan akta perkawinan orang tua',
             'KK dan KTP orang tua',
@@ -152,7 +157,7 @@ $serviceConfig = [
         'fields'       => [
             ['name' => 'layanan_id', 'value' => '2', 'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pengajuan'],
-            ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian (Opsional)', 'placeholder' => 'Nomor Antrian', 'type' => 'text', 'required' => false],
+            ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Nomor Antrian', 'type' => 'text'],
             ['type' => 'heading', 'label' => 'Akte Kelahiran'],
             ['name' => 'nama_pemohon', 'label' => 'Nama Pemohon', 'placeholder' => 'Masukkan Nama Pemohon', 'type' => 'text'],
             ['name' => 'nik_pemohon', 'label' => 'NIK Pemohon', 'placeholder' => 'Masukkan NIK Pemohon', 'type' => 'text'],
@@ -164,6 +169,7 @@ $serviceConfig = [
             ['name' => 'ktp_pemohon', 'label' => 'KTP Pemohon'],
             ['name' => 'ktp_saksi1', 'label' => 'KTP Saksi 1'],
             ['name' => 'ktp_saksi2', 'label' => 'KTP Saksi 2'],
+            ['name' => 'kk_pemohon', 'label' => 'Kartu Keluarga Pemohon'],
             ['name' => 'file_surat_lahir', 'label' => 'Surat Keterangan Lahir (RS/Bidan/Nakhoda/Kades)'],
             ['name' => 'file_buku_nikah', 'label' => 'Buku Nikah / Akta Perkawinan'],
             ['name' => 'file_sptjm_kelahiran', 'label' => 'SPTJM Kebenaran Data Kelahiran (F-2.03) - Jika tidak ada surat lahir', 'required' => false],
@@ -176,6 +182,7 @@ $serviceConfig = [
         'color' => 'orange',
         'id'    => 'akte_kematian',
         'persyaratan' => [
+            'Wajib Mengambil Nomor Antrian',
             'Fotokopi surat kematian dari dokter atau kepala desa/lurah',
             'Fotokopi KK/KTP yang meninggal dunia.',
         ],
@@ -187,7 +194,7 @@ $serviceConfig = [
         'fields' => [
             ['name' => 'layanan_id', 'value' => '3', 'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pengajuan'],
-            ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian (Opsional)', 'placeholder' => 'Masukkan Nomor Antrian', 'type' => 'text', 'required' => false],
+            ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Masukkan Nomor Antrian', 'type' => 'text',],
             ['type' => 'heading', 'label' => 'Data Pemohon'],
             ['name' => 'nik_pemohon', 'label' => 'NIK Pemohon', 'placeholder' => '16 digit NIK Pemohon', 'type' => 'text'],
             ['name' => 'nomor_kk_pemohon', 'label' => 'Nomor KK Pemohon', 'placeholder' => '16 digit Nomor KK', 'type' => 'text'],
@@ -210,6 +217,7 @@ $serviceConfig = [
         'color' => 'orange',
         'id'    => 'lahir_mati',
         'persyaratan' => [
+            'Wajib Mengambil Nomor Antrian',
             'Fotokopi surat keterangan lahir mati (RS/Bidan/Kades).',
             'Fotokopi KK Orang Tua.',
         ],
@@ -221,7 +229,7 @@ $serviceConfig = [
         'fields' => [
             ['name' => 'layanan_id', 'value' => '4', 'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pengajuan'],
-            ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian (Opsional)', 'placeholder' => 'Masukkan Nomor Antrian', 'type' => 'text', 'required' => false],
+            ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Masukkan Nomor Antrian', 'type' => 'text'],
             ['type' => 'heading', 'label' => 'Data Pemohon'],
             ['name' => 'nik_pemohon', 'label' => 'NIK Pemohon', 'placeholder' => '16 digit NIK Pemohon', 'type' => 'text'],
             ['name' => 'nomor_kk_pemohon', 'label' => 'Nomor KK Pemohon', 'placeholder' => '16 digit Nomor KK', 'type' => 'text'],
@@ -243,6 +251,7 @@ $serviceConfig = [
         'color' => 'purple',
         'id'    => 'layanan-pernikahan',
         'persyaratan' => [
+            'Wajib Mengambil Nomor Antrian',
             'Kutipan akta kelahiran masing-masing pihak',
             'Surat keterangan belum pernah kawin dari Kepala Desa/Lurah',
             'KTP dan KK kedua calon mempelai',

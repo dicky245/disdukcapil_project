@@ -11,7 +11,7 @@ class AkteLahir extends Model
     protected $fillable = [
     'uuid',
     'layanan_id',
-    'nomor_registrasi',
+    'nomor_antrian',
     'nama_pemohon',
     'nik_pemohon',
     'nomor_kk_pemohon',
@@ -26,6 +26,7 @@ class AkteLahir extends Model
     'file_sptjm_kelahiran',
     'file_sptjm_pasutri',
     'file_berita_acara_polisi',
+    'foto_wajah',
     'alasan_penolakan',
     'status',
     'deleted_at',
