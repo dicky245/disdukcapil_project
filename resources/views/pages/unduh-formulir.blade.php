@@ -72,8 +72,7 @@
                                 <i class="fas fa-download mr-2"></i> Unduh File
                             </a>
                         </div>
-                    </div> 
-                   
+                    </div>               
                 </div>
             </div>
 
@@ -99,6 +98,23 @@
                         
                         <div class="mt-auto pt-4 border-t border-gray-50">
                             <a href="{{ asset('downloads/formulir/F-2.01.pdf') }}" download class="flex justify-center items-center w-full bg-green-50 text-green-700 hover:bg-green-600 hover:text-white font-semibold py-2.5 rounded-xl transition-colors">
+                                <i class="fas fa-download mr-2"></i> Unduh File
+                            </a>
+                        </div>
+                    </div>
+                    {{-- SPTJM SUAMI ISTRI (COMMENTED) --}}
+                    <div class="bg-white rounded-2xl p-6 border-2 border-gray-100 hover:border-orange-400 hover:shadow-xl transition-all group flex flex-col h-full">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors">
+                                <i class="fas fa-user-friends text-xl"></i>
+                            </div>
+                            <span class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full">PDF</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800 text-lg mb-2">SPTJM F-2.04</h3>
+                        <p class="text-sm text-gray-500 mb-6">Surat Pernyataan Tanggung Jawab Mutlak (SPTJM) Kebenaran Sebagai Pasangan Suami Istri. Dipakai jika tidak memiliki Buku Nikah/Akte.</p>
+                        
+                        <div class="mt-auto pt-4 border-t border-gray-50">
+                            <a href="{{ asset('downloads/formulir/F-2.04.pdf') }}" download class="flex justify-center items-center w-full bg-orange-50 text-orange-700 hover:bg-orange-600 hover:text-white font-semibold py-2.5 rounded-xl transition-colors">
                                 <i class="fas fa-download mr-2"></i> Unduh File
                             </a>
                         </div>
@@ -133,27 +149,9 @@
                         </div>
                     </div>
 
-                    {{-- SPTJM SUAMI ISTRI (COMMENTED)
-                    <div class="bg-white rounded-2xl p-6 border-2 border-gray-100 hover:border-orange-400 hover:shadow-xl transition-all group flex flex-col h-full">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors">
-                                <i class="fas fa-user-friends text-xl"></i>
-                            </div>
-                            <span class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full">PDF</span>
-                        </div>
-                        <h3 class="font-bold text-gray-800 text-lg mb-2">SPTJM F-2.04</h3>
-                        <p class="text-sm text-gray-500 mb-6">Surat Pernyataan Tanggung Jawab Mutlak (SPTJM) Kebenaran Sebagai Pasangan Suami Istri. Dipakai jika tidak memiliki Buku Nikah/Akte.</p>
-                        
-                        <div class="mt-auto pt-4 border-t border-gray-50">
-                            <a href="{{ asset('downloads/formulir/F-2.04.pdf') }}" download class="flex justify-center items-center w-full bg-orange-50 text-orange-700 hover:bg-orange-600 hover:text-white font-semibold py-2.5 rounded-xl transition-colors">
-                                <i class="fas fa-download mr-2"></i> Unduh File
-                            </a>
-                        </div>
-                    </div> 
-                    --}}
+                    
                 </div>
             </div>
-
         </div>
 
         {{-- Bantuan / Panduan (Full Width) --}}

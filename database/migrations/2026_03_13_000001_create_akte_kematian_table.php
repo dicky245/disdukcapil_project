@@ -40,6 +40,7 @@ return new class extends Migration
             $table->string('ktp_almarhum')->nullable();
             $table->string('ktp_saksi1')->nullable();
             $table->string('ktp_saksi2')->nullable();
+            $table->string('foto_wajah')->nullable();
             
             // Status dan metadata
             $table->enum('status', ['Dokumen Diterima', 'Verifikasi Data', 'Proses Cetak', 'Siap Pengambilan', 'Tolak'])

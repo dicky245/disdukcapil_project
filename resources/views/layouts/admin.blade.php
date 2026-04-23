@@ -760,6 +760,37 @@
                 });
             },
 
+            // Helper: Konfirmasi Penolakan (Warna Merah - Khusus Tolak Berkas)
+            confirmReject: function(title, message, subMessage, onConfirm, onCancel) {
+                // Pause auto-logout monitoring
+                if (window.pauseAutoLogoutReset) {
+                    window.pauseAutoLogoutReset();
+                }
+
+                SwalHelper.customConfirm({
+                    title: title,
+                    message: message,
+                    subMessage: subMessage,
+                    iconClass: 'fas fa-times-circle', // Menggunakan icon silang
+                    iconColor: '#ef4444',
+                    confirmText: 'Ya, Tolak',         // Teks khusus penolakan
+                    confirmColor: '#ef4444',
+                    cancelText: 'Batal',
+                    cancelColor: '#64748b',
+                    showLoadingAfterConfirm: false,   // Dimatikan karena kita butuh popup ke-2 untuk alasan
+                    onConfirm: onConfirm,
+                    onCancel: () => {
+                        // Resume auto-logout monitoring
+                        if (window.resumeAutoLogoutReset && onCancel) {
+                            onCancel();
+                        }
+                        if (window.resumeAutoLogoutReset) {
+                            window.resumeAutoLogoutReset();
+                        }
+                    }
+                });
+            },
+            
             // Helper: Konfirmasi Save/Simpan (Warna Hijau)
             confirmSave: function(title, message, subMessage, onConfirm, onCancel) {
                 // Pause auto-logout monitoring

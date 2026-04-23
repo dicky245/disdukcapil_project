@@ -34,6 +34,7 @@ class AkteKematian extends Model
         'ktp_almarhum',
         'ktp_saksi1',
         'ktp_saksi2',
+        'foto_wajah',
         
         // Status
         'status',

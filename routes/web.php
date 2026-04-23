@@ -180,6 +180,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/', [AkteKematianController::class, 'daftar'])->name('admin.penerbitan-akte-kematian');
             Route::get('/detail/{uuid}', [AkteKematianController::class, 'detail'])->name('admin.akte-kematian.detail');
             Route::post('/{uuid}/status', [AkteKematianController::class, 'updateStatus'])->name('admin.akte-kematian.status');
+            Route::get('/berkas/{uuid}/{field}', [AkteKematianController::class, 'lihatBerkas'])->name('admin.akte-kematian.lihat-berkas');
         });
 
         // Penerbitan Lahir Mati
@@ -187,6 +188,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/', [LahirMatiController::class, 'daftar'])->name('admin.penerbitan-lahir-mati');
             Route::get('/detail/{uuid}', [LahirMatiController::class, 'detail'])->name('admin.lahir-mati.detail');
             Route::post('/{uuid}/status', [LahirMatiController::class, 'updateStatus'])->name('admin.lahir-mati.status');
+            Route::get('/berkas/{uuid}/{field}', [LahirMatiController::class, 'lihatBerkas'])->name('admin.lahir-mati.lihat-berkas');
         });
 
         // Akte Kelahiran
