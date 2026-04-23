@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Berita_Model;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -11,7 +12,24 @@ class PageController extends Controller
      */
     public function index()
     {
-        return view('pages.index');
+        $beritas = Berita_Model::query()
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at')
+            ->limit(12)
+            ->get();
+
+        $newsForModal = $beritas->keyBy->id->map(function ($b) {
+            $tanggal = ($b->published_at ?? $b->created_at)->locale('id')->translatedFormat('d F Y');
+
+            return [
+                'category' => $b->judul,
+                'date' => $tanggal,
+                'title' => $b->judul,
+                'content' => $b->konten,
+            ];
+        });
+
+        return view('pages.index', compact('beritas', 'newsForModal'));
     }
 
     /**

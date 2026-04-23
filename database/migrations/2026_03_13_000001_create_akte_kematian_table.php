@@ -32,6 +32,15 @@ return new class extends Migration
             $table->text('alamat_pemohon'); // Menggunakan text karena alamat bisa panjang
             $table->string('hubungan_pemohon');
             
+            // Data Jenazah (dari remote)
+            $table->string('nama_almarhum');
+            $table->text('nik_almarhum')->nullable();
+            $table->text('nik_pelapor')->nullable();
+            $table->date('tgl_meninggal');
+            $table->string('tempat_meninggal');
+            $table->text('sebab_meninggal')->nullable();
+            $table->string('nama_pelapor');
+            
             // File uploads (Semua data jenazah & saksi dialihkan ke unggahan dokumen F-2.01)
             $table->string('ktp_pemohon')->nullable();
             $table->string('kartu_keluarga_pemohon')->nullable();

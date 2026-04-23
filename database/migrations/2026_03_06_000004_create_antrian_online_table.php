@@ -16,23 +16,19 @@ return new class extends Migration
             $table->char('antrian_online_id', 36)->primary();
             $table->string('nomor_antrian', 20)->unique();
 
-            // NIK (encrypted, gunakan TEXT type)
+            // NIK
             $table->text('nik')->nullable();
-
-            // KTP & Selfie photos (store path to uploaded images)
-            $table->string('foto_ktp', 500)->nullable();
-            $table->string('foto_selfie', 500)->nullable();
 
             // Data personal
             $table->string('nama_lengkap', 100);
             $table->text('alamat')->nullable();
-            $table->date('tanggal_lahir')->nullable();
 
             // Foreign key ke layanan
-            $table->foreignId('layanan_id')->constrained(
-                table: 'layanan',
-                column: 'layanan_id'
-            )->onDelete('cascade');
+            $table->char('layanan_id', 36);
+            $table->foreign('layanan_id')
+                ->references('layanan_id')
+                ->on('layanan')
+                ->onDelete('cascade');
 
             // Status antrian
             $table->enum('status_antrian', ['Menunggu', 'Dokumen Diterima', 'Verifikasi Data', 'Proses Cetak', 'Siap Pengambilan', 'Ditolak', 'Dibatalkan'])->default('Menunggu');

@@ -36,18 +36,6 @@ class Admin_Controller extends Controller
     }
 
     /**
-     * Tampilkan halaman kelola berita
-     */
-    public function kelola_berita()
-    {
-        if (!Auth::user()->hasRole('Admin')) {
-            abort(403, 'Anda tidak memiliki akses.');
-        }
-
-        return view('admin.kelola_berita');
-    }
-
-    /**
      * Tampilkan halaman organisasi
      */
     public function organisasi()

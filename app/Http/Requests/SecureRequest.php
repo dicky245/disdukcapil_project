@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Services\SQLInjectionProtectionService;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use App\Services\SQLInjectionProtectionService;
 
 abstract class SecureRequest extends FormRequest
 {
@@ -24,13 +24,11 @@ abstract class SecureRequest extends FormRequest
     public function __construct()
     {
         parent::__construct();
-        $this->sqlProtection = new SQLInjectionProtectionService();
+        $this->sqlProtection = new SQLInjectionProtectionService;
     }
 
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {
@@ -46,8 +44,6 @@ abstract class SecureRequest extends FormRequest
 
     /**
      * Get custom messages for validator errors.
-     *
-     * @return array
      */
     public function messages(): array
     {
@@ -79,18 +75,11 @@ abstract class SecureRequest extends FormRequest
     /**
      * Handle a failed validation attempt.
      *
-     * @param  \Illuminate\Contracts\Validation\Validator  $validator
-     * @return void
      *
      * @throws \Illuminate\Http\Exceptions\HttpResponseException
      */
     protected function failedValidation(Validator $validator): void
     {
-        // Log validation failures
-        $this->logSecurityEvent('validasi_gagal', [
-            'errors' => $validator->errors()->toArray(),
-        ]);
-
         throw new HttpResponseException(
             response()->json([
                 'success' => false,
@@ -102,8 +91,6 @@ abstract class SecureRequest extends FormRequest
 
     /**
      * Prepare inputs for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {
@@ -125,18 +112,12 @@ abstract class SecureRequest extends FormRequest
     /**
      * Check for SQL injection patterns
      *
-     * @param  array  $inputs
-     * @return void
      *
      * @throws \Illuminate\Http\Exceptions\HttpResponseException
      */
     protected function checkForSQLInjection(array $inputs): void
     {
         if ($this->sqlProtection->detectInArray($inputs, $this->route()->getName())) {
-            $this->logSecurityEvent('sql_injection_terdeteksi', [
-                'inputs' => array_keys($inputs),
-            ]);
-
             throw new HttpResponseException(
                 response()->json([
                     'success' => false,
@@ -148,8 +129,6 @@ abstract class SecureRequest extends FormRequest
 
     /**
      * Get validated and sanitized data
-     *
-     * @return array
      */
     public function validatedSafe(): array
     {
@@ -160,15 +139,15 @@ abstract class SecureRequest extends FormRequest
     }
 
     /**
-     * Log security event
+     * Get sanitized input
      *
-     * @param  string  $event
-     * @param  array  $context
-     * @return void
+     * @param  string|null  $key
+     * @param  mixed  $default
+     * @return mixed
      */
     protected function logSecurityEvent(string $event, array $context = []): void
     {
-        \Log::warning('Security Event: ' . $event, array_merge($context, [
+        \Log::warning('Security Event: '.$event, array_merge($context, [
             'ip' => $this->ip(),
             'url' => $this->fullUrl(),
             'method' => $this->method(),
@@ -209,7 +188,6 @@ abstract class SecureRequest extends FormRequest
      * @param  string  $attribute
      * @param  mixed  $value
      * @param  array  $parameters
-     * @return bool
      */
     public function validateNik($attribute, $value, $parameters): bool
     {
@@ -222,7 +200,6 @@ abstract class SecureRequest extends FormRequest
      * @param  string  $attribute
      * @param  mixed  $value
      * @param  array  $parameters
-     * @return bool
      */
     public function validatePhone($attribute, $value, $parameters): bool
     {
@@ -235,7 +212,6 @@ abstract class SecureRequest extends FormRequest
      * @param  string  $attribute
      * @param  mixed  $value
      * @param  array  $parameters
-     * @return bool
      */
     public function validateSafeString($attribute, $value, $parameters): bool
     {
@@ -248,10 +224,9 @@ abstract class SecureRequest extends FormRequest
      * @param  string  $attribute
      * @param  mixed  $value
      * @param  array  $parameters
-     * @return bool
      */
     public function validateSafeUrl($attribute, $value, $parameters): bool
     {
-        return !preg_match('/^(javascript|vbscript|data):/i', $value);
+        return ! preg_match('/^(javascript|vbscript|data):/i', $value);
     }
 }

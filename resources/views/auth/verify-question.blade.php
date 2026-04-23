@@ -14,6 +14,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('js/sweetalert-helper.js') }}"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -251,7 +252,7 @@
                         autofocus>
                     <p class="text-xs text-gray-500">
                         <i class="fas fa-info-circle mr-1"></i>
-                        Jawaban bersifat case-sensitive (huruf besar/kecil berpengaruh)
+                        Jawaban tidak bersifat case-sensitive (huruf besar/kecil tidak berpengaruh)
                     </p>
                 </div>
 
@@ -296,35 +297,49 @@
         </div>
     </div>
 
-    <script>
-        // Focus on input when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('security_answer').focus();
-        });
+     <script>
+        window.addEventListener('load', function() {
+            var securityAnswerInput = document.getElementById('security_answer');
+            if (securityAnswerInput) {
+                securityAnswerInput.focus();
+            }
 
-        // Add shake animation on error
-        @if ($errors->any())
-            document.addEventListener('DOMContentLoaded', function() {
-                const form = document.getElementById('verifyForm');
-                form.classList.add('shake-animation');
-                setTimeout(() => {
-                    form.classList.remove('shake-animation');
-                }, 500);
-            });
-        @endif
+            @if(session('success'))
+                SwalHelper.toastSuccess("{{ session('success') }}");
+            @endif
 
-        // Auto-hide error messages after 5 seconds
-        document.addEventListener('DOMContentLoaded', function() {
-            const errorMessages = document.querySelectorAll('.bg-red-50');
-            errorMessages.forEach(function(message) {
-                setTimeout(function() {
-                    message.style.opacity = '0';
-                    message.style.transition = 'opacity 0.5s ease';
+            @if(session('error'))
+                SwalHelper.toastError("{{ session('error') }}");
+            @endif
+
+            @if(session('info'))
+                SwalHelper.toastInfo("{{ session('info') }}");
+            @endif
+
+            @if(session('warning'))
+                SwalHelper.toastWarning("{{ session('warning') }}");
+            @endif
+
+            @if ($errors->any())
+                var form = document.getElementById('verifyForm');
+                if (form) {
+                    form.classList.add('shake-animation');
                     setTimeout(function() {
-                        message.remove();
+                        form.classList.remove('shake-animation');
                     }, 500);
-                }, 5000);
-            });
+                }
+
+                var errorMessages = document.querySelectorAll('.bg-red-50');
+                errorMessages.forEach(function(message) {
+                    setTimeout(function() {
+                        message.style.opacity = '0';
+                        message.style.transition = 'opacity 0.5s ease';
+                        setTimeout(function() {
+                            message.remove();
+                        }, 500);
+                    }, 5000);
+                });
+            @endif
         });
     </script>
 </body>
