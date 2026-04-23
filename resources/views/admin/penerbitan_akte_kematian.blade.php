@@ -53,6 +53,7 @@
             <thead>
                 <tr class="bg-blue-700 text-white">
                     <th class="p-4 font-semibold uppercase text-xs">No</th>
+                    <th class="p-4 font-semibold uppercase text-xs">Nomor Antrian</th>
                     <th class="p-4 font-semibold uppercase text-xs">Nama Pemohon</th>
                     <th class="p-4 font-semibold uppercase text-xs">NIK Pemohon</th>
                     <th class="p-4 font-semibold uppercase text-xs">Tgl Pengajuan</th>
@@ -64,6 +65,7 @@
                 @forelse ($dataKematian as $data)
                 <tr class="hover:bg-gray-50 transition-colors">
                     <td class="p-4 text-sm text-gray-700">{{ $loop->iteration }}</td>
+                    <td class="p-4 text-sm text-gray-700">{{ $data->nomor_antrian }}</td>
                     <td class="p-4 text-sm font-bold text-gray-800">{{ $data->nama_pemohon }}</td>
                     <td class="p-4 text-sm text-gray-700">{{ $data->nik_pemohon }}</td>
                     <td class="p-4 text-sm text-gray-700">{{ $data->created_at->format('d M Y') }}</td>
@@ -83,41 +85,45 @@
                         </span>
                     </td>
                     <td class="p-4">
-                        <div class="flex flex-col gap-1 items-center">
+                        <div class="flex flex-col gap-2 items-center">
                             <a href="{{ route('admin.akte-kematian.detail', $data->uuid) }}"
-                            class="w-28 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-xs font-semibold text-center">
-                                Cek Berkas
+                            class="w-28 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-semibold text-center transition-colors">
+                                Detail Berkas
                             </a>
+                            
                             @if($data->status == 'Dokumen Diterima')
                                 <form action="{{ route('admin.akte-kematian.status', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Verifikasi Data">
-                                    <button class="w-28 bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
+                                    <button type="button" class="btn-status w-28 bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-semibold transition-colors">
                                         Verifikasi
                                     </button>
                                 </form>
                                 <form action="{{ route('admin.akte-kematian.status', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Tolak">
-                                    <button class="w-28 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
+                                    <input type="hidden" name="alasan_penolakan" class="input-alasan">
+                                    <button type="button" class="btn-tolak w-28 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs font-semibold transition-colors">
                                         Tolak
                                     </button>
                                 </form>
                             @endif
+
                             @if($data->status == 'Verifikasi Data')
                                 <form action="{{ route('admin.akte-kematian.status', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Proses Cetak">
-                                    <button class="w-28 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
+                                    <button type="button" class="btn-status w-28 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-xs font-semibold transition-colors">
                                         Proses Cetak
                                     </button>
                                 </form>
                             @endif
+
                             @if($data->status == 'Proses Cetak')
                                 <form action="{{ route('admin.akte-kematian.status', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Siap Pengambilan">
-                                    <button class="w-28 bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
+                                    <button type="button" class="btn-status w-28 bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded text-xs font-semibold transition-colors">
                                         Siap Diambil
                                     </button>
                                 </form>
@@ -127,7 +133,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="p-8 text-center text-gray-400">
+                    <td colspan="7" class="p-8 text-center text-gray-400">
                         <div class="text-4xl mb-2"><i class="fas fa-clipboard-list"></i></div>
                         <p class="font-semibold">Belum ada permohonan akte kematian</p>
                     </td>
@@ -137,4 +143,77 @@
         </table>
     </div>
 </div>
+
+@push('scripts')
+<script>
+// 1. SCRIPT UNIVERSAL UNTUK TOMBOL VERIFIKASI / PROSES
+document.querySelectorAll('.btn-status').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        let form = this.closest('form');
+        let statusBaru = form.querySelector('input[name="status"]').value;
+        
+        SwalHelper.confirmUpdate(
+            'Ubah Status',
+            `Apakah Anda yakin ingin mengubah status?`,
+            `Status akan diperbarui ke: ${statusBaru}`,
+            () => form.submit()
+        );
+    });
+});
+
+// 2. SCRIPT UNIVERSAL UNTUK TOMBOL TOLAK + ALASAN PENOLAKAN
+document.querySelectorAll('.btn-tolak').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        let form = this.closest('form');
+        
+        // Otomatis mencari input dengan class 'input-alasan' (apapun name attributenya)
+        let alasan = form.querySelector('.input-alasan'); 
+        
+        // Memanggil fungsi confirmReject yang baru saja kita buat di admin.blade.php
+        SwalHelper.confirmReject(
+            'Tolak Permohonan',
+            'Apakah Anda yakin ingin menolak permohonan ini?',
+            'Permohonan yang ditolak tidak dapat dikembalikan.',
+            () => {
+                // Popup Kedua: Meminta input alasan penolakan
+                Swal.fire({
+                    title: 'Alasan Penolakan',
+                    input: 'textarea',
+                    inputPlaceholder: 'Tuliskan alasan penolakan agar warga tahu...',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Kirim Penolakan',
+                    cancelButtonText: 'Batal',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    customClass: {
+                        popup: 'swal2-modal-popup',
+                        confirmButton: 'swal2-delete-button',
+                        cancelButton: 'swal2-cancel-button'
+                    },
+                    inputValidator: (value) => {
+                        if (!value) return 'Alasan penolakan wajib diisi!';
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        alasan.value = result.value; // Memasukkan teks ke input hidden
+                        form.submit();               // Mengirim form ke Controller
+                    }
+                });
+            }
+        );
+    });
+});
+
+// 3. SCRIPT UNTUK MENAMPILKAN PESAN SUKSES DARI CONTROLLER
+@if(session('success'))
+    SwalHelper.success("{{ session('success') }}");
+@endif
+</script>
+@endpush
 @endsection

@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use App\Traits\HasEncryptedNIK;
+use App\Traits\EncryptsSensitiveData;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class AkteKematian extends Model
 {
-    use SoftDeletes, HasEncryptedNIK;
+    use SoftDeletes, EncryptsSensitiveData;
 
     protected $table = 'akte_kematian';
 
@@ -34,6 +34,7 @@ class AkteKematian extends Model
         'ktp_almarhum',
         'ktp_saksi1',
         'ktp_saksi2',
+        'foto_wajah',
         
         // Status
         'status',
@@ -45,32 +46,63 @@ class AkteKematian extends Model
     ];
 
     /**
-     * Tentukan field NIK yang akan dienkripsi secara otomatis
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
      */
-    public function getNikFields(): array
+    public $incrementing = false;
+
+    /**
+     * The "type" of the auto-incrementing ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * Daftar sensitive fields yang akan di-encrypt
+     *
+     * @return array
+     */
+    public function getSensitiveFields(): array
     {
+        // Gabungan dari local dan remote
         return [
             'nik_pemohon',
             'nomor_kk_pemohon',
+            'nik_almarhum',
+            'nik_pelapor',
+            'surat_keterangan_kematian',
+            'ktp_almarhum',
+            'kartu_keluarga',
         ];
     }
 
     /**
-     * Boot function untuk menangani pembuatan UUID secara otomatis
+     * Boot function from Laravel.
      */
     protected static function boot()
     {
         parent::boot();
+        
+        // UUID generation dari remote
         self::creating(function ($model) {
-            // Kita mengisi kolom 'uuid', bukan kolom 'id'
+            if (empty($model->id)) {
+                $model->id = (string) Str::uuid();
+            }
             if (empty($model->uuid)) {
                 $model->uuid = (string) Str::uuid();
             }
         });
+
+        // Encrypt sensitive data dari local
+        static::bootEncryptsSensitiveData();
     }
 
     /**
-     * Relasi ke Master Layanan
+     * Relasi dengan layanan
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function layanan()
     {

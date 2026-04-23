@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use App\Traits\HasEncryptedNIK;
+use App\Traits\EncryptsSensitiveData;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class LahirMati extends Model
 {
-    use SoftDeletes, HasEncryptedNIK;
+    use SoftDeletes, EncryptsSensitiveData;
 
     protected $table = 'lahir_mati';
 
@@ -33,6 +33,7 @@ class LahirMati extends Model
         'ktp_saksi2',
         'formulir_f201',
         'surat_keterangan_lahir_mati',
+        'foto_wajah',
         
         'keterangan',
         'status',
@@ -44,28 +45,64 @@ class LahirMati extends Model
     ];
 
     /**
-     * Tentukan field NIK yang akan dienkripsi secara otomatis
+     * Indicates if the IDs are auto-incrementing.
+     *
+     * @var bool
      */
-    public function getNikFields(): array
+    public $incrementing = false;
+
+    /**
+     * The "type" of the auto-incrementing ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * Daftar sensitive fields yang akan di-encrypt (gabungan dari local dan remote)
+     *
+     * @return array
+     */
+    public function getSensitiveFields(): array
     {
         return [
             'nik_pemohon',
             'nomor_kk_pemohon',
+            'nik_ayah',
+            'nik_ibu',
+            'surat_keterangan_lahir_mati',
+            'ktp_ayah',
+            'ktp_ibu',
         ];
     }
 
     /**
-     * Boot function untuk menangani pembuatan UUID secara otomatis
+     * Boot function from Laravel.
      */
     protected static function boot()
     {
         parent::boot();
+        
         self::creating(function ($model) {
-            // Memasukkan UUID ke kolom 'uuid'
+            if (empty($model->id)) {
+                $model->id = (string) Str::uuid();
+            }
             if (empty($model->uuid)) {
                 $model->uuid = (string) Str::uuid();
             }
         });
+
+        static::bootEncryptsSensitiveData();
+    }
+
+    /**
+     * Relasi dengan layanan
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function layanan()
+    {
+        return $this->belongsTo(Layanan_Model::class, 'layanan_id', 'layanan_id');
     }
 
     /**
@@ -74,13 +111,5 @@ class LahirMati extends Model
     public function antrian_online()
     {
         return $this->belongsTo(Antrian_Online_Model::class, 'antrian_online_id', 'antrian_online_id');
-    }
-
-    /**
-     * Relasi dengan layanan
-     */
-    public function layanan()
-    {
-        return $this->belongsTo(Layanan_Model::class, 'layanan_id', 'layanan_id');
     }
 }

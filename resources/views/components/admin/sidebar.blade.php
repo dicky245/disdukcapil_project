@@ -21,7 +21,7 @@
         </div>
 
         <a href="{{ route('admin.berita') }}"
-            class="sidebar-link {{ request()->routeIs('admin.berita') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700">
+            class="sidebar-link {{ request()->routeIs('admin.berita*') ? 'active' : '' }} flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700">
             <i class="fas fa-newspaper w-5"></i>
             <span class="sidebar-text font-medium">Kelola Berita</span>
         </a>

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\HasEncryptedNIK;
+use App\Traits\EncryptsSensitiveData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,11 +11,12 @@ use Illuminate\Support\Str;
 
 class Antrian_Online_Model extends Model
 {
-    use HasFactory;
-    use HasEncryptedNIK;
+    use EncryptsSensitiveData, HasFactory;
 
     protected $table = 'antrian_online';
+
     protected $primaryKey = 'antrian_online_id';
+
     public $timestamps = true;
 
     protected $fillable = [
@@ -32,11 +33,15 @@ class Antrian_Online_Model extends Model
     ];
 
     /**
-     * Define NIK fields for encryption
+     * Daftar sensitive fields yang akan di-encrypt
      */
-    public function getNikFields(): array
+    public function getSensitiveFields(): array
     {
-        return ['nik'];
+        return [
+            'nik',
+            'foto_ktp',
+            'foto_selfie',
+        ];
     }
 
     /**
@@ -47,7 +52,7 @@ class Antrian_Online_Model extends Model
     public $incrementing = false;
 
     /**
-     * The "type" of the auto-incrementing ID.
+     * The "type" of auto-incrementing ID.
      *
      * @var string
      */
@@ -64,6 +69,8 @@ class Antrian_Online_Model extends Model
                 $model->antrian_online_id = (string) Str::uuid();
             }
         });
+
+        static::bootEncryptsSensitiveData();
     }
 
     /**

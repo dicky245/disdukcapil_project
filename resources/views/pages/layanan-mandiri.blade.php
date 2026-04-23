@@ -9,7 +9,7 @@ $serviceConfig = [
         'id'           => 'kk',
         'persyaratan'  => [
             'Wajib Mengambil Nomor Antrian',
-            'Formulir F-1.02 (Formulir Pendaftaran Peristiwa Kependudukan)',
+            'Formulir F-1.02 (Formulir Pendaftaran Peristiwa Kependudukan) <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
             'KTP Pemohon dengan Ukuran Berkas Maksimal 200 KB Berformat PDF',
             'Kartu Keluarga Pemohon dengan Ukuran Berkas Maksimal 200 KB Berformat PDF',
             'Surat keterangan/bukti perubahan Peristiwa Kependudukan (cth: Paspor, SKPWNI) dan Peristiwa Penting.',
@@ -47,7 +47,7 @@ $serviceConfig = [
         'id'           => 'ganti_kepala_kk',
         'persyaratan'  => [
             'Wajib Mengambil Nomor Antrian',
-            'Formulir F-1.02 (Formulir Pendaftaran Peristiwa Kependudukan)',
+            'Formulir F-1.02 (Formulir Pendaftaran Peristiwa Kependudukan) <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
             'KTP Pemohon dengan Ukuran Berkas Maksimal 200 KB Berformat PDF',
             'Kartu Keluarga Pemohon dengan Ukuran Berkas Maksimal 200 KB Berformat PDF',
             'Akte Kematian Kepala Keluarga',
@@ -84,7 +84,7 @@ $serviceConfig = [
         'id'           => 'kk_hilang_rusak',
         'persyaratan'  => [
             'Wajib Mengambil Nomor Antrian',
-            'Formulir F-1.02 (Formulir Pendaftaran Peristiwa Kependudukan)',
+            'Formulir F-1.02 (Formulir Pendaftaran Peristiwa Kependudukan) <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
             'KTP Pemohon dengan Ukuran Berkas Maksimal 200 KB Berformat PDF',
             'Surat kehilangan dari kepolisian (jika hilang) atau KK yang rusak',
         ],
@@ -114,6 +114,7 @@ $serviceConfig = [
         'id'           => 'pisah_kk',
         'persyaratan'  => [
             'Wajib Mengambil Nomor Antrian',
+            'Formulir F-1.02 (Formulir Pendaftaran Peristiwa Kependudukan) <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
             'KK lama',
             'Berumur sekurang-kurangnya 17 (tujuh belas) tahun atau sudah kawin.',
         ],
@@ -146,6 +147,7 @@ $serviceConfig = [
         'id'           => 'akte_kelahiran',
         'persyaratan'  => [
             'Wajib Mengambil Nomor Antrian',
+            'Formulir F-2.01 (Formulir Permohonan Pencatatan Kelahiran) <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
             'Surat keterangan kelahiran dari rumah sakit/Puskesmas/bidan/kepala desa.',
             'Buku nikah/kutipan akta perkawinan orang tua',
             'KK dan KTP orang tua',
@@ -183,10 +185,14 @@ $serviceConfig = [
         'id'    => 'akte_kematian',
         'persyaratan' => [
             'Wajib Mengambil Nomor Antrian',
+            'Formulir F-2.01 (Formulir Permohonan Pencatatan Kematian) <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
             'Fotokopi surat kematian dari dokter atau kepala desa/lurah',
             'Fotokopi KK/KTP yang meninggal dunia.',
+            'Fotokopi KK/KTP pemohon.',
+            'Fotokopi KK/KTP saksi 1 dan saksi 2 yang mengetahui kematian.',
         ],
         'penjelasan' => [
+            'Mengisi formulir F-2.01',
             'WNI melampirkan fotokopi KK untuk verifikasi data.',
             'Untuk pelayanan online/Daring, persyaratan yang discan/difoto untuk diunggah harus aslinya.',
             'Seluruh informasi terkait jenazah dan saksi dilampirkan melalui isian Formulir F-2.01.',
@@ -207,9 +213,9 @@ $serviceConfig = [
             ['name' => 'surat_keterangan_kematian', 'label' => 'Scan/Foto Asli Surat Keterangan Kematian (Dokter/Kades)'],
             ['name' => 'ktp_pemohon', 'label' => 'Scan/Foto Asli KTP Pemohon'],
             ['name' => 'kartu_keluarga_pemohon', 'label' => 'Scan/Foto Asli KK Pemohon'],
-            ['name' => 'ktp_almarhum', 'label' => 'Scan/Foto Asli KTP Almarhum (Opsional)', 'required' => false],
-            ['name' => 'ktp_saksi1', 'label' => 'Scan/Foto Asli KTP Saksi 1 (Opsional)', 'required' => false],
-            ['name' => 'ktp_saksi2', 'label' => 'Scan/Foto Asli KTP Saksi 2 (Opsional)', 'required' => false],
+            ['name' => 'ktp_almarhum', 'label' => 'Scan/Foto Asli KTP Almarhum '],
+            ['name' => 'ktp_saksi1', 'label' => 'Scan/Foto Asli KTP Saksi 1 '],
+            ['name' => 'ktp_saksi2', 'label' => 'Scan/Foto Asli KTP Saksi 2 '],
         ],
     ],
     4 => [
@@ -218,8 +224,10 @@ $serviceConfig = [
         'id'    => 'lahir_mati',
         'persyaratan' => [
             'Wajib Mengambil Nomor Antrian',
+            'Mengisi Formulir F-2.01 (Formulir Permohonan Pencatatan Kelahiran Mati) <a href="'.route('unduh-formulir').'" class="text-blue-600 font-bold hover:underline ml-1" target="_blank"><i class="fas fa-download mr-1"></i>Unduh di Sini</a>',
             'Fotokopi surat keterangan lahir mati (RS/Bidan/Kades).',
             'Fotokopi KK Orang Tua.',
+            'Fotokopi Saksi 1 dan Saksi 2 yang mengetahui peristiwa lahir mati.',
         ],
         'penjelasan' => [
             'WNI melampirkan fotokopi KK untuk verifikasi data.',
@@ -242,8 +250,8 @@ $serviceConfig = [
             ['name' => 'surat_keterangan_lahir_mati', 'label' => 'Scan/Foto Asli Surat Ket. Lahir Mati (RS/Bidan/Kades)'],
             ['name' => 'ktp_pemohon', 'label' => 'Scan/Foto Asli KTP Pemohon'],
             ['name' => 'kartu_keluarga_pemohon', 'label' => 'Scan/Foto Asli KK Pemohon'],
-            ['name' => 'ktp_saksi1', 'label' => 'Scan/Foto Asli KTP Saksi 1 (Opsional)', 'required' => false],
-            ['name' => 'ktp_saksi2', 'label' => 'Scan/Foto Asli KTP Saksi 2 (Opsional)', 'required' => false],
+            ['name' => 'ktp_saksi1', 'label' => 'Scan/Foto Asli KTP Saksi 1 '],
+            ['name' => 'ktp_saksi2', 'label' => 'Scan/Foto Asli KTP Saksi 2 '],
         ],
     ],
     5 => [
@@ -350,11 +358,9 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
         </div>
     </section>
 
-    {{-- ===================== KATEGORI GRID 2x2 ===================== --}}
     <section class="py-12 bg-gray-50 -mt-6 relative z-10">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            {{-- Panduan --}}
             <div class="mb-8 bg-blue-50 border border-blue-200 rounded-2xl p-5 reveal shadow-sm">
                 <div class="flex items-start gap-4">
                     <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-200">
@@ -370,7 +376,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                 </div>
             </div>
 
-            {{-- Grid 2x2 Kategori --}}
             <div class="grid grid-cols-2 gap-4 reveal">
                 @foreach($kategoriLayanan as $namaKategori => $kategoriConfig)
                     @php
@@ -421,7 +426,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
         </div>
     </section>
 
-    {{-- Keuntungan --}}
     <section class="py-12 bg-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-10 reveal">
@@ -454,7 +458,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
     </section>
 </main>
 
-{{-- ===================== MODAL 1: PILIH LAYANAN DALAM KATEGORI ===================== --}}
 <div id="kategoriModal" class="fixed inset-0 z-40 hidden overflow-y-auto">
     <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" onclick="closeKategoriModal()"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
@@ -483,7 +486,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
     </div>
 </div>
 
-{{-- ===================== MODAL 2: FORM SERVICE (5 STEP) ===================== --}}
 <div id="serviceModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
     <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
@@ -533,7 +535,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                 @csrf
                 <input type="hidden" name="foto_wajah" id="foto_wajah">
 
-                {{-- Step 1: Informasi --}}
                 <div id="step1" class="step-content p-5 space-y-5">
                     <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4">
                         <div class="flex items-center gap-2 mb-2">
@@ -566,7 +567,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                     </button>
                 </div>
 
-                {{-- Step 2: Data --}}
                 <div id="step2" class="step-content p-5 space-y-4 hidden">
                     <p class="text-sm text-gray-500 mb-1">Lengkapi data Anda dengan benar sesuai dokumen resmi.</p>
                     <div id="formFields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
@@ -582,7 +582,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                     </div>
                 </div>
 
-                {{-- Step 3: Berkas --}}
                 <div id="step3" class="step-content p-5 space-y-4 hidden">
                     <p class="text-sm text-gray-500 mb-1">Upload berkas persyaratan dalam format <strong>PDF</strong>. Pastikan dokumen terbaca dengan jelas.</p>
                     <div id="fileFields" class="space-y-4"></div>
@@ -598,7 +597,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                     </div>
                 </div>
 
-                {{-- Step 4: Verifikasi Wajah --}}
                 <div id="step4" class="step-content p-5 space-y-4 hidden">
                     <h3 class="font-bold text-lg text-gray-800">Verifikasi Wajah</h3>
                     <p class="text-sm text-gray-500">Kedipkan mata <strong>2 kali</strong> di depan kamera untuk membuktikan Anda bukan robot.</p>
@@ -633,7 +631,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                     </div>
                 </div>
 
-                {{-- Step 5: Konfirmasi --}}
                 <div id="step5" class="step-content p-5 space-y-4 hidden">
                     <div class="bg-green-50 border border-green-200 rounded-2xl p-4 text-center">
                         <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">

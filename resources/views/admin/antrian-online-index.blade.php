@@ -530,9 +530,11 @@
                 const loadingEl = document.getElementById('riwayatLoading');
                 if (loadingEl) loadingEl.style.display = 'none';
 
-                if (resp.success && resp.data.riwayat) {
+                console.log('Riwayat response:', resp);
+
+                if (resp.success && resp.data && resp.data.riwayat) {
                     const riwayatContainer = document.getElementById('riwayatContainer');
-                    riwayatContainer.innerHTML = resp.data.riwayat.map((r, index) => {
+                    riwayatContainer.innerHTML = resp.data.riwayat.map(function(r, index) {
                         // Tentukan warna berdasarkan status
                         let dotColor = 'bg-blue-500';
                         if (r.status === 'Ditolak') dotColor = 'bg-red-500';
@@ -552,7 +554,8 @@
                                 ${r.alasan_penolakan ? `<p class="text-xs text-red-600 mt-1 font-semibold"><i class="fas fa-exclamation-circle mr-1"></i>Alasan: ${r.alasan_penolakan}</p>` : ''}
                             </div>
                         </div>
-                    `}).join('');
+                    `;
+                    }).join('');
                 } else {
                     document.getElementById('riwayatContainer').innerHTML = `
                         <div class="p-4 bg-slate-50 rounded-xl text-center">
