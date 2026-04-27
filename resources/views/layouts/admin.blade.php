@@ -23,6 +23,15 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- SweetAlert2 Disdukcapil Notification System -->
+    <script src="{{ asset('js/sweetalert-disdukcapil.js') }}"></script>
+
+    <!-- Notifikasi Disdukcapil Helper -->
+    <script src="{{ asset('js/notifikasi-disdukcapil.js') }}"></script>
+
+    <!-- SweetAlert Global Fix untuk Admin -->
+    <script src="{{ asset('js/admin-sweetalert-fix.js') }}"></script>
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
@@ -264,6 +273,9 @@
     </style>
 
     @stack('styles')
+
+    {{-- SweetAlert Global Styles untuk Admin --}}
+    @include('admin.partials.sweetalert-styles')
 </head>
 <body class="bg-gray-50">
     @include('components.admin.sidebar')
@@ -365,8 +377,10 @@
     @endif
 
     <script>
-        // SweetAlert Helper Functions - Konsisten & Profesional
-        window.SwalHelper = {
+        // SwalHelper sudah didefinisikan di sweetalert-helper.js
+        // Jangan replace jika sudah ada
+        if (typeof window.SwalHelper === 'undefined') {
+            window.SwalHelper = {};
             // Success Toast
             success: function(message) {
                 const Toast = Swal.mixin({
@@ -636,6 +650,7 @@
                     confirmColor: '#ef4444',
                     cancelText: 'Batal',
                     cancelColor: '#64748b',
+                    reverseButtons: true, // Batal di kiri, Ya, Keluar di kanan
                     onConfirm: null,
                     onCancel: null,
                     loadingTitle: 'Memproses',
@@ -668,7 +683,7 @@
                     cancelButtonColor: config.cancelColor,
                     confirmButtonText: `<i class="${config.iconClass} mr-2"></i>${config.confirmText}`,
                     cancelButtonText: '<i class="fas fa-times mr-2"></i>' + config.cancelText,
-                    reverseButtons: true,
+                    reverseButtons: config.reverseButtons, // Batal di kiri, Ya, Keluar di kanan
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                     keydownListenerCapture: true,
@@ -772,37 +787,6 @@
                 });
             },
 
-            // Helper: Konfirmasi Penolakan (Warna Merah - Khusus Tolak Berkas)
-            confirmReject: function(title, message, subMessage, onConfirm, onCancel) {
-                // Pause auto-logout monitoring
-                if (window.pauseAutoLogoutReset) {
-                    window.pauseAutoLogoutReset();
-                }
-
-                SwalHelper.customConfirm({
-                    title: title,
-                    message: message,
-                    subMessage: subMessage,
-                    iconClass: 'fas fa-times-circle', // Menggunakan icon silang
-                    iconColor: '#ef4444',
-                    confirmText: 'Ya, Tolak',         // Teks khusus penolakan
-                    confirmColor: '#ef4444',
-                    cancelText: 'Batal',
-                    cancelColor: '#64748b',
-                    showLoadingAfterConfirm: false,   // Dimatikan karena kita butuh popup ke-2 untuk alasan
-                    onConfirm: onConfirm,
-                    onCancel: () => {
-                        // Resume auto-logout monitoring
-                        if (window.resumeAutoLogoutReset && onCancel) {
-                            onCancel();
-                        }
-                        if (window.resumeAutoLogoutReset) {
-                            window.resumeAutoLogoutReset();
-                        }
-                    }
-                });
-            },
-            
             // Helper: Konfirmasi Save/Simpan (Warna Hijau)
             confirmSave: function(title, message, subMessage, onConfirm, onCancel) {
                 // Pause auto-logout monitoring
@@ -1042,9 +1026,16 @@
                 Swal.close();
             }
         };
+        } // end if SwalHelper undefined
 
         // Show SweetAlert for session messages on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Fix untuk memastikan SwalHelper tersedia
+            if (typeof SwalHelper === 'undefined') {
+                console.warn('SwalHelper tidak tersedia, membuat fallback...');
+                return;
+            }
+
             @if(session('success'))
                 SwalHelper.success('{{ session('success') }}');
             @endif

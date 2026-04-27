@@ -221,20 +221,20 @@
             return; // Don't initialize if not logged in
         }
 
-        // Initialize last activity
-        const lastActivity = localStorage.getItem('lastActivity');
-        if (!lastActivity) {
-            localStorage.setItem('lastActivity', Date.now().toString());
-        }
+        // Initialize last activity - ALWAYS reset on page load for fresh start
+        // This prevents immediate logout after login due to stale localStorage data
+        localStorage.setItem('lastActivity', Date.now().toString());
+        localStorage.setItem('sessionStartTime', Date.now().toString());
 
-        // Check existing inactivity on page load
-        if (lastActivity) {
-            const inactiveMinutes = (Date.now() - parseInt(lastActivity)) / 1000 / 60;
-            if (inactiveMinutes >= INACTIVITY_LIMIT) {
-                performAutoLogout();
-                return;
-            }
-        }
+        // Get last activity (now freshly set above)
+        const lastActivity = localStorage.getItem('lastActivity');
+
+        // Get session start time to avoid logging out immediately after login
+        const sessionStartTime = localStorage.getItem('sessionStartTime');
+        const minutesSinceLogin = (Date.now() - parseInt(sessionStartTime)) / 1000 / 60;
+
+        // Don't check for past inactivity on page load - this is a fresh login or page refresh
+        // Only start monitoring from now
 
         // Monitor user activity
         const activityEvents = [

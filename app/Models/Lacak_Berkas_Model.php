@@ -53,4 +53,12 @@ class Lacak_Berkas_Model extends Model
     {
         return $this->belongsTo(Antrian_Online_Model::class, 'antrian_online_id', 'antrian_online_id');
     }
+    
+    /**
+     * Alias relasi untuk backward compatibility
+     */
+    public function AntrianOnline(): BelongsTo
+    {
+        return $this->belongsTo(Antrian_Online_Model::class, 'antrian_online_id', 'antrian_online_id');
+    }
 }

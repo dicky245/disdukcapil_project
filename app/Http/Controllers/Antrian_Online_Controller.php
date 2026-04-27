@@ -23,6 +23,40 @@ class Antrian_Online_Controller extends Controller
     private FileEncryptionService $fileEncryption;
 
     private KtpOcrService $ktpOcrService;
+    
+    /**
+     * Test endpoint for debugging
+     * GET /antrian-online/test
+     */
+    public function Test_Search()
+    {
+        try {
+            // Test basic query
+            $count = Antrian_Online_Model::count();
+            
+            // Test with relationships
+            $samples = Antrian_Online_Model::with(['layanan', 'lacak_berkas'])
+                ->limit(3)
+                ->get();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Test successful',
+                'data' => [
+                    'total_count' => $count,
+                    'sample_count' => $samples->count(),
+                    'samples' => $samples->toArray(),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Test failed',
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ], 500);
+        }
+    }
 
     private EasyOcrService $easyOcrService;
 
@@ -316,36 +350,170 @@ class Antrian_Online_Controller extends Controller
     }
 
     /**
-     * Cari antrian berdasarkan nama dan/atau nomor antrian
+     * Cari antrian berdasarkan nama, nomor antrian, atau NIK
      */
     public function Cari_Antrian(Request $request)
     {
+        // Support multiple search parameters
+        $nomorAntrian = trim($request->input('nomor_antrian', ''));
+        $namaLengkap = trim($request->input('nama_lengkap', ''));
+        $nik = trim($request->input('nik', ''));
+        $search = trim($request->input('search', ''));
+
+        // Log untuk debugging
+        Log::info('Cari_Antrian called', [
+            'nomor_antrian' => $nomorAntrian,
+            'nama_lengkap' => $namaLengkap,
+            'nik' => $nik,
+            'search' => $search,
+            'layanan_id' => $request->input('layanan_id'),
+            'all_params' => $request->all()
+        ]);
+
+        // Determine search strategy based on which parameter is provided
         $query = Antrian_Online_Model::query();
-
-        if ($request->has('nama_lengkap')) {
-            $searchTerm = $request->nama_lengkap;
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('nama_lengkap', 'like', '%'.$searchTerm.'%')
-                    ->orWhere('nomor_antrian', 'like', '%'.$searchTerm.'%');
+        
+        if (!empty($nomorAntrian)) {
+            // Search by queue number
+            $searchUpper = strtoupper($nomorAntrian);
+            $searchClean = str_replace('-', '', $searchUpper);
+            
+            $query->where(function ($q) use ($searchUpper, $searchClean) {
+                $q->where('nomor_antrian', $searchUpper)
+                    ->orWhere('nomor_antrian', 'like', $searchUpper . '%')
+                    ->orWhere('nomor_antrian', 'like', '%' . $searchUpper . '%')
+                    ->orWhereRaw("REPLACE(UPPER(nomor_antrian), '-', '') LIKE ?", [$searchClean . '%']);
             });
+            
+            Log::info('Searching by queue number', [
+                'nomor_antrian' => $searchUpper,
+                'cleaned' => $searchClean
+            ]);
+        } elseif (!empty($namaLengkap)) {
+            // Search by name - menggunakan LIKE yang case-insensitive dan fleksibel
+            $searchLower = strtolower($namaLengkap);
+            $searchUpper = strtoupper($namaLengkap);
+            $searchCapitalized = ucwords(strtolower($namaLengkap));
+            
+            $query->where(function ($q) use ($namaLengkap, $searchLower, $searchUpper, $searchCapitalized) {
+                // Pencarian case-insensitive dengan berbagai format
+                $q->whereRaw('LOWER(nama_lengkap) LIKE ?', ['%' . $searchLower . '%'])
+                  ->orWhereRaw('UPPER(nama_lengkap) LIKE ?', ['%' . $searchUpper . '%'])
+                  ->orWhere('nama_lengkap', 'like', '%' . $namaLengkap . '%')
+                  ->orWhere('nama_lengkap', 'like', '%' . $searchCapitalized . '%')
+                  // Tambahan: cari juga di NIK dan alamat
+                  ->orWhere('nik', 'like', '%' . $namaLengkap . '%')
+                  ->orWhere('alamat', 'like', '%' . $namaLengkap . '%')
+                  // Fallback: cari dengan COLLATE utf8mb4_general_ci untuk case-insensitive
+                  ->orWhereRaw('nama_lengkap COLLATE utf8mb4_general_ci LIKE ?', ['%' . $namaLengkap . '%'])
+                  // Pencarian fuzzy dengan SOUNDEX untuk menangani kesalahan ketik
+                  ->orWhereRaw('SOUNDEX(nama_lengkap) = SOUNDEX(?)', [$namaLengkap]);
+            });
+            
+            Log::info('Searching by name', [
+                'nama_lengkap' => $namaLengkap,
+                'search_lower' => $searchLower,
+                'search_upper' => $searchUpper,
+                'search_capitalized' => $searchCapitalized
+            ]);
+        } elseif (!empty($nik)) {
+            // Search by NIK
+            $query->where(function ($q) use ($nik) {
+                $q->where('nik', 'like', '%' . $nik . '%')
+                    ->orWhere('nama_lengkap', 'like', '%' . $nik . '%');
+            });
+        } elseif (!empty($search)) {
+            // Generic search - try all fields
+            $searchUpper = strtoupper($search);
+            $searchClean = str_replace('-', '', $searchUpper);
+            
+            $query->where(function ($q) use ($search, $searchUpper, $searchClean) {
+                $q->whereRaw('LOWER(nama_lengkap) LIKE ?', ['%' . strtolower($search) . '%'])
+                  ->orWhere('nik', 'like', '%' . $search . '%')
+                  ->orWhere('nomor_antrian', $searchUpper)
+                  ->orWhere('nomor_antrian', 'like', '%' . $searchUpper . '%')
+                  ->orWhereRaw("REPLACE(UPPER(nomor_antrian), '-', '') LIKE ?", [$searchClean . '%']);
+            });
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Masukkan kata kunci pencarian (nomor antrian, nama, atau NIK)',
+            ], 400);
         }
 
-        if ($request->has('nomor_antrian')) {
-            $query->where('nomor_antrian', $request->nomor_antrian);
-        }
-
-        if ($request->has('layanan_id') && $request->layanan_id) {
+        // Filter by layanan (optional)
+        if ($request->has('layanan_id') && !empty($request->layanan_id)) {
             $query->where('layanan_id', $request->layanan_id);
+            Log::info('Filtering by layanan_id', ['layanan_id' => $request->layanan_id]);
         }
 
-        $data_antrian = $query->with(['layanan', 'lacak_berkas'])
-            ->orderBy('created_at', 'desc')
-            ->limit(10)
-            ->get();
+        // Filter by date range
+        if ($request->has('days') && $request->days && $request->days !== 'all') {
+            $days = (int) $request->days;
+            $query->where('created_at', '>=', now()->subDays($days)->startOfDay());
+        }
+
+        // Log SQL query untuk debugging
+        Log::info('SQL Query:', [
+            'sql' => $query->toSql(),
+            'bindings' => $query->getBindings()
+        ]);
+
+        // Load relationships
+        try {
+            $data_antrian = $query->with(['layanan', 'lacak_berkas'])
+                ->orderBy('created_at', 'desc')
+                ->limit(20)
+                ->get();
+        } catch (\Exception $e) {
+            Log::warning('Antrian search: relationship loading failed', [
+                'error' => $e->getMessage()
+            ]);
+            $data_antrian = $query->orderBy('created_at', 'desc')
+                ->limit(20)
+                ->get();
+        }
+
+        // Transform data
+        $transformedData = $data_antrian->map(function ($item) {
+            return [
+                'antrian_online_id' => $item->antrian_online_id,
+                'nomor_antrian' => $item->nomor_antrian,
+                'nama_lengkap' => $item->nama_lengkap,
+                'nik' => $item->nik,
+                'alamat' => $item->alamat,
+                'layanan_id' => $item->layanan_id,
+                'status_antrian' => $item->status_antrian,
+                'created_at' => $item->created_at,
+                'updated_at' => $item->updated_at,
+                'layanan' => $item->layanan ? [
+                    'layanan_id' => $item->layanan->layanan_id,
+                    'nama_layanan' => $item->layanan->nama_layanan,
+                ] : null,
+                'lacak_berkas' => $item->lacak_berkas ? $item->lacak_berkas->map(function ($lb) {
+                    return [
+                        'lacak_berkas_id' => $lb->lacak_berkas_id,
+                        'status' => $lb->status,
+                        'tanggal' => $lb->tanggal ?: ($lb->created_at ? $lb->created_at->format('d M Y') : date('d M Y')),
+                        'keterangan' => $lb->keterangan,
+                    ];
+                }) : [],
+            ];
+        });
+
+        Log::info('Antrian search executed', [
+            'query_params' => $request->all(),
+            'results_count' => $transformedData->count()
+        ]);
 
         return response()->json([
             'success' => true,
-            'data' => $data_antrian,
+            'data' => $transformedData,
+            'debug' => [
+                'params' => $request->all(),
+                'results_count' => $transformedData->count(),
+                'search_type' => !empty($nomorAntrian) ? 'nomor_antrian' : (!empty($namaLengkap) ? 'nama_lengkap' : (!empty($nik) ? 'nik' : 'search')),
+            ]
         ]);
     }
 
@@ -425,31 +593,62 @@ class Antrian_Online_Controller extends Controller
      */
     public function Lacak_Berkas(Request $request)
     {
-        // Cari berdasarkan nomor antrian atau nama lengkap
-        $search = $request->input('search', '');
+        // Support multiple parameter names
+        $search = trim($request->input('search', ''));
+        $nomorAntrian = trim($request->input('nomor_antrian', ''));
+        $namaLengkap = trim($request->input('nama_lengkap', ''));
 
-        if (empty($search)) {
+        // Determine primary search term
+        $searchTerm = $search ?: ($nomorAntrian ?: $namaLengkap);
+
+        if (empty($searchTerm)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Masukkan nomor antrian atau nama lengkap untuk melacak berkas',
             ], 400);
         }
 
-        $antrian = Antrian_Online_Model::with(['layanan', 'lacak_berkas' => function ($q) {
-            $q->orderBy('created_at', 'asc');
-        }])
-            ->where(function ($q) use ($search) {
-                $q->where('nomor_antrian', 'like', '%'.$search.'%')
-                    ->orWhere('nama_lengkap', 'like', '%'.$search.'%');
-            })
-            ->first();
+        // Normalize search term
+        $searchUpper = strtoupper($searchTerm);
+        $searchClean = str_replace('-', '', $searchUpper);
 
-        if (! $antrian) {
+        // Detect if it's a queue number
+        $isQueueNumber = preg_match('/^[A-Z]{3}[-]?[\d]*[-]?[\d]*$/i', $searchTerm);
+
+        $query = Antrian_Online_Model::with(['layanan', 'lacak_berkas' => function ($q) {
+            $q->orderBy('created_at', 'asc');
+        }]);
+
+        if ($isQueueNumber) {
+            // Search by queue number
+            $query->where(function ($q) use ($searchUpper, $searchClean) {
+                $q->where('nomor_antrian', $searchUpper)
+                    ->orWhere('nomor_antrian', 'like', $searchUpper . '%')
+                    ->orWhere('nomor_antrian', 'like', '%' . $searchUpper . '%')
+                    ->orWhereRaw("REPLACE(nomor_antrian, '-', '') LIKE ?", [$searchClean . '%']);
+            });
+        } else {
+            // Search by name
+            $query->where('nama_lengkap', 'like', '%' . $searchTerm . '%');
+        }
+
+        $antrian = $query->first();
+
+        if (!$antrian) {
             return response()->json([
                 'success' => false,
                 'message' => 'Data antrian tidak ditemukan. Silakan periksa kembali nomor antrian atau nama lengkap Anda.',
             ], 404);
         }
+
+        // Format riwayat
+        $riwayat = $antrian->lacak_berkas->map(function ($item) {
+            return [
+                'status' => $item->status,
+                'keterangan' => $item->keterangan,
+                'tanggal' => $item->tanggal ?: ($item->created_at ? $item->created_at->format('d M Y') : date('d M Y')),
+            ];
+        });
 
         return response()->json([
             'success' => true,
@@ -457,10 +656,12 @@ class Antrian_Online_Controller extends Controller
                 'antrian_online_id' => $antrian->antrian_online_id,
                 'nomor_antrian' => $antrian->nomor_antrian,
                 'nama_lengkap' => $antrian->nama_lengkap,
+                'nik' => $antrian->nik,
+                'alamat' => $antrian->alamat,
                 'status_antrian' => $antrian->status_antrian,
                 'layanan' => $antrian->layanan ? $antrian->layanan->nama_layanan : '-',
                 'created_at' => $antrian->created_at,
-                'riwayat' => $antrian->lacak_berkas,
+                'riwayat' => $riwayat,
             ],
         ]);
     }
@@ -1056,13 +1257,20 @@ class Antrian_Online_Controller extends Controller
             ], 400);
         }
 
+        // Normalize search term
+        $searchUpper = strtoupper($search);
+        $searchClean = str_replace('-', '', $searchUpper);
+
         $query = Antrian_Online_Model::with(['layanan'])
-            ->where(function ($q) use ($search) {
-                $q->where('nama_lengkap', 'like', '%'.$search.'%')
-                    ->orWhere('nomor_antrian', 'like', '%'.$search.'%');
+            ->where(function ($q) use ($search, $searchUpper, $searchClean) {
+                // Search by nomor_antrian (case-insensitive, multiple strategies)
+                $q->whereRaw("UPPER(nomor_antrian) LIKE ?", ['%' . $searchUpper . '%'])
+                    ->orWhereRaw("REPLACE(UPPER(nomor_antrian), '-', '') LIKE ?", [$searchClean . '%'])
+                    // Also search by nama_lengkap
+                    ->orWhere('nama_lengkap', 'like', '%' . $search . '%');
             });
 
-        if (! empty($layananId)) {
+        if (!empty($layananId)) {
             $query->where('layanan_id', $layananId);
         }
 
@@ -1085,8 +1293,8 @@ class Antrian_Online_Controller extends Controller
             'success' => true,
             'data' => $formatted_data,
             'message' => $formatted_data->isEmpty()
-                ? 'Tidak ditemukan antrian dengan "'.$search.'"'
-                : 'Ditemukan '.$formatted_data->count().' antrian untuk "'.$search.'"',
+                ? 'Tidak ditemukan antrian dengan "' . $search . '"'
+                : 'Ditemukan ' . $formatted_data->count() . ' antrian untuk "' . $search . '"',
         ]);
     }
 
@@ -1097,7 +1305,7 @@ class Antrian_Online_Controller extends Controller
      */
     public function Lacak_Berkas_Post(Request $request)
     {
-        $search = $request->input('search', '');
+        $search = trim($request->input('search', ''));
         $layananId = $request->input('layanan_id', '');
 
         if (empty($search)) {
@@ -1107,13 +1315,20 @@ class Antrian_Online_Controller extends Controller
             ], 400);
         }
 
+        // Normalize search term
+        $searchUpper = strtoupper($search);
+        $searchClean = str_replace('-', '', $searchUpper);
+
         // Cari berdasarkan nomor antrian atau nama lengkap dengan filter layanan
         $query = Antrian_Online_Model::with(['layanan', 'lacak_berkas' => function ($q) {
             $q->orderBy('created_at', 'asc');
         }])
-            ->where(function ($q) use ($search) {
-                $q->where('nomor_antrian', 'like', '%'.$search.'%')
-                    ->orWhere('nama_lengkap', 'like', '%'.$search.'%');
+            ->where(function ($q) use ($search, $searchUpper, $searchClean) {
+                // Search by nomor_antrian (case-insensitive, multiple strategies)
+                $q->whereRaw("UPPER(nomor_antrian) LIKE ?", ['%' . $searchUpper . '%'])
+                    ->orWhereRaw("REPLACE(UPPER(nomor_antrian), '-', '') LIKE ?", [$searchClean . '%'])
+                    // Also search by nama_lengkap
+                    ->orWhere('nama_lengkap', 'like', '%' . $search . '%');
             });
 
         // Terapkan filter layanan jika layanan_id diberikan
@@ -1123,7 +1338,7 @@ class Antrian_Online_Controller extends Controller
 
         $antrian = $query->first();
 
-        if (! $antrian) {
+        if (!$antrian) {
             return response()->json([
                 'success' => false,
                 'message' => 'Data antrian tidak ditemukan. Silakan periksa kembali nama atau nomor antrian Anda.',

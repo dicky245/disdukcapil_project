@@ -50,7 +50,7 @@
                         <p class="text-sm text-gray-500 mb-6">Formulir Pendaftaran Peristiwa Kependudukan (Digunakan untuk pembuatan KK Baru, Pindah Datang, Pisah KK).</p>
                         
                         <div class="mt-auto pt-4 border-t border-gray-50">
-                            <a href="{{ asset('downloads/formulir/F-1.02.pdf') }}" download class="flex justify-center items-center w-full bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white font-semibold py-2.5 rounded-xl transition-colors">
+                            <a href="{{ asset('downloads/formulir/F-1.02.pdf') }}" download class="flex justify-center items-center w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-2.5 rounded-xl transition-all shadow-sm">
                                 <i class="fas fa-download mr-2"></i> Unduh File
                             </a>
                         </div>
@@ -68,11 +68,12 @@
                         <p class="text-sm text-gray-500 mb-6">Formulir Perubahan Elemen Data Kependudukan (Digunakan jika ada perubahan nama, pendidikan, pekerjaan di KK).</p>
                         
                         <div class="mt-auto pt-4 border-t border-gray-50">
-                            <a href="{{ asset('downloads/formulir/F-1.06.pdf') }}" download class="flex justify-center items-center w-full bg-blue-50 text-blue-700 hover:bg-blue-600 hover:text-white font-semibold py-2.5 rounded-xl transition-colors">
+                            <a href="{{ asset('downloads/formulir/F-1.06.pdf') }}" download class="flex justify-center items-center w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-2.5 rounded-xl transition-all shadow-sm">
                                 <i class="fas fa-download mr-2"></i> Unduh File
                             </a>
                         </div>
-                    </div>               
+                    </div> 
+                   
                 </div>
             </div>
 
@@ -97,24 +98,7 @@
                         <p class="text-sm text-gray-500 mb-6">Formulir Pelaporan Pencatatan Sipil di dalam Wilayah NKRI (Wajib untuk Akte Kelahiran, Akte Kematian, dan Lahir Mati).</p>
                         
                         <div class="mt-auto pt-4 border-t border-gray-50">
-                            <a href="{{ asset('downloads/formulir/F-2.01.pdf') }}" download class="flex justify-center items-center w-full bg-green-50 text-green-700 hover:bg-green-600 hover:text-white font-semibold py-2.5 rounded-xl transition-colors">
-                                <i class="fas fa-download mr-2"></i> Unduh File
-                            </a>
-                        </div>
-                    </div>
-                    {{-- SPTJM SUAMI ISTRI (COMMENTED) --}}
-                    <div class="bg-white rounded-2xl p-6 border-2 border-gray-100 hover:border-orange-400 hover:shadow-xl transition-all group flex flex-col h-full">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors">
-                                <i class="fas fa-user-friends text-xl"></i>
-                            </div>
-                            <span class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full">PDF</span>
-                        </div>
-                        <h3 class="font-bold text-gray-800 text-lg mb-2">SPTJM F-2.04</h3>
-                        <p class="text-sm text-gray-500 mb-6">Surat Pernyataan Tanggung Jawab Mutlak (SPTJM) Kebenaran Sebagai Pasangan Suami Istri. Dipakai jika tidak memiliki Buku Nikah/Akte.</p>
-                        
-                        <div class="mt-auto pt-4 border-t border-gray-50">
-                            <a href="{{ asset('downloads/formulir/F-2.04.pdf') }}" download class="flex justify-center items-center w-full bg-orange-50 text-orange-700 hover:bg-orange-600 hover:text-white font-semibold py-2.5 rounded-xl transition-colors">
+                            <a href="{{ asset('downloads/formulir/F-2.01.pdf') }}" download class="flex justify-center items-center w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-2.5 rounded-xl transition-all shadow-sm">
                                 <i class="fas fa-download mr-2"></i> Unduh File
                             </a>
                         </div>
@@ -143,15 +127,33 @@
                         <p class="text-sm text-gray-500 mb-6">Surat Pernyataan Tanggung Jawab Mutlak (SPTJM) Kebenaran Data Kelahiran. Dipakai jika tidak memiliki Surat Ket. Lahir dari Bidan/RS.</p>
                         
                         <div class="mt-auto pt-4 border-t border-gray-50">
-                            <a href="{{ asset('downloads/formulir/F-2.03.pdf') }}" download class="flex justify-center items-center w-full bg-orange-50 text-orange-700 hover:bg-orange-600 hover:text-white font-semibold py-2.5 rounded-xl transition-colors">
+                            <a href="{{ asset('downloads/formulir/F-2.03.pdf') }}" download class="flex justify-center items-center w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold py-2.5 rounded-xl transition-all shadow-sm">
                                 <i class="fas fa-download mr-2"></i> Unduh File
                             </a>
                         </div>
                     </div>
 
-                    
+                    {{-- SPTJM SUAMI ISTRI (COMMENTED)
+                    <div class="bg-white rounded-2xl p-6 border-2 border-gray-100 hover:border-orange-400 hover:shadow-xl transition-all group flex flex-col h-full">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-colors">
+                                <i class="fas fa-user-friends text-xl"></i>
+                            </div>
+                            <span class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full">PDF</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800 text-lg mb-2">SPTJM F-2.04</h3>
+                        <p class="text-sm text-gray-500 mb-6">Surat Pernyataan Tanggung Jawab Mutlak (SPTJM) Kebenaran Sebagai Pasangan Suami Istri. Dipakai jika tidak memiliki Buku Nikah/Akte.</p>
+                        
+                        <div class="mt-auto pt-4 border-t border-gray-50">
+                            <a href="{{ asset('downloads/formulir/F-2.04.pdf') }}" download class="flex justify-center items-center w-full bg-orange-50 text-orange-700 hover:bg-orange-600 hover:text-white font-semibold py-2.5 rounded-xl transition-colors">
+                                <i class="fas fa-download mr-2"></i> Unduh File
+                            </a>
+                        </div>
+                    </div> 
+                    --}}
                 </div>
             </div>
+
         </div>
 
         {{-- Bantuan / Panduan (Full Width) --}}
@@ -162,7 +164,7 @@
             <div class="flex-1 text-center md:text-left">
                 <h3 class="text-xl font-bold text-gray-800 mb-2">Sudah Selesai Mengisi Formulir?</h3>
                 <p class="text-gray-600 text-sm md:text-base mb-4">Jika formulir sudah dicetak, diisi dengan lengkap, dan ditandatangani, silakan scan atau foto formulir tersebut. Kemudian ajukan permohonan Anda melalui menu Layanan Mandiri.</p>
-                <a href="{{ route('layanan-mandiri') }}" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl text-sm transition-colors shadow-sm">
+                <a href="{{ route('layanan-mandiri') }}" class="inline-flex items-center bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold px-6 py-3 rounded-xl text-sm transition-all shadow-lg">
                     Pergi ke Layanan Mandiri <i class="fas fa-arrow-right ml-2"></i>
                 </a>
             </div>

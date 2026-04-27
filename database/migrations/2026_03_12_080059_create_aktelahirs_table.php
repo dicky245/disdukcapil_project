@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('aktelahirs', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
-            $table->foreignId('layanan_id')->constrained(
-                table: 'layanan',
-                column: 'layanan_id'
-            )->onDelete('cascade');
+            $table->char('layanan_id', 36);
+            $table->foreign('layanan_id')
+                ->references('layanan_id')
+                ->on('layanan')
+                ->onDelete('cascade');
             $table->string('nomor_registrasi');
             $table->string('nama_pemohon');
             $table->char('nik_pemohon', 16);

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('lacak_berkas', function (Blueprint $table) {
             $table->id('lacak_berkas_id');
-            // Gunakan TEXT untuk UUID foreign key (SQLite lebih kompatibel dengan TEXT)
-            $table->text('antrian_online_id');
+            // Gunakan char(36) untuk UUID foreign key agar cocok dengan antrian_online
+            $table->char('antrian_online_id', 36);
             $table->string('status', 100);
             $table->date('tanggal');
             $table->text('keterangan')->nullable();

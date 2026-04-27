@@ -187,7 +187,7 @@
                     </div>
 
                     <div class="flex items-center gap-3 pt-6 border-t">
-                        <button type="submit" class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg transition-all">
+                        <button type="submit" class="flex-1 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold hover:from-green-700 hover:to-green-800 shadow-lg transition-all">
                             <i class="fas fa-save mr-2"></i> Simpan Akun
                         </button>
                         <button type="button" onclick="closeModal()" class="px-8 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold hover:bg-gray-200">Batal</button>

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Layanan_Model;
+use Illuminate\Support\Str;
 
 class Layanan_Seeder extends Seeder
 {
@@ -16,14 +17,14 @@ class Layanan_Seeder extends Seeder
         Layanan_Model::query()->delete();
 
         $data_layanan = [
-            ['nama_layanan' => 'Penerbitan Kartu Keluarga Karena Perubahan Data'],
-            ['nama_layanan' => 'Penerbitan Akte Kelahiran'],
-            ['nama_layanan' => 'Penerbitan Akte Kematian'],
-            ['nama_layanan' => 'Penerbitan Akte Lahir Mati'],
-            ['nama_layanan' => 'Penerbitan Akte Perkawinan'],
-            ['nama_layanan' => 'Penerbitan Kartu Keluarga Baru Karena Penggantian Kepala Keluarga (Kematian Kepala Keluarga)'],
-            ['nama_layanan' => 'Penerbitan Kartu Keluarga Karena Hilang/Rusak'],
-            ['nama_layanan' => 'Penerbitan Kartu Keluarga Baru Karena Pisah KK Dalam 1 (Satu) Alamat'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Kartu Keluarga Karena Perubahan Data'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Akte Kelahiran'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Akte Kematian'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Akte Lahir Mati'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Akte Perkawinan'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Kartu Keluarga Baru Karena Penggantian Kepala Keluarga (Kematian Kepala Keluarga)'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Kartu Keluarga Karena Hilang/Rusak'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Kartu Keluarga Baru Karena Pisah KK Dalam 1 (Satu) Alamat'],
             
         ];
 

@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('akte_lahir', function (Blueprint $table) {
             // Gunakan CHAR(36) untuk UUID sesuai dengan AkteLahir model
             $table->char('id', 36)->primary();
-            $table->foreignId('layanan_id')->constrained(
-                table: 'layanan',
-                column: 'layanan_id'
-            )->onDelete('cascade');
+            $table->char('layanan_id', 36);
+            $table->foreign('layanan_id')
+                ->references('layanan_id')
+                ->on('layanan')
+                ->onDelete('cascade');
 
             // NIK bayi
             $table->text('nik')->nullable();

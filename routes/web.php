@@ -13,6 +13,7 @@ use App\Http\Controllers\LahirMatiController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\Pengguna_Controller;
 use App\Http\Controllers\SecureFileController;
+use App\Http\Controllers\StatistikPublikController;
 use App\Models\Layanan_Model;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 
 // Home page - Beranda
 Route::get('/', [PageController::class, 'index'])->name('home');
+
 
 // API Routes untuk layanan (public)
 Route::get('/api/layanan', function () {
@@ -52,6 +54,9 @@ Route::prefix('antrian-online')->group(function () {
     Route::post('/lacak', [Antrian_Online_Controller::class, 'Lacak_Berkas_Post'])->name('antrian-online.lacak');
     Route::post('/lacak-berkas', [Antrian_Online_Controller::class, 'Lacak_Berkas_Post'])->name('antrian-online.lacak-berkas');
     Route::get('/get-data/{nomor_antrian}', [Antrian_Online_Controller::class, 'Get_Data_Antrian'])->name('antrian.get-data');
+    
+    // Test endpoint for debugging
+    Route::get('/test', [Antrian_Online_Controller::class, 'Test_Search'])->name('antrian.test');
 
     // Auto-OCR multi-step flow
     Route::post('/draft', [Antrian_Online_Controller::class, 'Buat_Draft_Antrian'])
@@ -199,13 +204,14 @@ Route::prefix('admin')->group(function () {
         Route::prefix('antrian-online')->group(function () {
             Route::get('/', [Admin_Controller::class, 'antrian_online'])->name('admin.antrian-online');
             Route::get('/data', [Admin_Controller::class, 'Get_Data_Antrian'])->name('admin.antrian-online.data');
-            Route::post('/terima/{uuid}', [Admin_Controller::class, 'Terima_Dokumen'])->name('admin.antrian-online.terima');
-            Route::post('/verifikasi/{uuid}', [Admin_Controller::class, 'Verifikasi_Data'])->name('admin.antrian-online.verifikasi');
-            Route::post('/cetak/{uuid}', [Admin_Controller::class, 'Proses_Cetak'])->name('admin.antrian-online.cetak');
-            Route::post('/selesai/{uuid}', [Admin_Controller::class, 'Siap_Pengambilan'])->name('admin.antrian-online.selesai');
-            Route::post('/update-berkas/{uuid}', [Admin_Controller::class, 'Update_Berkas'])->name('admin.antrian-online.update-berkas');
-            Route::get('/riwayat/{uuid}', [Admin_Controller::class, 'Get_Riwayat_Berkas'])->name('admin.antrian-online.riwayat');
-            Route::delete('/{uuid}', [Admin_Controller::class, 'Hapus_Antrian'])->name('admin.antrian-online.hapus');
+            Route::get('/statistics', [Admin_Controller::class, 'Get_Data_Antrian_Statistics'])->name('admin.antrian-online.statistics');
+            Route::post('/terima/{uuid}', [Admin_Controller::class, 'Terima_Dokumen'])->name('admin.antrian-online.terima')->whereUuid('uuid');
+            Route::post('/verifikasi/{uuid}', [Admin_Controller::class, 'Verifikasi_Data'])->name('admin.antrian-online.verifikasi')->whereUuid('uuid');
+            Route::post('/cetak/{uuid}', [Admin_Controller::class, 'Proses_Cetak'])->name('admin.antrian-online.cetak')->whereUuid('uuid');
+            Route::post('/selesai/{uuid}', [Admin_Controller::class, 'Siap_Pengambilan'])->name('admin.antrian-online.selesai')->whereUuid('uuid');
+            Route::post('/update-berkas/{uuid}', [Admin_Controller::class, 'Update_Berkas'])->name('admin.antrian-online.update-berkas')->whereUuid('uuid');
+            Route::get('/riwayat/{uuid}', [Admin_Controller::class, 'Get_Riwayat_Berkas'])->name('admin.antrian-online.riwayat')->whereUuid('uuid');
+            Route::delete('/{uuid}', [Admin_Controller::class, 'Hapus_Antrian'])->name('admin.antrian-online.hapus')->whereUuid('uuid');
         });
 
         Route::get('/tracking-berkas', [Admin_Controller::class, 'tracking_berkas'])->name('admin.tracking-berkas');
@@ -235,7 +241,6 @@ Route::prefix('admin')->group(function () {
             Route::get('/', [AkteKematianController::class, 'daftar'])->name('admin.penerbitan-akte-kematian');
             Route::get('/detail/{uuid}', [AkteKematianController::class, 'detail'])->name('admin.akte-kematian.detail');
             Route::post('/{uuid}/status', [AkteKematianController::class, 'updateStatus'])->name('admin.akte-kematian.status');
-            Route::get('/berkas/{uuid}/{field}', [AkteKematianController::class, 'lihatBerkas'])->name('admin.akte-kematian.lihat-berkas');
         });
 
         // Penerbitan Lahir Mati
@@ -243,7 +248,6 @@ Route::prefix('admin')->group(function () {
             Route::get('/', [LahirMatiController::class, 'daftar'])->name('admin.penerbitan-lahir-mati');
             Route::get('/detail/{uuid}', [LahirMatiController::class, 'detail'])->name('admin.lahir-mati.detail');
             Route::post('/{uuid}/status', [LahirMatiController::class, 'updateStatus'])->name('admin.lahir-mati.status');
-            Route::get('/berkas/{uuid}/{field}', [LahirMatiController::class, 'lihatBerkas'])->name('admin.lahir-mati.lihat-berkas');
         });
 
         Route::get('/penerbitan-pernikahan', [Admin_Controller::class, 'penerbitan_pernikahan'])->name('admin.penerbitan-pernikahan');
@@ -258,6 +262,38 @@ Route::prefix('admin')->group(function () {
         // API Routes untuk Admin
         Route::get('/api/total-akun', [Admin_Controller::class, 'getTotalAkun'])->name('admin.api.total-akun');
         Route::get('/api/chart-antrian', [Admin_Controller::class, 'getChartAntrian'])->name('admin.api.chart-antrian');
+    
+        /*
+        |--------------------------------------------------------------------------
+        | STATISTIK ROUTES
+        |--------------------------------------------------------------------------
+        */
+        
+        // Statistik Penduduk
+        Route::middleware(['permission:view statistik|edit statistik|delete statistik'])->prefix('statistik-penduduk')->name('admin.statistik-penduduk.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\StatistikPendudukController::class, 'index'])->name('index');
+            Route::post('/', [App\Http\Controllers\Admin\StatistikPendudukController::class, 'store'])->name('store')->middleware('permission:create statistik');
+            Route::put('/{id}', [App\Http\Controllers\Admin\StatistikPendudukController::class, 'update'])->name('update')->middleware('permission:edit statistik');
+            Route::delete('/{id}', [App\Http\Controllers\Admin\StatistikPendudukController::class, 'destroy'])->name('destroy')->middleware('permission:delete statistik');
+        });
+        
+        // Statistik Dokumen
+        Route::middleware(['permission:view statistik|edit statistik|delete statistik'])->prefix('statistik-dokumen')->name('admin.statistik-dokumen.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\StatistikDokumenController::class, 'index'])->name('index');
+            Route::post('/', [App\Http\Controllers\Admin\StatistikDokumenController::class, 'store'])->name('store')->middleware('permission:create statistik');
+            Route::put('/{id}', [App\Http\Controllers\Admin\StatistikDokumenController::class, 'update'])->name('update')->middleware('permission:edit statistik');
+            Route::delete('/{id}', [App\Http\Controllers\Admin\StatistikDokumenController::class, 'destroy'])->name('destroy')->middleware('permission:delete statistik');
+            Route::post('/generate', [App\Http\Controllers\Admin\StatistikDokumenController::class, 'generate'])->name('generate')->middleware('permission:generate statistik');
+        });
+        
+        // Statistik Layanan Bulanan
+        Route::middleware(['permission:view statistik|edit statistik|delete statistik'])->prefix('statistik-layanan')->name('admin.statistik-layanan.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\StatistikLayananController::class, 'index'])->name('index');
+            Route::post('/', [App\Http\Controllers\Admin\StatistikLayananController::class, 'store'])->name('store')->middleware('permission:create statistik');
+            Route::put('/{id}', [App\Http\Controllers\Admin\StatistikLayananController::class, 'update'])->name('update')->middleware('permission:edit statistik');
+            Route::delete('/{id}', [App\Http\Controllers\Admin\StatistikLayananController::class, 'destroy'])->name('destroy')->middleware('permission:delete statistik');
+            Route::post('/generate', [App\Http\Controllers\Admin\StatistikLayananController::class, 'generate'])->name('generate')->middleware('permission:generate statistik');
+        });
     
     });
 });
@@ -285,4 +321,24 @@ Route::prefix('keclesiastical')->middleware(['auth'])->group(function () {
     Route::post('/proses-request-pernikahan', [Keclesiastical_Controller::class, 'proses_request_pernikahan'])->name('keclesiastical.proses_request_pernikahan');
     Route::post('/sync-data-dukcapil', [Keclesiastical_Controller::class, 'sync_data_dukcapil'])->name('keclesiastical.sync_data_dukcapil');
     Route::post('/upload-dokumen', [Keclesiastical_Controller::class, 'upload_dokumen'])->name('keclesiastical.upload_dokumen');
+});
+
+/*
+|--------------------------------------------------------------------------
+| STATISTIK PUBLIK ROUTES (Tanpa Autentikasi)
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('statistik')->group(function () {
+    // Halaman Statistik Publik
+    Route::get('/', [StatistikPublikController::class, 'index'])->name('statistik');
+
+    // API Data Statistik (untuk AJAX/Chart)
+    Route::get('/data/penduduk', [StatistikPublikController::class, 'penduduk'])->name('statistik.data.penduduk');
+    Route::get('/data/penduduk/trend', [StatistikPublikController::class, 'pendudukTrend'])->name('statistik.data.penduduk.trend');
+    Route::get('/data/dokumen', [StatistikPublikController::class, 'dokumen'])->name('statistik.data.dokumen');
+    Route::get('/data/layanan', [StatistikPublikController::class, 'layanan'])->name('statistik.data.layanan');
+    Route::get('/data/combo', [StatistikPublikController::class, 'combo'])->name('statistik.data.combo');
+    Route::get('/data/kecamatan', [StatistikPublikController::class, 'kecamatan'])->name('statistik.data.kecamatan');
+    Route::get('/data/tahun', [StatistikPublikController::class, 'tahunTersedia'])->name('statistik.data.tahun');
 });
