@@ -1,21 +1,6 @@
 @extends('layouts.user')
 
 @section('content')
-@php
-    $stats = [
-        'total_penduduk' => 250487,
-        'ktp_elektronik' => 238210,
-        'kartu_keluarga' => 78456,
-        'kia_anak' => 45234
-    ];
-
-    $districts = [
-        ['name' => 'Kec. Balige', 'penduduk' => 45234, 'kk' => 12456, 'ktp' => 43120, 'percentage' => 95],
-        ['name' => 'Kec. Borbor', 'penduduk' => 28456, 'kk' => 7890, 'ktp' => 27340, 'percentage' => 92],
-        ['name' => 'Kec. Laguboti', 'penduduk' => 35678, 'kk' => 9234, 'ktp' => 34120, 'percentage' => 94],
-    ];
-@endphp
-
 <main class="pt-0">
     {{-- Page Loading --}}
     <div id="pageLoading" class="page-loading">
@@ -58,35 +43,35 @@
 
     {{-- Quick Stats --}}
     <section class="py-12 bg-gray-50 -mt-8 relative z-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 reveal">
                 <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
                     <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
                         <i class="fas fa-users text-2xl text-blue-600"></i>
                     </div>
-                    <p class="text-3xl font-bold text-gray-800 mb-1">{{ number_format($stats['total_penduduk']) }}</p>
+                    <p class="text-3xl font-bold text-gray-800 mb-1" id="totalPenduduk">{{ number_format($ringkasanPenduduk['total'] ?? 0) }}</p>
                     <p class="text-sm text-gray-600">Total Penduduk</p>
-                </div>
-                <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
-                    <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                        <i class="fas fa-id-card text-2xl text-blue-600"></i>
-                    </div>
-                    <p class="text-3xl font-bold text-gray-800 mb-1">{{ number_format($stats['ktp_elektronik']) }}</p>
-                    <p class="text-sm text-gray-600">KTP Elektronik</p>
                 </div>
                 <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
                     <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3">
                         <i class="fas fa-address-card text-2xl text-purple-600"></i>
                     </div>
-                    <p class="text-3xl font-bold text-gray-800 mb-1">{{ number_format($stats['kartu_keluarga']) }}</p>
+                    <p class="text-3xl font-bold text-gray-800 mb-1" id="totalKK">{{ number_format($ringkasanDokumen['total'] ?? 0) }}</p>
                     <p class="text-sm text-gray-600">Kartu Keluarga</p>
                 </div>
                 <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
-                    <div class="w-14 h-14 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                        <i class="fas fa-child text-2xl text-orange-600"></i>
+                    <div class="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-check-circle text-2xl text-emerald-600"></i>
                     </div>
-                    <p class="text-3xl font-bold text-gray-800 mb-1">{{ number_format($stats['kia_anak']) }}</p>
-                    <p class="text-sm text-gray-600">KIA Anak</p>
+                    <p class="text-3xl font-bold text-gray-800 mb-1" id="totalLayanan">{{ number_format($ringkasanLayanan['total_selesai'] ?? 0) }}</p>
+                    <p class="text-sm text-gray-600">Layanan Selesai</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+                    <div class="w-14 h-14 bg-cyan-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-tasks text-2xl text-cyan-600"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-gray-800 mb-1" id="totalAntrian">{{ number_format($ringkasanLayanan['total_antrian'] ?? 0) }}</p>
+                    <p class="text-sm text-gray-600">Total Antrian</p>
                 </div>
             </div>
         </div>
@@ -100,37 +85,38 @@
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Grafik Kependudukan</h2>
             </div>
 
+            {{-- Filter Tahun --}}
+            <div class="mb-8 flex justify-center reveal">
+                <div class="inline-flex items-center gap-3 bg-white rounded-2xl shadow-sm p-2">
+                    <label class="text-sm font-semibold text-gray-700">Tahun:</label>
+                    <select id="filterTahun" class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        @foreach($tahunTersedia as $tahun)
+                            <option value="{{ $tahun }}" {{ $tahun == $tahunSekarang ? 'selected' : '' }}>{{ $tahun }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
             <div class="grid md:grid-cols-2 gap-8 reveal">
-                {{-- Population by Age --}}
+                {{-- Statistik Dokumen Bulanan --}}
                 <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">
-                        <i class="fas fa-chart-pie text-blue-500 mr-2"></i>
-                        Distribusi Populasi
-                    </h3>
-                    <div class="h-80">
-                        <canvas id="ageChart"></canvas>
-                    </div>
-                </div>
-
-                {{-- Population by Gender --}}
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">
-                        <i class="fas fa-venus-mars text-blue-500 mr-2"></i>
-                        Jenis Kelamin
-                    </h3>
-                    <div class="h-80">
-                        <canvas id="genderChart"></canvas>
-                    </div>
-                </div>
-
-                {{-- Documents Issued --}}
-                <div class="bg-white rounded-2xl shadow-lg p-6 md:col-span-2">
                     <h3 class="text-lg font-bold text-gray-800 mb-4">
                         <i class="fas fa-file-alt text-purple-500 mr-2"></i>
-                        Dokumen Diterbitkan per Bulan
+                        Dokumen Diterbitkan
                     </h3>
-                    <div class="h-80">
-                        <canvas id="documentsChart"></canvas>
+                    <div class="h-96">
+                        <canvas id="dokumenChart"></canvas>
+                    </div>
+                </div>
+
+                {{-- Statistik Layanan --}}
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">
+                        <i class="fas fa-clipboard-list text-emerald-500 mr-2"></i>
+                        Statistik Layanan Bulanan
+                    </h3>
+                    <div class="h-96">
+                        <canvas id="layananChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -145,121 +131,109 @@
                 <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Data Kecamatan</h2>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-6 reveal">
-                @foreach($districts as $district)
-                <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-100">
-                    <div class="flex items-center justify-between mb-4">
-                        <h4 class="font-bold text-gray-800">{{ $district['name'] }}</h4>
-                        @if($district['percentage'] >= 95)
-                        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">Tertinggi</span>
-                        @endif
-                    </div>
-                    <div class="space-y-3">
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">Penduduk</span>
-                            <span class="font-semibold">{{ number_format($district['penduduk']) }}</span>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">KK</span>
-                            <span class="font-semibold">{{ number_format($district['kk']) }}</span>
-                        </div>
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">KTP</span>
-                            <span class="font-semibold">{{ number_format($district['ktp']) }}</span>
+            {{-- Horizontal Scroll Container --}}
+            <div class="relative reveal">
+                {{-- Scroll Button Left --}}
+                <button id="scrollLeft" class="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-3 hover:bg-gray-50 transition-all duration-300 hidden md:block">
+                    <i class="fas fa-chevron-left text-gray-600"></i>
+                </button>
+
+                {{-- Cards Container --}}
+                <div id="districtCardsContainer" class="flex gap-6 overflow-x-auto pb-4 px-1 scroll-smooth" style="scrollbar-width: thin; scrollbar-color: #cbd5e1 #f1f5f9;">
+                    {{-- Cards will be dynamically loaded here --}}
+                    <div class="flex items-center justify-center w-full py-20">
+                        <div class="text-center">
+                            <i class="fas fa-spinner fa-spin text-4xl text-blue-600 mb-4"></i>
+                            <p class="text-gray-600">Memuat data kecamatan...</p>
                         </div>
                     </div>
-                    <div class="mt-4 bg-gray-200 rounded-full h-2">
-                        <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $district['percentage'] }}%"></div>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-2">{{ $district['percentage'] }}% kepemilikan KTP</p>
                 </div>
-                @endforeach
+
+                {{-- Scroll Button Right --}}
+                <button id="scrollRight" class="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-3 hover:bg-gray-50 transition-all duration-300 hidden md:block">
+                    <i class="fas fa-chevron-right text-gray-600"></i>
+                </button>
             </div>
         </div>
     </section>
+
 </main>
 @endsection
 
 @push('scripts')
 <script>
-    // Age Chart
-    const ageCtx = document.getElementById('ageChart')?.getContext('2d');
-    if (ageCtx) {
-        new Chart(ageCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['0-15 Tahun', '16-30 Tahun', '31-45 Tahun', '46-60 Tahun', '60+ Tahun'],
-                datasets: [{
-                    data: [45230, 78450, 65230, 42100, 19477],
-                    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
-                    borderColor: '#fff',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
+    // Chart instances
+    let dokumenChartInstance = null;
+    let layananChartInstance = null;
+
+    /**
+     * Load data dokumen bulanan
+     */
+    async function loadDokumenChart(tahun) {
+        try {
+            const response = await fetch(`/statistik/data/dokumen?tahun=${tahun}`);
+            const result = await response.json();
+
+            if (result.success) {
+                renderDokumenChart(result.data);
             }
-        });
+        } catch (error) {
+            console.error('Error loading dokumen data:', error);
+        }
     }
 
-    // Gender Chart
-    const genderCtx = document.getElementById('genderChart')?.getContext('2d');
-    if (genderCtx) {
-        new Chart(genderCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Laki-laki', 'Perempuan'],
-                datasets: [{
-                    data: [125243, 125244],
-                    backgroundColor: ['#3b82f6', '#ec4899'],
-                    borderColor: '#fff',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
-        });
-    }
+    /**
+     * Render chart dokumen bulanan
+     */
+    function renderDokumenChart(data) {
+        const ctx = document.getElementById('dokumenChart')?.getContext('2d');
+        if (!ctx) return;
 
-    // Documents Chart
-    const docsCtx = document.getElementById('documentsChart')?.getContext('2d');
-    if (docsCtx) {
-        new Chart(docsCtx, {
+        // Destroy existing chart
+        if (dokumenChartInstance) {
+            dokumenChartInstance.destroy();
+        }
+
+        const labels = data.map(item => item.nama_bulan);
+
+        dokumenChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
-                datasets: [{
-                    label: 'KTP',
-                    data: [450, 380, 420, 500, 480, 520, 610, 590, 530, 480, 520, 450],
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    tension: 0.4
-                }, {
-                    label: 'KK',
-                    data: [280, 250, 290, 320, 310, 350, 380, 360, 340, 300, 320, 280],
-                    borderColor: '#8b5cf6',
-                    backgroundColor: 'rgba(139, 92, 246, 0.1.',
-                    tension: 0.4
-                }, {
-                    label: 'Akta',
-                    data: [150, 180, 160, 200, 190, 220, 250, 240, 210, 180, 200, 160],
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                    tension: 0.4
-                }]
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Kartu Keluarga',
+                        data: data.map(item => item.jumlah_kk),
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'KTP',
+                        data: data.map(item => item.jumlah_ktp),
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Akte Lahir',
+                        data: data.map(item => item.jumlah_akte_lahir),
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Akte Kematian',
+                        data: data.map(item => item.jumlah_akte_kematian),
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
             },
             options: {
                 responsive: true,
@@ -277,5 +251,220 @@
             }
         });
     }
+
+    /**
+     * Load data layanan bulanan
+     */
+    async function loadLayananChart(tahun) {
+        try {
+            const response = await fetch(`/statistik/data/layanan?tahun=${tahun}`);
+            const result = await response.json();
+
+            if (result.success) {
+                renderLayananChart(result.data);
+            }
+        } catch (error) {
+            console.error('Error loading layanan data:', error);
+        }
+    }
+
+    /**
+     * Render chart layanan bulanan
+     */
+    function renderLayananChart(data) {
+        const ctx = document.getElementById('layananChart')?.getContext('2d');
+        if (!ctx) return;
+
+        // Destroy existing chart
+        if (layananChartInstance) {
+            layananChartInstance.destroy();
+        }
+
+        const labels = data.map(item => item.nama_bulan);
+
+        layananChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Total Antrian',
+                        data: data.map(item => item.total_antrian),
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Selesai',
+                        data: data.map(item => item.antrian_selesai),
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Diproses',
+                        data: data.map(item => item.antrian_diproses),
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Menunggu',
+                        data: data.map(item => item.antrian_menunggu),
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Load semua data untuk tahun tertentu
+     */
+    function loadAllData(tahun) {
+        loadDokumenChart(tahun);
+        loadLayananChart(tahun);
+        loadDistrictCards(tahun);
+    }
+
+    /**
+     * Load dan render district cards
+     */
+    async function loadDistrictCards(tahun) {
+        try {
+            const response = await fetch(`/statistik/data/penduduk?tahun=${tahun}`);
+            const result = await response.json();
+
+            if (result.success) {
+                renderDistrictCards(result.data);
+            }
+        } catch (error) {
+            console.error('Error loading district data:', error);
+        }
+    }
+
+    /**
+     * Render district cards dengan horizontal scroll
+     */
+    function renderDistrictCards(data) {
+        const container = document.getElementById('districtCardsContainer');
+        if (!container) return;
+
+        // Urutkan data berdasarkan jumlah penduduk (descending)
+        const sortedData = [...data].sort((a, b) => b.total_penduduk - a.total_penduduk);
+
+        // Tentukan kecamatan dengan penduduk tertinggi
+        const maxPenduduk = sortedData.length > 0 ? sortedData[0].total_penduduk : 0;
+
+        // Warna gradient untuk cards
+        const gradients = [
+            'from-blue-50 to-cyan-50 border-blue-100',
+            'from-purple-50 to-pink-50 border-purple-100',
+            'from-emerald-50 to-teal-50 border-emerald-100',
+            'from-amber-50 to-orange-50 border-amber-100',
+            'from-rose-50 to-red-50 border-rose-100',
+        ];
+
+        // Progress bar colors
+        const progressColors = ['bg-blue-500', 'bg-purple-500', 'bg-emerald-500', 'bg-amber-500', 'bg-rose-500'];
+
+        let html = '';
+        sortedData.forEach((item, index) => {
+            const gradientClass = gradients[index % gradients.length];
+            const progressColor = progressColors[index % progressColors.length];
+            const isHighest = item.total_penduduk === maxPenduduk;
+
+            html += `
+                <div class="flex-shrink-0 w-80 bg-gradient-to-br ${gradientClass} rounded-2xl p-6 border">
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="font-bold text-gray-800">Kec. ${item.nama_kecamatan}</h4>
+                        ${isHighest ? '<span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">Tertinggi</span>' : ''}
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Penduduk</span>
+                            <span class="font-semibold">${number_format(item.total_penduduk)}</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 bg-gray-200 rounded-full h-2">
+                        <div class="${progressColor} h-2 rounded-full transition-all duration-500" style="width: ${(item.total_penduduk / maxPenduduk) * 100}%"></div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">${Math.round((item.total_penduduk / maxPenduduk) * 100)}% dari kecamatan tertinggi</p>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+
+        // Setup scroll buttons
+        setupScrollButtons();
+    }
+
+    /**
+     * Setup scroll buttons untuk horizontal scroll
+     */
+    function setupScrollButtons() {
+        const container = document.getElementById('districtCardsContainer');
+        const scrollLeft = document.getElementById('scrollLeft');
+        const scrollRight = document.getElementById('scrollRight');
+
+        if (!container || !scrollLeft || !scrollRight) return;
+
+        const scrollAmount = 320; // Width of one card + gap
+
+        scrollLeft.addEventListener('click', () => {
+            container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
+
+        scrollRight.addEventListener('click', () => {
+            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+
+        // Show/hide scroll buttons based on scroll position
+        container.addEventListener('scroll', () => {
+            scrollLeft.classList.toggle('opacity-50', container.scrollLeft <= 0);
+            scrollRight.classList.toggle('opacity-50', container.scrollLeft >= container.scrollWidth - container.clientWidth);
+        });
+    }
+
+    /**
+     * Format number dengan pemisah ribuan
+     */
+    function number_format(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // Event listener untuk filter tahun
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterTahun = document.getElementById('filterTahun');
+        const initialYear = filterTahun ? filterTahun.value : new Date().getFullYear();
+
+        // Load data awal
+        loadAllData(initialYear);
+
+        // Event listener untuk perubahan filter
+        if (filterTahun) {
+            filterTahun.addEventListener('change', function() {
+                const selectedYear = this.value;
+                loadAllData(selectedYear);
+            });
+        }
+    });
 </script>
 @endpush

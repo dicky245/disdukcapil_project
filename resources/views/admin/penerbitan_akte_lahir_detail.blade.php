@@ -1,6 +1,8 @@
 @extends('layouts.admin')
 @section('content')
 <div class="container-fluid p-6">
+
+    <!-- HEADER -->
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">
             Detail Permohonan Akte Lahir
@@ -131,6 +133,8 @@
                 @endif
             </div>
         </div>
+        @endif
+
     </div>
 </div>
 @endsection

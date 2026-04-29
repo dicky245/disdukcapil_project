@@ -34,13 +34,12 @@
             </div>
             <select name="status" class="border border-gray-300 rounded-lg px-4 py-2 text-sm">
                 <option value="">Semua Status</option>
-                <option value="Dokumen Diterima" {{ request('status') == 'Dokumen Diterima' ? 'selected' : '' }}>Dokumen Diterima</option>
-                <option value="Verifikasi Data" {{ request('status') == 'Verifikasi Data' ? 'selected' : '' }}>Verifikasi Data</option>
-                <option value="Proses Cetak" {{ request('status') == 'Proses Cetak' ? 'selected' : '' }}>Proses Cetak</option>
-                <option value="Siap Pengambilan" {{ request('status') == 'Siap Pengambilan' ? 'selected' : '' }}>Siap Pengambilan</option>
-                <option value="Tolak" {{ request('status') == 'Tolak' ? 'selected' : '' }}>Ditolak</option>
+                <option value="Dokumen Diterima">Dokumen Diterima</option>
+                <option value="Verifikasi Data">Verifikasi Data</option>
+                <option value="Proses Cetak">Proses Cetak</option>
+                <option value="Siap Pengambilan">Siap Pengambilan</option>
             </select>
-            <button class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition-colors">Terapkan</button>
+            <button class="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-4 py-2 rounded-lg text-sm transition">Terapkan</button>
         </div>
     </form>
 
@@ -62,32 +61,23 @@
                     <td class="p-4 text-sm font-bold text-gray-800">{{ $data->nama_pemohon }}</td>
                     <td class="p-4 text-sm text-gray-700">{{ $data->nomor_antrian }}</td>
                     <td class="p-4 text-center">
-                        @php
-                            $statusColor = match($data->status) {
-                                'Dokumen Diterima' => 'bg-orange-50 text-orange-600 border-orange-100',
-                                'Verifikasi Data' => 'bg-blue-50 text-blue-600 border-blue-100',
-                                'Proses Cetak' => 'bg-yellow-50 text-yellow-600 border-yellow-100',
-                                'Siap Pengambilan' => 'bg-green-50 text-green-600 border-green-100',
-                                'Tolak' => 'bg-red-50 text-red-600 border-red-100',
-                                default => 'bg-gray-50 text-gray-600 border-gray-100',
-                            };
-                        @endphp
-                        <span class="{{ $statusColor }} px-3 py-1 rounded-full text-xs font-bold border">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold border 
+                            {{ $data->status == 'Tolak' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-orange-50 text-orange-600 border-orange-100' }}">
                             {{ $data->status }}
                         </span>
                     </td>
                     <td class="p-4">
-                        <div class="flex flex-col gap-2 items-center">
+                        <div class="flex flex-col gap-1 items-center">
                             <a href="{{ route('admin.detail.aktelahir', $data->uuid) }}"
-                                class="w-28 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-semibold text-center transition-colors">
-                                Detail Berkas
+                                class="w-28 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-3 py-1 rounded-lg text-xs font-semibold text-center transition">
+                                Detail
                             </a>
 
                             @if($data->status == 'Dokumen Diterima')
                                 <form action="{{ route('admin.status.aktelahir', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Verifikasi Data">
-                                    <button type="button" class="btn-status w-28 bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-xs font-semibold transition-colors">
+                                    <button type="button" class="btn-status w-28 bg-emerald-500 hover:bg-emerald-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
                                         Verifikasi
                                     </button>
                                 </form>
@@ -95,7 +85,7 @@
                                     @csrf
                                     <input type="hidden" name="status" value="Tolak">
                                     <input type="hidden" name="alasan" class="input-alasan">
-                                    <button type="button" class="btn-tolak w-28 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs font-semibold transition-colors">
+                                    <button type="button" class="btn-tolak w-28 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
                                         Tolak
                                     </button>
                                 </form>
@@ -104,7 +94,7 @@
                                 <form action="{{ route('admin.status.aktelahir', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Proses Cetak">
-                                    <button type="button" class="btn-status w-28 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-xs font-semibold transition-colors">
+                                    <button type="button" class="btn-status w-28 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
                                         Proses Cetak
                                     </button>
                                 </form>
@@ -113,7 +103,7 @@
                                 <form action="{{ route('admin.status.aktelahir', $data->uuid) }}" method="POST">
                                     @csrf
                                     <input type="hidden" name="status" value="Siap Pengambilan">
-                                    <button type="button" class="btn-status w-28 bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded text-xs font-semibold transition-colors">
+                                    <button type="button" class="btn-status w-28 bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded-lg text-xs font-semibold">
                                         Siap Diambil
                                     </button>
                                 </form>
@@ -127,17 +117,14 @@
     </div>
 </div>
 @endsection
-
 @push('scripts')
 <script>
-// 1. SCRIPT UNIVERSAL UNTUK TOMBOL VERIFIKASI / PROSES
-document.querySelectorAll('.btn-status').forEach(btn => {
+    document.querySelectorAll('.btn-status').forEach(btn => {
     btn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
         let form = this.closest('form');
         let statusBaru = form.querySelector('input[name="status"]').value;
-        
         SwalHelper.confirmUpdate(
             'Ubah Status',
             `Apakah Anda yakin ingin mengubah status?`,
@@ -146,16 +133,13 @@ document.querySelectorAll('.btn-status').forEach(btn => {
         );
     });
 });
-
-// 2. SCRIPT UNIVERSAL UNTUK TOMBOL TOLAK + ALASAN PENOLAKAN
-document.querySelectorAll('.btn-tolak').forEach(btn => {
+    document.querySelectorAll('.btn-tolak').forEach(btn => {
     btn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
         let form = this.closest('form');
-        let alasan = form.querySelector('.input-alasan'); 
-        
-        SwalHelper.confirmReject(
+        let alasan = form.querySelector('.input-alasan');
+        SwalHelper.confirmDelete(
             'Tolak Permohonan',
             'Apakah Anda yakin ingin menolak permohonan ini?',
             'Permohonan yang ditolak tidak dapat dikembalikan.',
@@ -163,34 +147,27 @@ document.querySelectorAll('.btn-tolak').forEach(btn => {
                 Swal.fire({
                     title: 'Alasan Penolakan',
                     input: 'textarea',
-                    inputPlaceholder: 'Tuliskan alasan penolakan agar warga tahu...',
+                    inputPlaceholder: 'Masukkan alasan penolakan...',
                     showCancelButton: true,
                     confirmButtonColor: '#ef4444',
                     cancelButtonColor: '#64748b',
-                    confirmButtonText: 'Kirim Penolakan',
+                    confirmButtonText: 'Ya, Tolak',
                     cancelButtonText: 'Batal',
                     allowOutsideClick: false,
                     allowEscapeKey: false,
-                    customClass: {
-                        popup: 'swal2-modal-popup',
-                        confirmButton: 'swal2-delete-button',
-                        cancelButton: 'swal2-cancel-button'
-                    },
                     inputValidator: (value) => {
-                        if (!value) return 'Alasan penolakan wajib diisi!';
+                        if (!value) return 'Alasan wajib diisi!';
                     }
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        alasan.value = result.value; 
-                        form.submit();               
+                        alasan.value = result.value;
+                        form.submit();
                     }
                 });
             }
         );
     });
 });
-
-// 3. SCRIPT UNTUK MENAMPILKAN PESAN SUKSES DARI CONTROLLER
 @if(session('success'))
     SwalHelper.success("{{ session('success') }}");
 @endif

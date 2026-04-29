@@ -16,44 +16,21 @@ class Layanan_Seeder extends Seeder
     {
         DB::table('layanan')->delete();
 
-        $data = [
-            [
-                'kode_layanan' => 'kk_perubahan',
-                'nama_layanan' => 'Penerbitan Kartu Keluarga Karena Perubahan Data'
-            ],
-            [
-                'kode_layanan' => 'akte_kelahiran',
-                'nama_layanan' => 'Penerbitan Akte Kelahiran'
-            ],
-            [
-                'kode_layanan' => 'akte_kematian',
-                'nama_layanan' => 'Penerbitan Akte Kematian'
-            ],
-            [
-                'kode_layanan' => 'lahir_mati',
-                'nama_layanan' => 'Penerbitan Akte Lahir Mati'
-            ],
-            [
-                'kode_layanan' => 'perkawinan',
-                'nama_layanan' => 'Penerbitan Akte Perkawinan'
-            ],
-            [
-                'kode_layanan' => 'kk_ganti_kepala',
-                'nama_layanan' => 'Penerbitan KK Ganti Kepala Keluarga'
-            ],
-            [
-                'kode_layanan' => 'kk_hilang',
-                'nama_layanan' => 'Penerbitan KK Hilang/Rusak'
-            ],
-            [
-                'kode_layanan' => 'kk_pisah',
-                'nama_layanan' => 'Penerbitan KK Pisah'
-            ],
+        $data_layanan = [
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Kartu Keluarga Karena Perubahan Data'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Akte Kelahiran'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Akte Kematian'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Akte Lahir Mati'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Akte Perkawinan'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Kartu Keluarga Baru Karena Penggantian Kepala Keluarga (Kematian Kepala Keluarga)'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Kartu Keluarga Karena Hilang/Rusak'],
+            ['layanan_id' => (string) Str::uuid(), 'nama_layanan' => 'Penerbitan Kartu Keluarga Baru Karena Pisah KK Dalam 1 (Satu) Alamat'],
+            
         ];
 
         $insert = [];
 
-        foreach ($data as $item) {
+        foreach ($data_layanan as $item) {
             $insert[] = [
                 'layanan_id' => $item['kode_layanan'],
                 'kode_layanan' => $item['kode_layanan'], 

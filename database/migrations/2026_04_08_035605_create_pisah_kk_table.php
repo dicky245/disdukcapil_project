@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pisah_kk', function (Blueprint $table) {
-            $table->uuid('uuid')->primary();
+            $table->id();
+            $table->uuid('uuid')->unique();
             $table->char('layanan_id', 36);
             $table->foreign('layanan_id')
                 ->references('layanan_id')

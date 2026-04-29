@@ -390,7 +390,7 @@
                         </select>
                     </div>
                 </div>
-                <button onclick="searchAntrian()" class="w-full py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all shadow-lg">
+                <button type="button" id="btnCariAntrian" onclick="searchAntrian()" class="w-full py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all shadow-lg">
                     <i class="fas fa-search mr-2"></i>
                     Cari Antrian
                 </button>
@@ -718,6 +718,229 @@
 <script>
     window.ANTRIAN_OCR_CONFIG = @json($ocrClientConfig ?? []);
 </script>
+
+{{-- Search Antrian Functions - didefinisikan sebelum antrian-ocr.js agar selalu tersedia --}}
+<script>
+    // Helper: deteksi format nomor antrian (ABC-123-456 atau ABC123)
+    // Hanya true jika: 3 huruf di awal DAN ada angka setelahnya
+    window.isQueueNumberFormat = function(input) {
+        if (!input || typeof input !== 'string') return false;
+        var cleaned = input.replace(/[-\s]/g, '').toUpperCase();
+        // Format nomor antrian: 3 huruf + minimal 1 angka
+        // Contoh: ABC123, ABC-123-456, ABC1
+        var queuePattern = /^[A-Z]{3,}\d+$/;
+        // Atau format dengan dash: ABC-123-456
+        var dashPattern = /^[A-Z]{3,}-\d+(-\d+)*$/;
+        return queuePattern.test(cleaned) || dashPattern.test(input.toUpperCase());
+    };
+
+    // Helper: format nomor antrian ke standar ABC-123-456
+    window.formatQueueNumber = function(input) {
+        if (!input || typeof input !== 'string') return null;
+        var cleaned = input.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (cleaned.length < 3) return null;
+        var letters = cleaned.substring(0, 3);
+        var numbers = cleaned.substring(3);
+        if (numbers.length < 6) {
+            numbers = numbers.padEnd(6, '0');
+        }
+        var part1 = numbers.substring(0, 3);
+        var part2 = numbers.substring(3, 6);
+        return letters + '-' + part1 + '-' + part2;
+    };
+
+    // Fungsi pencarian antrian - global scope
+    window.searchAntrian = function() {
+        try {
+            console.log('=== SEARCH ANTRIAN DIPANGGIL ===');
+
+            var searchInput = document.getElementById('searchInput');
+            var searchLayanan = document.getElementById('searchLayanan');
+            var resultsContainer = document.getElementById('searchResults');
+
+            if (!searchInput) {
+                console.error('searchInput element not found');
+                SwalHelper.error('Error!', 'Elemen input tidak ditemukan');
+                return;
+            }
+
+            var searchValue = searchInput.value.trim();
+            var layananId = searchLayanan ? searchLayanan.value : '';
+
+            console.log('Search value:', searchValue);
+            console.log('Layanan ID:', layananId);
+
+            if (!searchValue) {
+                SwalHelper.warning('Peringatan!', 'Masukkan kata kunci pencarian');
+                return;
+            }
+
+            // Tampilkan loading di results container
+            if (resultsContainer) {
+                resultsContainer.innerHTML = '<div class="text-center py-8"><div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-green-500 border-t-transparent mb-4"></div><p class="text-gray-500 font-medium">Mencari data antrian...</p></div>';
+            }
+
+            // Build query params
+            var params = new URLSearchParams();
+
+            // Deteksi apakah input adalah format nomor antrian
+            var isQueueNumber = window.isQueueNumberFormat(searchValue);
+
+            if (isQueueNumber) {
+                var formattedNomor = window.formatQueueNumber(searchValue);
+                if (formattedNomor) {
+                    params.append('nomor_antrian', formattedNomor);
+                    console.log('Searching queue number:', formattedNomor);
+                } else {
+                    params.append('nomor_antrian', searchValue.toUpperCase());
+                }
+            } else {
+                params.append('nama_lengkap', searchValue);
+                console.log('Searching by name:', searchValue);
+            }
+
+            if (layananId) {
+                params.append('layanan_id', layananId);
+            }
+
+            console.log('Searching with params:', params.toString());
+
+            var searchUrl = '{{ route('antrian.search') }}?' + params.toString();
+            console.log('Search URL:', searchUrl);
+
+            fetch(searchUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(function(response) {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        throw new Error('HTTP error! status: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function(data) {
+                    console.log('Search response:', data);
+                    console.log('Response success:', data.success);
+                    console.log('Response data:', data.data);
+                    console.log('Response data length:', data.data ? data.data.length : 0);
+
+                    if (!resultsContainer) {
+                        console.error('resultsContainer not found');
+                        return;
+                    }
+
+                    if (data.success && data.data && data.data.length > 0) {
+                        console.log('Rendering ' + data.data.length + ' results');
+                        window.renderSearchResults(data.data);
+
+                        // Notifikasi cari berhasil
+                        SwalHelper.success('Ditemukan!', data.data.length + ' data ditemukan untuk "' + searchValue + '"');
+                    } else {
+                        console.log('No results found. Message:', data.message || 'No message');
+                        var debugInfo = data.debug ? '<br><small class="text-gray-400">Debug: Mencari ' + data.debug.search_type + ' = ' + (data.debug.params.nama_lengkap || data.debug.params.nomor_antrian || data.debug.params.search || 'kosong') + '</small>' : '';
+                        resultsContainer.innerHTML = '<div class="text-center py-8 animate-fade-in"><div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-search text-3xl text-gray-400"></i></div><p class="text-gray-500 font-medium">Data antrian tidak ditemukan.</p><p class="text-sm text-gray-400 mt-1">Pastikan nama atau nomor antrian yang dimasukkan benar.</p><div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg inline-block"><p class="text-sm text-yellow-700"><i class="fas fa-lightbulb mr-1"></i><strong>Tips:</strong> Gunakan nama lengkap sesuai KTP. Coba juga dengan nama lain yang mirip.</p></div>' + debugInfo + '</div>';
+                        
+                        // Tampilkan notifikasi cari kosong
+                        SwalHelper.info('Tidak Ditemukan', 'Data untuk "' + searchValue + '" tidak ditemukan dalam sistem');
+                    }
+                })
+                .catch(function(err) {
+                    console.error('Search Error:', err);
+                    if (resultsContainer) {
+                        resultsContainer.innerHTML = '<div class="text-center py-8"><div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-exclamation-triangle text-3xl text-red-500"></i></div><p class="text-gray-500 font-medium">Gagal mencari data.</p><p class="text-sm text-gray-400 mt-1">' + (err.message || 'Terjadi kesalahan koneksi') + '</p></div>';
+                    }
+                    // Gunakan notifikasi error
+                    SwalHelper.error('Gagal Mencari Data!', 'Gagal mencari data: ' + (err.message || 'Terjadi kesalahan koneksi'));
+                });
+        } catch (err) {
+            console.error('Unexpected error in searchAntrian:', err);
+            SwalHelper.error('Terjadi kesalahan!', 'Terjadi kesalahan: ' + err.message);
+        }
+    };
+
+    // Render Search Results
+    window.renderSearchResults = function(results) {
+        console.log('Rendering results:', results);
+        
+        if (!results || results.length === 0) {
+            document.getElementById('searchResults').innerHTML = 
+                '<div class="text-center py-8 animate-fade-in"><div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-inbox text-3xl text-gray-400"></i></div><p class="text-gray-500 font-medium">Tidak ada data antrian.</p></div>';
+            return;
+        }
+        
+        var html = results.map(function(antrian, index) {
+            var statusColors = {
+                'Menunggu': { bg: 'bg-amber-100', text: 'text-amber-700', border: 'border-amber-200', hex: '#f59e0b' },
+                'Dokumen Diterima': { bg: 'bg-green-100', text: 'text-green-700', border: 'border-green-200', hex: '#22c55e' },
+                'Verifikasi Data': { bg: 'bg-indigo-100', text: 'text-indigo-700', border: 'border-indigo-200', hex: '#6366f1' },
+                'Proses Cetak': { bg: 'bg-purple-100', text: 'text-purple-700', border: 'border-purple-200', hex: '#a855f7' },
+                'Siap Pengambilan': { bg: 'bg-emerald-100', text: 'text-emerald-700', border: 'border-emerald-200', hex: '#10b981' },
+                'Selesai': { bg: 'bg-blue-100', text: 'text-blue-700', border: 'border-blue-200', hex: '#3b82f6' },
+                'Ditolak': { bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-200', hex: '#ef4444' },
+                'Dibatalkan': { bg: 'bg-rose-100', text: 'text-rose-700', border: 'border-rose-200', hex: '#f43f5e' }
+            };
+            var statusIcons = {
+                'Menunggu': 'fa-clock',
+                'Dokumen Diterima': 'fa-file-check',
+                'Verifikasi Data': 'fa-search',
+                'Proses Cetak': 'fa-print',
+                'Siap Pengambilan': 'fa-box-open',
+                'Selesai': 'fa-check-circle',
+                'Ditolak': 'fa-ban',
+                'Dibatalkan': 'fa-times'
+            };
+            
+            var nomorAntrian = antrian.nomor_antrian || '-';
+            var namaLengkap = antrian.nama_lengkap || '-';
+            var namaLayanan = (antrian.layanan && antrian.layanan.nama_layanan) ? antrian.layanan.nama_layanan : 'Layanan Umum';
+            var statusAntrian = antrian.status_antrian || 'Menunggu';
+            var statusStyle = statusColors[statusAntrian] || statusColors['Menunggu'];
+            var icon = statusIcons[statusAntrian] || 'fa-info-circle';
+            var prefixText = nomorAntrian.substring(0, 2);
+
+            var timelineHtml = '';
+            if (antrian.lacak_berkas && antrian.lacak_berkas.length > 0) {
+                var dots = antrian.lacak_berkas.slice(-5).map(function(lb) {
+                    var lbStatus = lb.status || '-';
+                    var lbColor = statusColors[lbStatus] ? statusColors[lbStatus].hex : '#6b7280';
+                    return '<div class="w-3 h-3 rounded-full border-2 border-white shadow" style="background-color: ' + lbColor + '"></div>';
+                }).join('');
+                timelineHtml = '<div class="mt-4 pt-4 border-t border-gray-100"><p class="text-xs text-gray-500 mb-2"><i class="fas fa-history mr-1"></i>Riwayat: ' + antrian.lacak_berkas.length + ' update status</p><div class="flex gap-1">' + dots + '</div></div>';
+            }
+
+            return '<div class="search-result-card bg-white border-2 ' + statusStyle.border + ' rounded-xl p-5 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer" style="animation-delay: ' + (index * 0.1) + 's" onclick="window.showAntrianDetail(' + JSON.stringify(antrian).replace(/'/g, "&#39;") + ')">' +
+                '<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">' +
+                    '<div class="flex items-center gap-4">' +
+                        '<div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex flex-col items-center justify-center text-white shadow-lg">' +
+                            '<span class="font-black text-lg leading-none">' + prefixText + '</span>' +
+                        '</div>' +
+                        '<div>' +
+                            '<h3 class="font-bold text-2xl text-green-600">' + nomorAntrian + '</h3>' +
+                            '<p class="text-gray-800 font-semibold">' + namaLengkap + '</p>' +
+                            '<p class="text-xs text-gray-500 mt-1"><i class="fas fa-file-alt mr-1"></i>' + namaLayanan + '</p>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="flex flex-col items-start md:items-end gap-3">' +
+                        '<div class="flex items-center gap-2 px-4 py-2 rounded-full ' + statusStyle.bg + ' ' + statusStyle.text + ' border ' + statusStyle.border + ' font-bold text-sm shadow-sm">' +
+                            '<i class="fas ' + icon + '"></i>' +
+                            '<span>' + statusAntrian + '</span>' +
+                        '</div>' +
+                        '<button onclick="event.stopPropagation(); window.copyNomorAntrianToClipboard(\'' + nomorAntrian + '\')" class="text-xs text-green-600 hover:text-green-800 font-semibold flex items-center gap-1">' +
+                            '<i class="fas fa-copy"></i> Salin Nomor Antrian' +
+                        '</button>' +
+                    '</div>' +
+                '</div>' +
+                timelineHtml +
+            '</div>';
+        }).join('');
+        document.getElementById('searchResults').innerHTML = html;
+    };
+</script>
+
 <script src="{{ asset('js/antrian-ocr.js') }}?v={{ time() }}" defer></script>
 <script>
     // Load Statistics on Page Load
@@ -842,136 +1065,18 @@
     }
 
     // resetForm: didefinisikan di antrian-ocr.js (konfirmasi Swal + reset multi-step).
-    // Search Antrian dengan Staggered Animation
-    function searchAntrian() {
-        const search = document.getElementById('searchInput').value.trim();
-        const layanan = document.getElementById('searchLayanan').value;
-
-        if (!search) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Input Kosong',
-                text: 'Masukkan nama atau nomor antrian terlebih dahulu',
-                confirmButtonColor: '#28A745',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
-
-        const params = new URLSearchParams({
-            nama_lengkap: search,
-            layanan_id: layanan
-        });
-
-        // Show loading
-        Swal.fire({
-            title: 'Mencari...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
-        fetch(`{{ route('antrian.search') }}?${params}`)
-            .then(response => response.json())
-            .then(data => {
-                Swal.close();
-                const resultsContainer = document.getElementById('searchResults');
-                if (data.success && data.data.length > 0) {
-                    renderSearchResults(data.data);
-
-                    // Show success message
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Ditemukan!',
-                        text: `Menemukan ${data.data.length} data antrian`,
-                        timer: 2000,
-                        showConfirmButton: false,
-                        toast: true,
-                        position: 'top-end'
-                    });
-                } else {
-                    resultsContainer.innerHTML = `
-                        <div class="text-center py-8 animate-fade-in">
-                            <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-inbox text-3xl text-gray-400"></i>
-                            </div>
-                            <p class="text-gray-500 font-medium">Data antrian tidak ditemukan.</p>
-                            <p class="text-sm text-gray-400 mt-1">Coba kata kunci lain atau periksa kembali nomor antrian Anda.</p>
-                        </div>
-                    `;
-                }
-            })
-            .catch(err => {
-                Swal.close();
-                console.error('Error:', err);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Koneksi Error',
-                    text: 'Gagal mencari data. Pastikan koneksi tersedia.',
-                    confirmButtonColor: '#28A745',
-                    confirmButtonText: 'OK'
-                });
-            });
-    }
-
-    function renderSearchResults(results) {
-        const html = results.map((antrian, index) => {
-            const statusColors = {
-                'Menunggu': 'bg-amber-100 text-amber-700 border-amber-200',
-                'Dokumen Diterima': 'bg-green-100 text-green-700 border-green-200',
-                'Verifikasi Data': 'bg-indigo-100 text-indigo-700 border-indigo-200',
-                'Proses Cetak': 'bg-purple-100 text-purple-700 border-purple-200',
-                'Siap Pengambilan': 'bg-emerald-100 text-emerald-700 border-emerald-200',
-                'Ditolak': 'bg-red-100 text-red-700 border-red-200',
-                'Dibatalkan': 'bg-rose-100 text-rose-700 border-rose-200'
-            };
-            const colorClass = statusColors[antrian.status_antrian] || 'bg-gray-100 text-gray-700';
-            const statusIcons = {
-                'Menunggu': 'fa-clock',
-                'Dokumen Diterima': 'fa-file-check',
-                'Verifikasi Data': 'fa-search',
-                'Proses Cetak': 'fa-print',
-                'Siap Pengambilan': 'fa-box-open',
-                'Ditolak': 'fa-ban',
-                'Dibatalkan': 'fa-times'
-            };
-            const icon = statusIcons[antrian.status_antrian] || 'fa-info-circle';
-
-            return `
-                <div class="search-result-card bg-white border-2 border-gray-100 rounded-xl p-5 flex justify-between items-center shadow-md hover:shadow-xl transition-all duration-300 hover:border-green-200 cursor-pointer" style="animation-delay: ${index * 0.1}s" onclick='showAntrianDetail(${JSON.stringify(antrian)})'>
-                    <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                            ${antrian.nomor_antrian.substring(0, 2)}
-                        </div>
-                        <div>
-                            <p class="font-bold text-green-600 text-lg">${antrian.nomor_antrian}</p>
-                            <p class="text-gray-800 font-semibold">${antrian.nama_lengkap}</p>
-                            <p class="text-xs text-gray-500 uppercase tracking-wide font-medium">
-                                <i class="fas fa-file-alt mr-1"></i>
-                                ${antrian.layanan ? antrian.layanan.nama_layanan : 'Layanan Umum'}
-                            </p>
-                        </div>
-                    </div>
-                    <span class="px-4 py-2 rounded-full text-xs font-bold uppercase border ${colorClass} flex items-center gap-2 shadow-sm">
-                        <i class="fas ${icon}"></i>
-                        ${antrian.status_antrian}
-                    </span>
-                </div>
-            `;
-        }).join('');
-        document.getElementById('searchResults').innerHTML = html;
-    }
-
-    // Show detail antrian dengan SweetAlert
-    function showAntrianDetail(antrian) {
+    
+    // Show Antrian Detail dengan SweetAlert - untuk Lacak Berkas
+    window.showAntrianDetail = function(antrian) {
+        console.log('Showing antrian detail:', antrian);
+        
         const statusColors = {
             'Menunggu': '#f59e0b',
             'Dokumen Diterima': '#3b82f6',
             'Verifikasi Data': '#6366f1',
             'Proses Cetak': '#a855f7',
             'Siap Pengambilan': '#10b981',
+            'Selesai': '#22c55e',
             'Ditolak': '#ef4444',
             'Dibatalkan': '#f43f5e'
         };
@@ -981,442 +1086,253 @@
             'Verifikasi Data': 'fa-search',
             'Proses Cetak': 'fa-print',
             'Siap Pengambilan': 'fa-box-open',
+            'Selesai': 'fa-check-circle',
             'Ditolak': 'fa-ban',
             'Dibatalkan': 'fa-times'
         };
 
+        const nomorAntrian = antrian.nomor_antrian || '-';
+        const namaLengkap = antrian.nama_lengkap || '-';
+        const nik = antrian.nik || '-';
+        const namaLayanan = (antrian.layanan && antrian.layanan.nama_layanan) ? antrian.layanan.nama_layanan : 'Layanan Umum';
+        const statusAntrian = antrian.status_antrian || 'Menunggu';
+        const statusColor = statusColors[statusAntrian] || '#6b7280';
+        const statusIconName = statusIcon[statusAntrian] || 'fa-info-circle';
+
+        // Format tanggal pembuatan
+        let createdDate = 'Tanggal tidak tersedia';
+        if (antrian.created_at) {
+            try {
+                createdDate = new Date(antrian.created_at).toLocaleString('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch (e) {
+                console.error('Error parsing date:', e);
+            }
+        }
+
+        // Build timeline HTML untuk Lacak Berkas
+        let timelineHtml = '';
+        const lacakBerkas = antrian.lacak_berkas || [];
+        
+        if (lacakBerkas.length > 0) {
+            // Urutkan berdasarkan tanggal (terlama dulu)
+            const sortedBerkas = [...lacakBerkas].sort((a, b) => {
+                const dateA = new Date(a.created_at || a.tanggal || 0);
+                const dateB = new Date(b.created_at || b.tanggal || 0);
+                return dateA - dateB;
+            });
+
+            timelineHtml = `
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <p class="text-sm font-bold text-gray-700 mb-3">
+                        <i class="fas fa-route mr-2 text-green-600"></i>Riwayat Status:
+                    </p>
+                    <div class="space-y-3 max-h-48 overflow-y-auto pr-2">
+                        ${sortedBerkas.map((item, idx) => {
+                            const itemStatus = item.status || '-';
+                            const itemColor = statusColors[itemStatus] || '#6b7280';
+                            const itemIcon = statusIcon[itemStatus] || 'fa-info-circle';
+                            
+                            // Format tanggal
+                            let itemTanggal = '-';
+                            if (item.tanggal) {
+                                try {
+                                    itemTanggal = new Date(item.tanggal).toLocaleDateString('id-ID', {
+                                        day: '2-digit',
+                                        month: 'short',
+                                        year: 'numeric'
+                                    });
+                                } catch (e) {
+                                    itemTanggal = item.tanggal;
+                                }
+                            } else if (item.created_at) {
+                                try {
+                                    itemTanggal = new Date(item.created_at).toLocaleDateString('id-ID', {
+                                        day: '2-digit',
+                                        month: 'short',
+                                        year: 'numeric'
+                                    });
+                                } catch (e) {
+                                    itemTanggal = item.created_at;
+                                }
+                            }
+                            
+                            const isLast = idx === sortedBerkas.length - 1;
+                            
+                            return `
+                                <div class="relative pl-6 ${isLast ? '' : 'pb-2'}">
+                                    ${!isLast ? `<div class="absolute left-2 top-6 bottom-0 w-0.5 bg-gray-200"></div>` : ''}
+                                    <div class="absolute left-0 top-1 w-5 h-5 rounded-full border-2 border-white shadow flex items-center justify-center" style="background-color: ${itemColor}">
+                                        <i class="fas ${itemIcon} text-white text-xs"></i>
+                                    </div>
+                                    <div class="bg-gray-50 rounded-lg p-2 ${isLast ? 'ring-2 ring-green-200' : ''}">
+                                        <div class="flex justify-between items-start">
+                                            <span class="font-semibold text-xs" style="color: ${itemColor}">${itemStatus}</span>
+                                            <span class="text-xs text-gray-400">${itemTanggal}</span>
+                                        </div>
+                                        ${item.keterangan ? `<p class="text-xs text-gray-500 mt-1">${item.keterangan}</p>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
         Swal.fire({
-            title: antrian.nomor_antrian,
+            title: `<div class="text-center">
+                <p class="text-xs text-gray-500 uppercase tracking-wide mb-1">Nomor Antrian Anda</p>
+                <p class="text-3xl font-black text-green-600">${nomorAntrian}</p>
+            </div>`,
             html: `
                 <div class="text-left">
-                    <div class="mb-4">
-                        <p class="text-sm text-gray-500 mb-1">Nama Lengkap</p>
-                        <p class="font-bold text-gray-800">${antrian.nama_lengkap}</p>
+                    <!-- Status Card - Sangat Menonjol -->
+                    <div class="mb-4 p-4 rounded-xl border-2 text-center" style="border-color: ${statusColor}; background-color: ${statusColor}15;">
+                        <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-2" style="background-color: ${statusColor}">
+                            <i class="fas ${statusIconName} text-white text-2xl"></i>
+                        </div>
+                        <p class="font-bold text-xl" style="color: ${statusColor}">${statusAntrian}</p>
+                        <p class="text-xs text-gray-500 mt-1">Status saat ini</p>
                     </div>
-                    <div class="mb-4">
-                        <p class="text-sm text-gray-500 mb-1">Jenis Layanan</p>
-                        <p class="font-bold text-gray-800">${antrian.layanan ? antrian.layanan.nama_layanan : 'Layanan Umum'}</p>
+                    
+                    <!-- Info Details -->
+                    <div class="bg-gray-50 rounded-xl p-4 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500">Nama</span>
+                            <span class="font-semibold text-gray-800">${namaLengkap}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500">NIK</span>
+                            <span class="font-mono text-sm text-gray-800">${nik}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500">Layanan</span>
+                            <span class="font-semibold text-gray-800">${namaLayanan}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500">Tanggal</span>
+                            <span class="text-sm text-gray-700">${createdDate}</span>
+                        </div>
                     </div>
-                    <div class="mb-4">
-                        <p class="text-sm text-gray-500 mb-1">Status</p>
-                        <p class="font-bold" style="color: ${statusColors[antrian.status_antrian] || '#6b7280'}">
-                            <i class="fas ${statusIcon[antrian.status_antrian] || 'fa-info-circle'} mr-2"></i>
-                            ${antrian.status_antrian}
+                    
+                    ${timelineHtml}
+                    
+                    <!-- Tips -->
+                    <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p class="text-xs text-blue-700">
+                            <i class="fas fa-lightbulb mr-1"></i>
+                            <strong>Tips:</strong> Catat nomor antrian Anda dan bawa saat mengambil dokumen.
                         </p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500 mb-1">Tanggal Pengajuan</p>
-                        <p class="font-semibold text-gray-700">${new Date(antrian.created_at).toLocaleString('id-ID', {
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        })}</p>
                     </div>
                 </div>
             `,
             icon: 'info',
             confirmButtonColor: '#28A745',
-            confirmButtonText: 'Tutup',
-            showCloseButton: true
-        });
-    }
-
-    // Lacak Berkas dengan Timeline Animation
-    function lacakBerkas() {
-        const input = document.getElementById('lacakInput').value.trim();
-        const layanan = document.getElementById('lacakLayanan').value;
-
-        if (!input) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Input Kosong',
-                text: 'Masukkan nomor antrian atau nama lengkap terlebih dahulu',
-                confirmButtonColor: '#28A745',
-                confirmButtonText: 'OK'
-            });
-            return;
-        }
-
-        const btn = event.target;
-        const originalText = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Mencari...';
-
-        const isNomorAntrian = /^[A-Z]{3}-\d{3}-\d{3}$/.test(input.toUpperCase());
-        const params = new URLSearchParams();
-        if (isNomorAntrian) {
-            params.append('nomor_antrian', input.toUpperCase());
-        } else {
-            params.append('nama_lengkap', input);
-        }
-        if (layanan) {
-            params.append('layanan_id', layanan);
-        }
-
-        // Show loading
-        Swal.fire({
-            title: 'Melacak...',
-            text: 'Mohon tunggu sebentar',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
-
-        fetch(`{{ route('antrian.lacak') }}?${params}`)
-            .then(response => response.json())
-            .then(data => {
-                Swal.close();
-                if (data.success) {
-                    displayLacakResult(data.data);
-                    document.getElementById('lacakResult').classList.remove('hidden');
-                    document.getElementById('lacakResult').scrollIntoView({ behavior: 'smooth' });
-
-                    // Show success message
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Data Ditemukan!',
-                        text: `Status antrian ${data.data.nomor_antrian}: ${data.data.status_antrian}`,
-                        timer: 2000,
-                        showConfirmButton: false,
-                        toast: true,
-                        position: 'top-end'
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Data Tidak Ditemukan',
-                        text: data.message || 'Data antrian tidak ditemukan. Silakan periksa kembali nomor antrian atau nama Anda.',
-                        confirmButtonColor: '#28A745',
-                        confirmButtonText: 'OK'
-                    });
-                    document.getElementById('lacakResult').classList.add('hidden');
-                }
-            })
-            .catch(err => {
-                Swal.close();
-                console.error('Error:', err);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Koneksi Error',
-                    text: 'Gagal mencari data. Pastikan koneksi tersedia.',
-                    confirmButtonColor: '#28A745',
-                    confirmButtonText: 'OK'
-                });
-            })
-            .finally(() => {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            });
-    }
-
-    function displayLacakResult(data) {
-        document.getElementById('lacakNomor').textContent = data.nomor_antrian;
-        document.getElementById('lacakNama').textContent = data.nama_lengkap;
-        document.getElementById('lacakLayanan').textContent = data.layanan;
-
-        const statusBadge = document.getElementById('lacakStatus');
-        statusBadge.textContent = data.status_antrian;
-        statusBadge.className = 'px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-bold uppercase animate-pulse-slow ' + getStatusColor(data.status_antrian);
-
-        const timeline = document.getElementById('lacakTimeline');
-        if (data.riwayat && data.riwayat.length > 0) {
-            let timelineHTML = '<div class="relative">';
-            timelineHTML += '<div class="absolute left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-green-500 to-emerald-500 rounded-full timeline-progress"></div>';
-
-            data.riwayat.forEach((item, index) => {
-                const isLast = index === data.riwayat.length - 1;
-                const dotColor = getTimelineDotColor(item.status);
-                const dotSize = item.status === data.status_antrian ? 'w-5 h-5' : 'w-4 h-4';
-                const glowClass = item.status === data.status_antrian ? 'status-glow' : '';
-                const date = new Date(item.tanggal);
-                const formattedDate = date.toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-
-                timelineHTML += `
-                    <div class="timeline-item relative pl-12 ${!isLast ? 'pb-8' : ''}" style="animation-delay: ${index * 0.15}s">
-                        <div class="absolute left-0 ${dotSize} ${dotColor} ${glowClass} rounded-full border-4 border-white shadow-lg transform transition-transform hover:scale-110"></div>
-                        <div class="bg-gradient-to-r from-gray-50 to-emerald-50 rounded-xl p-4 border border-gray-200 hover:shadow-md transition-all">
-                            <div class="flex items-start justify-between">
-                                <div class="flex-1">
-                                    <div class="flex items-center gap-2 mb-2">
-                                        <i class="fas ${getTimelineIcon(item.status)} text-sm ${getTimelineIconColor(item.status)}"></i>
-                                        <p class="font-bold text-gray-800">${item.status}</p>
-                                    </div>
-                                    <p class="text-sm text-gray-600 ml-6">${item.keterangan || 'Status diperbarui'}</p>
-                                    ${item.alasan_penolakan ? `
-                                        <div class="mt-2 ml-6 p-2 bg-red-50 border border-red-200 rounded-lg">
-                                            <p class="text-sm text-red-700 font-semibold flex items-center gap-2">
-                                                <i class="fas fa-exclamation-circle"></i>
-                                                ${item.alasan_penolakan}
-                                            </p>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                                <div class="ml-4 text-right">
-                                    <span class="text-xs text-gray-500 font-medium">${formattedDate}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            timelineHTML += '</div>';
-            timeline.innerHTML = timelineHTML;
-        } else {
-            timeline.innerHTML = `
-                <div class="text-center py-8">
-                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-history text-3xl text-gray-400"></i>
-                    </div>
-                    <p class="text-gray-500 font-medium">Belum ada riwayat status</p>
-                </div>
-            `;
-        }
-    }
-
-    function getStatusColor(status) {
-        switch(status) {
-            case 'Menunggu': return '!text-amber-700 !bg-amber-500/30';
-            case 'Dokumen Diterima': return '!text-green-700 !bg-green-500/30';
-            case 'Verifikasi Data': return '!text-indigo-700 !bg-indigo-500/30';
-            case 'Proses Cetak': return '!text-purple-700 !bg-purple-500/30';
-            case 'Siap Pengambilan': return '!text-emerald-700 !bg-emerald-500/30';
-            case 'Ditolak': return '!text-red-700 !bg-red-500/30';
-            case 'Dibatalkan': return '!text-rose-700 !bg-rose-500/30';
-            default: return '!text-gray-700 !bg-gray-500/30';
-        }
-    }
-
-    function getTimelineDotColor(status) {
-        switch(status) {
-            case 'Menunggu': return 'bg-amber-500';
-            case 'Dokumen Diterima': return 'bg-green-500';
-            case 'Verifikasi Data': return 'bg-indigo-500';
-            case 'Proses Cetak': return 'bg-purple-500';
-            case 'Siap Pengambilan': return 'bg-emerald-500';
-            case 'Ditolak': return 'bg-red-500';
-            case 'Dibatalkan': return 'bg-rose-500';
-            default: return 'bg-gray-500';
-        }
-    }
-
-    function getTimelineIcon(status) {
-        switch(status) {
-            case 'Menunggu': return 'fa-clock';
-            case 'Dokumen Diterima': return 'fa-file-check';
-            case 'Verifikasi Data': return 'fa-search';
-            case 'Proses Cetak': return 'fa-print';
-            case 'Siap Pengambilan': return 'fa-box-open';
-            case 'Ditolak': return 'fa-ban';
-            case 'Dibatalkan': return 'fa-times';
-            default: return 'fa-info-circle';
-        }
-    }
-
-    function getTimelineIconColor(status) {
-        switch(status) {
-            case 'Menunggu': return 'text-amber-600';
-            case 'Dokumen Diterima': return 'text-green-600';
-            case 'Verifikasi Data': return 'text-indigo-600';
-            case 'Proses Cetak': return 'text-purple-600';
-            case 'Siap Pengambilan': return 'text-emerald-600';
-            case 'Ditolak': return 'text-red-600';
-            case 'Dibatalkan': return 'text-rose-600';
-            default: return 'text-gray-600';
-        }
-    }
-
-    // Print Hasil Lacak Berkas
-    function printLacakResult() {
-        Swal.fire({
-            title: 'Cetak Status Berkas?',
-            text: 'Status berkas akan dicetak lengkap dengan riwayat',
-            icon: 'question',
+            confirmButtonText: '<i class="fas fa-copy mr-2"></i>Salin Nomor Antrian',
             showCancelButton: true,
-            confirmButtonColor: '#28A745',
-            cancelButtonColor: '#64748b',
-            confirmButtonText: 'Cetak',
-            cancelButtonText: 'Batal',
-            reverseButtons: true
+            cancelButtonText: 'Tutup',
+            cancelButtonColor: '#6b7280',
+            showCloseButton: true,
+            width: '450px'
         }).then((result) => {
             if (result.isConfirmed) {
-                const nomor = document.getElementById('lacakNomor').textContent;
-                const nama = document.getElementById('lacakNama').textContent;
-                const layanan = document.getElementById('lacakLayanan').textContent;
-                const status = document.getElementById('lacakStatus').textContent;
-
-        // Ambil timeline content
-        const timeline = document.getElementById('lacakTimeline').innerHTML;
-
-        // Buat window print khusus
-        const printWindow = window.open('', '_blank', 'width=800,height=800');
-
-        printWindow.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Status Berkas - ${nomor} - Disdukcapil Kabupaten Toba</title>
-                <link rel="icon" type="image/jpeg" href="{{ asset('images/logo_toba.jpeg') }}">
-                <script src="https://cdn.tailwindcss.com"><\/script>
-                <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-                <style>
-                    @media print {
-                        @page {
-                            size: A4;
-                            margin: 15mm;
-                        }
-                        body {
-                            margin: 0;
-                            padding: 15px;
-                            -webkit-print-color-adjust: exact;
-                            print-color-adjust: exact;
-                        }
-                        .no-print {
-                            display: none !important;
-                        }
-                        .page-break {
-                            page-break-before: always;
-                        }
-                    }
-                    * {
-                        font-family: 'Plus Jakarta Sans', sans-serif;
-                        -webkit-print-color-adjust: exact !important;
-                        print-color-adjust: exact !important;
-                    }
-                    .timeline-line {
-                        position: absolute;
-                        left: 16px;
-                        top: 0;
-                        bottom: 0;
-                        width: 2px;
-                        background: linear-gradient(to bottom, #28A745, #22c55e);
-                    }
-                </style>
-            </head>
-            <body class="bg-gray-50">
-                <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
-                    <!-- Header -->
-                    <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                                    <i class="fas fa-ticket-alt text-2xl"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm opacity-90">Nomor Antrian</p>
-                                    <h2 class="text-2xl font-bold">${nomor}</h2>
-                                </div>
-                            </div>
-                            <span class="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-bold uppercase">${status}</span>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3">
-                                <p class="text-xs opacity-90">Nama Lengkap</p>
-                                <p class="font-semibold">${nama}</p>
-                            </div>
-                            <div class="bg-white/10 backdrop-blur-sm rounded-lg p-3">
-                                <p class="text-xs opacity-90">Jenis Layanan</p>
-                                <p class="font-semibold">${layanan}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Timeline Section -->
-                    <div class="p-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
-                            <i class="fas fa-history text-green-600"></i>
-                            Riwayat Status
-                        </h3>
-                        <div class="relative">
-                            <div class="timeline-line"></div>
-                            ${timeline}
-                        </div>
-                    </div>
-
-                    <!-- Footer Info -->
-                    <div class="bg-green-50 border-t border-green-100 p-6">
-                        <div class="flex items-start gap-3">
-                            <i class="fas fa-info-circle text-green-600 mt-1"></i>
-                            <div>
-                                <p class="font-bold text-green-800 text-sm mb-1">Informasi:</p>
-                                <ul class="text-xs text-green-700 space-y-1">
-                                    <li>• Cetak dokumen ini sebagai bukti status berkas</li>
-                                    <li>• Pantau terus status berkas Anda secara berkala</li>
-                                    <li>• Hubungi loket jika ada pertanyaan</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="mt-4 text-center">
-                            <p class="text-xs text-gray-500">
-                                <i class="fas fa-clock mr-1"></i>
-                                Dicetak pada: ${new Date().toLocaleString('id-ID', {
-                                    day: 'numeric',
-                                    month: 'long',
-                                    year: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                })}
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Print Button (No Print) -->
-                    <div class="p-6 no-print bg-gray-50">
-                        <button onclick="window.print()" class="w-full py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-bold hover:from-green-700 hover:to-green-800 transition-all shadow-lg">
-                            <i class="fas fa-print mr-2"></i>
-                            Cetak Sekarang
-                        </button>
-                    </div>
-                </div>
-
-                <script>
-                    // Auto print setelah loading
-                    window.addEventListener('load', function() {
-                        setTimeout(function() {
-                            window.print();
-                        }, 500);
-                    });
-                <\/script>
-            </body>
-            </html>
-        `);
-
-        printWindow.document.close();
-
-        // Tunggu window print tertutup
-        printWindow.onbeforeunload = function() {
-            window.focus();
-        };
+                copyNomorAntrianToClipboard(nomorAntrian);
             }
         });
     }
 
-    // Enter key support
-    document.getElementById('lacakInput')?.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            lacakBerkas();
+    // Copy Nomor Antrian to Clipboard
+    window.copyNomorAntrianToClipboard = function(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil Disalin!',
+                    text: `Nomor antrian ${text} telah disalin`,
+                    timer: 2000,
+                    showConfirmButton: false,
+                    toast: true,
+                    position: 'top-end'
+                });
+            }).catch(() => {
+                fallbackCopyNomor(text);
+            });
+        } else {
+            fallbackCopyNomor(text);
         }
-    });
+    }
 
-    document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            searchAntrian();
+    function fallbackCopyNomor(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil Disalin!',
+                text: `Nomor antrian ${text} telah disalin`,
+                timer: 2000,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        } catch (err) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal Menyalin',
+                text: 'Tidak dapat menyalin nomor antrian',
+                confirmButtonColor: '#28A745',
+            });
         }
-    });
-
-    // Load statistics on page load
+        document.body.removeChild(textarea);
+    }
+    
+    // Enter key support for search
     document.addEventListener('DOMContentLoaded', function() {
+        var searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchAntrian();
+                }
+            });
+        }
+
+        // Button click handler untuk Cari Antrian
+        var btnCari = document.getElementById('btnCariAntrian');
+        if (btnCari) {
+            btnCari.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Button Cari Antrian clicked (addEventListener)');
+                searchAntrian();
+            });
+            console.log('Button event listener attached to btnCariAntrian');
+        } else {
+            console.error('Button btnCariAntrian not found');
+        }
+
+        // Load statistics on page load
         loadStatistics();
+
+        // Debug: Check if searchAntrian function exists
+        console.log('searchAntrian function exists:', typeof searchAntrian === 'function');
+    });
+
+    // Global error handler untuk debugging
+    window.addEventListener('error', function(e) {
+        console.error('Global error:', e.message, 'at', e.filename, 'line', e.lineno);
     });
 </script>
 @endpush

@@ -16,7 +16,7 @@
 
     // Store URL untuk simpan antrian
     function storeUrl() {
-        return cfg.storeUrl || '/antrian-online/store';
+        return cfg.storeUrl || '/antrian-online';
     }
 
     // ---------- helpers ----------

@@ -32,6 +32,12 @@
     <!-- SweetAlert Helper -->
     <script src="{{ asset('js/sweetalert-helper.js') }}"></script>
 
+    <!-- SweetAlert2 Disdukcapil Notification System -->
+    <script src="{{ asset('js/sweetalert-disdukcapil.js') }}"></script>
+
+    <!-- Notifikasi Disdukcapil Helper -->
+    <script src="{{ asset('js/notifikasi-disdukcapil.js') }}"></script>
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
@@ -443,8 +449,10 @@
             });
         });
 
-        // SweetAlert Helper Functions
-        window.SwalHelper = {
+        // SwalHelper sudah didefinisikan di sweetalert-helper.js
+        // Jangan replace jika sudah ada
+        if (typeof window.SwalHelper === 'undefined') {
+            window.SwalHelper = {
             // Success Toast
             success: function(message) {
                 const Toast = Swal.mixin({
@@ -597,6 +605,7 @@
                 Swal.close();
             }
         };
+        } // end if SwalHelper undefined
 
         // Show SweetAlert for session messages on page load
         document.addEventListener('DOMContentLoaded', function() {

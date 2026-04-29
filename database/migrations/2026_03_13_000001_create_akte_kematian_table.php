@@ -13,11 +13,15 @@ return new class extends Migration
     {
         Schema::create('akte_kematian', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
+            
+            // Foreign keys
             $table->char('layanan_id', 36);
             $table->foreign('layanan_id')
                 ->references('layanan_id')
                 ->on('layanan')
                 ->onDelete('cascade');
+            $table->char('antrian_online_id', 36)->nullable();
             
             // Form fields
             $table->string('nomor_antrian')->nullable();
@@ -46,7 +50,6 @@ return new class extends Migration
             $table->string('ktp_almarhum')->nullable();
             $table->string('ktp_saksi1')->nullable();
             $table->string('ktp_saksi2')->nullable();
-            $table->string('foto_wajah')->nullable();
             
             // Status dan metadata
             $table->enum('status', ['Dokumen Diterima', 'Verifikasi Data', 'Proses Cetak', 'Siap Pengambilan', 'Tolak'])
