@@ -13,6 +13,8 @@ use App\Http\Controllers\LahirMatiController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\Pengguna_Controller;
 use App\Http\Controllers\SecureFileController;
+use App\Http\Controllers\DasarHukumController;
+use App\Http\Controllers\PenghargaanController;
 use App\Models\Layanan_Model;
 use Illuminate\Support\Facades\Route;
 
@@ -183,14 +185,25 @@ Route::prefix('admin')->group(function () {
         // Dashboard
         Route::get('/dashboard', [Admin_Controller::class, 'dashboard'])->name('admin.dashboard');
 
-        // Manajemen Konten — Berita
+        // Manajemen Konten - Berita
         Route::get('/berita', [Berita_Controller::class, 'index'])->name('admin.berita');
         Route::post('/berita', [Berita_Controller::class, 'store'])->name('admin.berita.store');
         Route::put('/berita/{berita}', [Berita_Controller::class, 'update'])->name('admin.berita.update');
         Route::delete('/berita/{berita}', [Berita_Controller::class, 'destroy'])->name('admin.berita.destroy');
         Route::get('/organisasi', [Admin_Controller::class, 'organisasi'])->name('admin.organisasi');
-        Route::get('/dasar-hukum', [Admin_Controller::class, 'dasar_hukum'])->name('admin.dasar-hukum');
-        Route::get('/penghargaan', [Admin_Controller::class, 'penghargaan'])->name('admin.penghargaan');
+
+        // Manajemen Dasar-Hukum
+        Route::get('/dasar-hukum', [DasarHukumController::class, 'index'])->name('admin.dasar-hukum');
+        Route::post('/dasar-hukum', [DasarHukumController::class, 'store'])->name('admin.dasar-hukum.store');
+        Route::put('/dasar-hukum/{id}', [DasarHukumController::class, 'update'])->name('admin.dasar-hukum.update');
+        Route::delete('/dasar-hukum/{id}', [DasarHukumController::class, 'destroy'])->name('admin.dasar-hukum.destroy');
+
+
+        //Manajemen Penghargaan
+        Route::get('/penghargaan', [PenghargaanController::class, 'index'])->name('admin.penghargaan');
+        Route::post('/penghargaan', [PenghargaanController::class, 'store'])->name('admin.penghargaan.store');
+        Route::put('/penghargaan/{id}', [PenghargaanController::class, 'update'])->name('admin.penghargaan.update');
+        Route::delete('/penghargaan/{id}', [PenghargaanController::class, 'destroy'])->name('admin.penghargaan.destroy');
 
         // Visualisasi Data
         Route::get('/visualisasi-data', [Admin_Controller::class, 'visualisasi_data'])->name('admin.visualisasi-data');

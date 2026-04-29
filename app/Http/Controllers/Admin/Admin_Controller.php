@@ -48,8 +48,8 @@ class Admin_Controller extends Controller
     }
 
     /**
-     * Tampilkan halaman penghargaan
-     */
+    * Tampilkan halaman penghargaan
+    */
     public function penghargaan()
     {
         if (!Auth::user()->hasRole('Admin')) {

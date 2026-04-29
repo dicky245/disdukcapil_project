@@ -234,95 +234,95 @@
                 </div>
 
                 {{-- Penghargaan --}}
-                <div id="penghargaan" class="tab-panel">
-                    <div class="bg-white rounded-2xl shadow-lg p-8">
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-trophy text-2xl text-yellow-600"></i>
+                <div id="penghargaan" class="tab-panel hidden">
+                        <div class="bg-white rounded-2xl shadow-lg p-8">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-trophy text-2xl text-yellow-600"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-gray-800">Penghargaan</h3>
                             </div>
-                            <h3 class="text-2xl font-bold text-gray-800">Penghargaan</h3>
-                        </div>
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div class="flex gap-4 p-4 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl border-l-4 border-yellow-500">
-                                <div class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-award text-xl text-white"></i>
+                            @if(isset($penghargaan) && $penghargaan->count() > 0)
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    @foreach($penghargaan as $item)
+                                        @php
+                                            $colors = [
+                                                'Nasional'  => ['border' => 'border-yellow-500', 'bg' => 'from-yellow-50 to-amber-50',  'icon_bg' => 'bg-yellow-500',  'badge' => 'bg-red-100 text-red-700'],
+                                                'Provinsi'  => ['border' => 'border-blue-500',   'bg' => 'from-blue-50 to-cyan-50',     'icon_bg' => 'bg-blue-500',    'badge' => 'bg-blue-100 text-blue-700'],
+                                                'Kabupaten' => ['border' => 'border-green-500',  'bg' => 'from-green-50 to-emerald-50', 'icon_bg' => 'bg-green-500',   'badge' => 'bg-green-100 text-green-700'],
+                                            ];
+                                            $c = $colors[$item->tingkat] ?? ['border' => 'border-gray-300', 'bg' => 'from-gray-50 to-gray-100', 'icon_bg' => 'bg-gray-400', 'badge' => 'bg-gray-100 text-gray-600'];
+                                        @endphp
+                                        <div class="flex gap-4 p-4 bg-gradient-to-r {{ $c['bg'] }} rounded-xl border-l-4 {{ $c['border'] }}">
+                                            <div class="w-12 h-12 {{ $c['icon_bg'] }} rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-award text-xl text-white"></i>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-start justify-between gap-2">
+                                                    <h4 class="font-bold text-gray-800 text-sm leading-snug">{{ $item->nama }}</h4>
+                                                    <span class="px-2 py-0.5 {{ $c['badge'] }} rounded-full text-xs font-semibold flex-shrink-0">{{ $item->tingkat }}</span>
+                                                </div>
+                                                <p class="text-gray-600 text-xs mt-1">{{ $item->instansi }}</p>
+                                                @if($item->tahun || $item->lokasi)
+                                                    <div class="flex items-center gap-3 mt-1.5 text-xs text-gray-400">
+                                                        @if($item->tahun)<span><i class="fas fa-calendar mr-1"></i>{{ $item->tahun }}</span>@endif
+                                                        @if($item->lokasi)<span><i class="fas fa-map-marker-alt mr-1"></i>{{ $item->lokasi }}</span>@endif
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-800">Pelayanan Terbaik 2024</h4>
-                                    <p class="text-gray-600 text-sm">Penghargaan tingkat Provinsi Sumatera Utara</p>
+                            @else
+                                <div class="text-center py-12">
+                                    <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                        <i class="fas fa-trophy text-gray-300 text-2xl"></i>
+                                    </div>
+                                    <p class="text-gray-500 text-sm">Belum ada data penghargaan.</p>
                                 </div>
-                            </div>
-                            <div class="flex gap-4 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border-l-4 border-blue-500">
-                                <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-digital-tachograph text-xl text-white"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-800">Digitalisasi Terbaik 2023</h4>
-                                    <p class="text-gray-600 text-sm">Inovasi pelayanan online terintegrasi</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-l-4 border-green-500">
-                                <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-users text-xl text-white"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-800">Satyalancana Karya Bhakti</h4>
-                                    <p class="text-gray-600 text-sm">Penghargaan pelayanan publik prima</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-l-4 border-purple-500">
-                                <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-star text-xl text-white"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-800">Predikat WTP</h4>
-                                    <p class="text-gray-600 text-sm">Opini tertinggi atas laporan keuangan</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Dasar Hukum --}}
-                <div id="dasar-hukum" class="tab-panel">
-                    <div class="bg-white rounded-2xl shadow-lg p-8">
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-balance-scale text-2xl text-indigo-600"></i>
-                            </div>
-                            <h3 class="text-2xl font-bold text-gray-800">Dasar Hukum</h3>
-                        </div>
-                        <div class="space-y-4">
-                            <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition">
-                                <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <span class="text-white font-bold text-sm">1</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-semibold text-gray-800">Undang-Undang No. 24 Tahun 2013</h4>
-                                    <p class="text-gray-600 text-sm">Tentang Perubahan atas Undang-Undang No. 23 Tahun 2006 tentang Administrasi Kependudukan</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition">
-                                <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <span class="text-white font-bold text-sm">2</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-semibold text-gray-800">Peraturan Pemerintah No. 40 Tahun 2010</h4>
-                                    <p class="text-gray-600 text-sm">Tentang Pelaksanaan Undang-Undang Nomor 23 Tahun 2006</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition">
-                                <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <span class="text-white font-bold text-sm">3</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-semibold text-gray-800">Peraturan Daerah Kabupaten Toba</h4>
-                                    <p class="text-gray-600 text-sm">Tentang Penyelenggaraan Administrasi Kependudukan di Kabupaten Toba</p>
-                                </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
-                </div>
+ 
+                    {{-- Dasar Hukum --}}
+                    <div id="dasar-hukum" class="tab-panel hidden">
+                        <div class="bg-white rounded-2xl shadow-lg p-8">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-balance-scale text-2xl text-indigo-600"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-gray-800">Dasar Hukum</h3>
+                            </div>
+                            @if(isset($dasarHukum) && $dasarHukum->count() > 0)
+                                <div class="space-y-4">
+                                    @foreach($dasarHukum as $index => $item)
+                                        <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition group">
+                                            <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <span class="text-white font-bold text-sm">{{ $loop->iteration }}</span>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <h4 class="font-semibold text-gray-800">{{ $item->nama }}</h4>
+                                                <p class="text-gray-600 text-sm mt-1">{{ $item->deskripsi_singkat }}</p>
+                                            </div>
+                                            @if($item->file)
+                                                <a href="{{ asset('storage/' . $item->file) }}" target="_blank" rel="noopener"
+                                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition">
+                                                    <i class="fas fa-eye"></i> Lihat
+                                                </a>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="text-center py-12">
+                                    <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                        <i class="fas fa-balance-scale text-gray-300 text-2xl"></i>
+                                    </div>
+                                    <p class="text-gray-500 text-sm">Belum ada data dasar hukum.</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
 
                 {{-- Tugas & Fungsi --}}
                 <div id="tugas-fungsi" class="tab-panel">
@@ -610,8 +610,11 @@
             btn.classList.add('text-gray-600', 'hover:bg-gray-100');
         });
         document.querySelectorAll('.tab-panel').forEach(panel => {
+            panel.classList.add('hidden');
             panel.classList.remove('active');
         });
+        document.getElementById(tabId).classList.remove('hidden');
+        document.getElementById(tabId).classList.add('active');
 
         // Add active class to clicked button
         event.currentTarget.classList.add('active', 'bg-blue-600', 'text-white');

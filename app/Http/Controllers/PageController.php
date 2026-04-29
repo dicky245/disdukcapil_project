@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Berita_Model;
+use App\Models\DasarHukum;
+use App\Models\Penghargaan;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -18,6 +20,8 @@ class PageController extends Controller
             ->limit(12)
             ->get();
 
+        $dasarHukum = DasarHukum::orderBy('created_at', 'desc')->get();
+        $penghargaan = Penghargaan::orderBy('created_at', 'desc')->get();
         $newsForModal = $beritas->keyBy->id->map(function ($b) {
             $tanggal = ($b->published_at ?? $b->created_at)->locale('id')->translatedFormat('d F Y');
 
@@ -29,7 +33,7 @@ class PageController extends Controller
             ];
         });
 
-        return view('pages.index', compact('beritas', 'newsForModal'));
+        return view('pages.index', compact('beritas', 'newsForModal','dasarHukum','penghargaan'));
     }
 
     /**

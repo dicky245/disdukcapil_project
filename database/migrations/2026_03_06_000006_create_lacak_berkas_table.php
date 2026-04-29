@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('lacak_berkas', function (Blueprint $table) {
             $table->id('lacak_berkas_id');
             // Gunakan TEXT untuk UUID foreign key (SQLite lebih kompatibel dengan TEXT)
-            $table->text('antrian_online_id');
+            $table->char('antrian_online_id', 36);
             $table->string('status', 100);
             $table->date('tanggal');
             $table->text('keterangan')->nullable();
@@ -23,9 +23,9 @@ return new class extends Migration
 
             // Foreign key constraint
             $table->foreign('antrian_online_id')
-                ->references('antrian_online_id')
-                ->on('antrian_online')
-                ->onDelete('cascade');
+                    ->references('antrian_online_id')
+                    ->on('antrian_online')
+                    ->onDelete('cascade');
 
             $table->index('antrian_online_id');
             $table->index('status');

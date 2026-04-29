@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pisah_kk', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('uuid')->unique();
-            $table->foreignId('layanan_id')->constrained(
-                table: 'layanan',
-                column: 'layanan_id'
-            )->onDelete('cascade');
+            $table->uuid('uuid')->primary();
+            $table->char('layanan_id', 36);
+            $table->foreign('layanan_id')
+                ->references('layanan_id')
+                ->on('layanan')
+                ->onDelete('cascade');
            $table->string('nomor_antrian')->unique();
             $table->string('nama_pemohon');
             $table->char('nik_pemohon', 16);
