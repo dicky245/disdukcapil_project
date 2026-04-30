@@ -11,6 +11,7 @@ use App\Models\Layanan_Model;
 use App\Exceptions\DatabaseException;
 use Illuminate\Http\Request;
 use App\Models\Keagamaan_Model;
+use App\Models\Organisasi;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -52,13 +53,38 @@ class Admin_Controller extends Controller
      */
     public function organisasi()
     {
+       if (!Auth::user()->hasRole('Admin')) {
+            abort(403, 'Anda tidak memiliki akses.');
+        }
+
+        // Mengambil data dari tabel organisasi dan merubah key array menjadi kode_posisi
+        $struktur = Organisasi::orderBy('urutan')->get()->keyBy('kode_posisi');
+
+        return view('admin.organisasi', compact('struktur'));
+    }
+
+    public function update_organisasi(Request $request, $id)
+    {
         if (!Auth::user()->hasRole('Admin')) {
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        return view('admin.organisasi');
-    }
+        // Validasi input
+        $request->validate([
+            'nama_jabatan' => 'required|string|max:255',
+            'nama_pejabat' => 'required|string|max:255',
+        ]);
 
+        // Cari data dan update
+        $item = Organisasi::findOrFail($id);
+        $item->update([
+            'nama_jabatan' => $request->nama_jabatan,
+            'nama_pejabat' => $request->nama_pejabat
+        ]);
+
+        return redirect()->back()->with('success', 'Data Struktur Organisasi Berhasil Diperbarui!');
+    }
+    
     /**
      * Tampilkan halaman penghargaan
      */

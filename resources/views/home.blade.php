@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Disdukcapil Kabupaten Toba - Portal Pelayanan Kependudukan</title>
 
-    <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="{{ asset('images/logo_toba.jpeg') }}">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -52,13 +53,16 @@
             width: 8px;
             height: 8px;
         }
+
         ::-webkit-scrollbar-track {
             background: #f1f5f9;
         }
+
         ::-webkit-scrollbar-thumb {
             background: #0052CC;
             border-radius: 4px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
             background: #003d99;
         }
@@ -114,47 +118,14 @@
         }
 
         @keyframes figureFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
 
-        /* News Modal */
-        .news-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            z-index: 10000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
-        .news-modal-overlay.active {
-            display: flex;
-        }
-
-        .news-modal {
-            background: white;
-            border-radius: 24px;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes modalSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
+            0%,
+            100% {
                 transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
             }
         }
 
@@ -162,6 +133,7 @@
         .tabs::-webkit-scrollbar {
             display: none;
         }
+
         .tabs {
             scrollbar-width: none;
             -ms-overflow-style: none;
@@ -173,6 +145,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -193,72 +166,15 @@
             opacity: 1;
             transform: translateY(0);
         }
-
-        /* Skeleton Loading */
-        .skeleton {
-            background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 8px;
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
-        }
-
-        .skeleton-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        .skeleton-text {
-            height: 16px;
-            margin-bottom: 8px;
-        }
-
-        .skeleton-title {
-            height: 24px;
-            width: 60%;
-            margin-bottom: 12px;
-        }
-
-        .skeleton-circle {
-            border-radius: 50%;
-        }
-
-        .page-loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #f9fafb;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .page-loading.hidden {
-            display: none;
-        }
     </style>
 </head>
+
 <body class="bg-gray-50">
 
-    <!-- Header Navigation -->
-    <header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm z-50 transition-all duration-300" id="mainHeader">
+    <header class="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md shadow-sm z-50 transition-all duration-300"
+        id="mainHeader">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
                 <a href="{{ route('home') }}" class="flex items-center gap-3 hover:scale-105 transition-transform">
                     <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
                         <i class="fas fa-landmark text-white text-xl"></i>
@@ -269,48 +185,55 @@
                     </div>
                 </a>
 
-                <!-- Desktop Navigation -->
                 <nav class="hidden md:flex items-center gap-1">
-                    <a href="{{ route('home') }}" class="px-4 py-2 rounded-lg text-sm font-medium text-blue-600 bg-blue-50">
+                    <a href="{{ route('home') }}"
+                        class="px-4 py-2 rounded-lg text-sm font-medium text-blue-600 bg-blue-50">
                         <i class="fas fa-home mr-2"></i>Beranda
                     </a>
-                    <a href="#" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">
+                    <a href="#"
+                        class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">
                         <i class="fas fa-ticket-alt mr-2"></i>Antrian Online
                     </a>
-                    <a href="#" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">
+                    <a href="#"
+                        class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">
                         <i class="fas fa-rocket mr-2"></i>Layanan Mandiri
                     </a>
-                    <a href="#" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">
+                    <a href="#"
+                        class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">
                         <i class="fas fa-chart-line mr-2"></i>Statistik
                     </a>
-                    <a href="{{ route('login') }}" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">
+                    <a href="{{ route('login') }}"
+                        class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition">
                         <i class="fas fa-sign-in-alt mr-2"></i>Login
                     </a>
                 </nav>
 
-                <!-- Mobile Menu Button -->
                 <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
                     <i class="fas fa-bars text-gray-600"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Mobile Navigation -->
         <div id="mobileMenu" class="md:hidden hidden bg-white border-t">
             <nav class="px-4 py-3 space-y-1">
-                <a href="{{ route('home') }}" class="block px-4 py-2 rounded-lg text-sm font-medium text-blue-600 bg-blue-50">
+                <a href="{{ route('home') }}"
+                    class="block px-4 py-2 rounded-lg text-sm font-medium text-blue-600 bg-blue-50">
                     <i class="fas fa-home mr-2"></i>Beranda
                 </a>
-                <a href="#" class="block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">
+                <a href="#"
+                    class="block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">
                     <i class="fas fa-ticket-alt mr-2"></i>Antrian Online
                 </a>
-                <a href="#" class="block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">
+                <a href="#"
+                    class="block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">
                     <i class="fas fa-rocket mr-2"></i>Layanan Mandiri
                 </a>
-                <a href="#" class="block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">
+                <a href="#"
+                    class="block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">
                     <i class="fas fa-chart-line mr-2"></i>Statistik
                 </a>
-                <a href="{{ route('login') }}" class="block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">
+                <a href="{{ route('login') }}"
+                    class="block px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50">
                     <i class="fas fa-sign-in-alt mr-2"></i>Login
                 </a>
             </nav>
@@ -318,7 +241,6 @@
     </header>
 
     <main class="pt-16">
-        <!-- Flash Messages -->
         @if (session('success'))
             <div class="fixed top-20 right-4 z-50 max-w-md">
                 <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl shadow-lg">
@@ -352,9 +274,8 @@
             </div>
         @endif
 
-        <!-- Hero Section -->
-        <section class="relative min-h-[600px] bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white overflow-hidden">
-            <!-- Background Figures -->
+        <section
+            class="relative min-h-[600px] bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white overflow-hidden">
             <div class="hero-bg-left">
                 <div class="hero-figure">
                     <div class="hero-figure-emoji"><i class="fas fa-user-tie"></i></div>
@@ -371,14 +292,15 @@
                 </div>
             </div>
 
-            <!-- Hero Content -->
             <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
                 <div class="text-center max-w-3xl mx-auto">
-                    <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium mb-6 animate-fade-in-up">
+                    <span
+                        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium mb-6 animate-fade-in-up">
                         <i class="fas fa-rocket"></i>
                         Platform Digital Terintegrasi
                     </span>
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 animate-fade-in-up" style="animation-delay: 0.1s;">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 animate-fade-in-up"
+                        style="animation-delay: 0.1s;">
                         Urus Dokumen Kependudukan
                         <span class="block text-blue-200">Kini Lebih Mudah & Cepat</span>
                     </h1>
@@ -386,12 +308,15 @@
                         Layanan pendaftaran, pencatatan sipil, dan informasi kependudukan yang
                         modern, transparan, dan dapat diakses kapan saja, di mana saja.
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style="animation-delay: 0.3s;">
-                        <a href="#" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-blue-700 rounded-xl font-semibold hover:bg-blue-50 transition-all hover:scale-105 shadow-lg">
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up"
+                        style="animation-delay: 0.3s;">
+                        <a href="#"
+                            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-blue-700 rounded-xl font-semibold hover:bg-blue-50 transition-all hover:scale-105 shadow-lg">
                             <i class="fas fa-rocket"></i>
                             Layanan Mandiri
                         </a>
-                        <a href="#" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-500/30 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-blue-500/50 transition-all hover:scale-105">
+                        <a href="#"
+                            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-500/30 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-blue-500/50 transition-all hover:scale-105">
                             <i class="fas fa-chart-line"></i>
                             Lihat Statistik
                         </a>
@@ -399,18 +324,19 @@
                 </div>
             </div>
 
-            <!-- Wave Divider -->
             <div class="absolute bottom-0 left-0 right-0">
                 <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#f9fafb"/>
+                    <path
+                        d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
+                        fill="#f9fafb" />
                 </svg>
             </div>
         </section>
 
-        <!-- Welcome Section -->
         <section class="py-16 bg-gray-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 md:p-12 text-white text-center reveal">
+                <div
+                    class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 md:p-12 text-white text-center reveal">
                     <div class="text-4xl mb-4"><i class="fas fa-hand-wave"></i></div>
                     <h2 class="text-2xl md:text-3xl font-bold mb-3">Selamat Datang di Portal Disdukcapil</h2>
                     <p class="text-blue-100 text-lg max-w-3xl mx-auto">
@@ -421,7 +347,6 @@
             </div>
         </section>
 
-        <!-- Profil Disdukcapil Section -->
         <section id="profil" class="py-16 bg-gray-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12 reveal">
@@ -432,37 +357,46 @@
                     </p>
                 </div>
 
-                <!-- Horizontal Tabs Navigation -->
                 <div class="bg-white rounded-2xl shadow-lg p-2 mb-8 overflow-x-auto reveal">
                     <div class="tabs flex gap-2 min-w-max justify-center">
-                        <button onclick="switchTab(event, 'visi')" class="tab-btn active flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all">
+                        <button onclick="switchTab(event, 'visi')"
+                            class="tab-btn active flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all">
                             <i class="fas fa-bullseye"></i>
                             Visi & Misi
                         </button>
-                        <button onclick="switchTab(event, 'motto')" class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all">
+                        <button onclick="switchTab(event, 'motto')"
+                            class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all">
                             <i class="fas fa-quote-left"></i>
                             Motto & Nilai
                         </button>
-                        <button onclick="switchTab(event, 'sejarah')" class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all">
+                        <button onclick="switchTab(event, 'sejarah')"
+                            class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all">
                             <i class="fas fa-history"></i>
                             Sejarah
                         </button>
-                        <button onclick="switchTab(event, 'penghargaan')" class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all">
+                        <button onclick="switchTab(event, 'penghargaan')"
+                            class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all">
                             <i class="fas fa-trophy"></i>
                             Penghargaan
                         </button>
-                        <button onclick="switchTab(event, 'dasar-hukum')" class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all">
+                        <button onclick="switchTab(event, 'dasar-hukum')"
+                            class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all">
                             <i class="fas fa-balance-scale"></i>
                             Dasar Hukum
                         </button>
-                        <button onclick="switchTab(event, 'tugas-fungsi')" class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all">
+                        <button onclick="switchTab(event, 'tugas-fungsi')"
+                            class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all">
                             <i class="fas fa-tasks"></i>
                             Tugas & Fungsi
+                        </button>
+                        <button onclick="switchTab(event, 'struktur-organisasi')"
+                            class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all text-gray-600 hover:bg-gray-100">
+                            <i class="fas fa-sitemap"></i>
+                            Struktur Organisasi
                         </button>
                     </div>
                 </div>
 
-                <!-- Tab Content -->
                 <div class="tab-content reveal">
                     <div id="visi" class="tab-panel active">
                         <div class="bg-white rounded-2xl shadow-lg p-8">
@@ -474,8 +408,10 @@
                                         </div>
                                         <h3 class="text-2xl font-bold text-gray-800">Visi</h3>
                                     </div>
-                                    <p class="text-gray-700 text-lg leading-relaxed bg-blue-50 rounded-xl p-6 border-l-4 border-blue-500">
-                                        "Terwujudnya masyarakat Kabupaten Toba yang tertib administrasi kependudukan dan layanan pencatatan sipil yang berkualitas"
+                                    <p
+                                        class="text-gray-700 text-lg leading-relaxed bg-blue-50 rounded-xl p-6 border-l-4 border-blue-500">
+                                        "Terwujudnya masyarakat Kabupaten Toba yang tertib administrasi kependudukan dan
+                                        layanan pencatatan sipil yang berkualitas"
                                     </p>
                                 </div>
                                 <div>
@@ -488,19 +424,23 @@
                                     <ul class="space-y-3">
                                         <li class="flex items-start gap-3">
                                             <i class="fas fa-check-circle text-blue-600 mt-1"></i>
-                                            <span class="text-gray-700">Meningkatkan kualitas pelayanan administrasi kependudukan</span>
+                                            <span class="text-gray-700">Meningkatkan kualitas pelayanan administrasi
+                                                kependudukan</span>
                                         </li>
                                         <li class="flex items-start gap-3">
                                             <i class="fas fa-check-circle text-blue-600 mt-1"></i>
-                                            <span class="text-gray-700">Mengembangkan sistem informasi administrasi kependudukan terpadu</span>
+                                            <span class="text-gray-700">Mengembangkan sistem informasi administrasi
+                                                kependudukan terpadu</span>
                                         </li>
                                         <li class="flex items-start gap-3">
                                             <i class="fas fa-check-circle text-blue-600 mt-1"></i>
-                                            <span class="text-gray-700">Meningkatkan profesionalisme SDM aparatur</span>
+                                            <span class="text-gray-700">Meningkatkan profesionalisme SDM
+                                                aparatur</span>
                                         </li>
                                         <li class="flex items-start gap-3">
                                             <i class="fas fa-check-circle text-blue-600 mt-1"></i>
-                                            <span class="text-gray-700">Mewujudkan pelayanan prima yang transparan dan akuntabel</span>
+                                            <span class="text-gray-700">Mewujudkan pelayanan prima yang transparan dan
+                                                akuntabel</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -511,36 +451,44 @@
                     <div id="motto" class="tab-panel hidden">
                         <div class="bg-white rounded-2xl shadow-lg p-8">
                             <div class="text-center mb-8">
-                                <div class="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <div
+                                    class="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
                                     <i class="fas fa-quote-left text-3xl text-white"></i>
                                 </div>
                                 <h3 class="text-3xl font-bold text-gray-800 mb-2">Motto Pelayanan</h3>
                             </div>
-                            <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 text-white text-center mb-8">
+                            <div
+                                class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 text-white text-center mb-8">
                                 <p class="text-2xl md:text-3xl font-bold">"CEPAT, TEPAT, DAN RAMAH"</p>
                             </div>
                             <h4 class="text-xl font-bold text-gray-800 mb-6 text-center">Nilai-Nilai Pelayanan</h4>
                             <div class="grid md:grid-cols-3 gap-6">
                                 <div class="text-center p-6 bg-blue-50 rounded-xl">
-                                    <div class="w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                    <div
+                                        class="w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3">
                                         <i class="fas fa-clock text-2xl text-white"></i>
                                     </div>
                                     <h5 class="font-bold text-gray-800 mb-2">Cepat</h5>
-                                    <p class="text-gray-600 text-sm">Pelayanan efisien dengan waktu proses yang optimal</p>
+                                    <p class="text-gray-600 text-sm">Pelayanan efisien dengan waktu proses yang optimal
+                                    </p>
                                 </div>
                                 <div class="text-center p-6 bg-teal-50 rounded-xl">
-                                    <div class="w-14 h-14 bg-teal-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                    <div
+                                        class="w-14 h-14 bg-teal-500 rounded-xl flex items-center justify-center mx-auto mb-3">
                                         <i class="fas fa-bullseye text-2xl text-white"></i>
                                     </div>
                                     <h5 class="font-bold text-gray-800 mb-2">Tepat</h5>
-                                    <p class="text-gray-600 text-sm">Hasil layanan akurat dan sesuai ketentuan peraturan</p>
+                                    <p class="text-gray-600 text-sm">Hasil layanan akurat dan sesuai ketentuan
+                                        peraturan</p>
                                 </div>
                                 <div class="text-center p-6 bg-purple-50 rounded-xl">
-                                    <div class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                    <div
+                                        class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mx-auto mb-3">
                                         <i class="fas fa-heart text-2xl text-white"></i>
                                     </div>
                                     <h5 class="font-bold text-gray-800 mb-2">Ramah</h5>
-                                    <p class="text-gray-600 text-sm">Pelayanan dengan senyum dan sikap yang menyenangkan</p>
+                                    <p class="text-gray-600 text-sm">Pelayanan dengan senyum dan sikap yang
+                                        menyenangkan</p>
                                 </div>
                             </div>
                         </div>
@@ -556,13 +504,19 @@
                             </div>
                             <div class="space-y-6">
                                 <p class="text-gray-700 leading-relaxed">
-                                    Dinas Kependudukan dan Pencatatan Sipil (Disdukcapil) Kabupaten Toba merupakan unsur pelaksana urusan pemerintahan di bidang administrasi kependudukan dan pencatatan sipil.
+                                    Dinas Kependudukan dan Pencatatan Sipil (Disdukcapil) Kabupaten Toba merupakan unsur
+                                    pelaksana urusan pemerintahan di bidang administrasi kependudukan dan pencatatan
+                                    sipil.
                                 </p>
                                 <p class="text-gray-700 leading-relaxed">
-                                    Sejak berdirinya Kabupaten Toba, Disdukcapil terus berkomitmen untuk memberikan pelayanan terbaik bagi masyarakat dalam hal pengurusan dokumen kependudukan seperti KTP, Kartu Keluarga, Akta Kelahiran, dan dokumen lainnya.
+                                    Sejak berdirinya Kabupaten Toba, Disdukcapil terus berkomitmen untuk memberikan
+                                    pelayanan terbaik bagi masyarakat dalam hal pengurusan dokumen kependudukan seperti
+                                    KTP, Kartu Keluarga, Akta Kelahiran, dan dokumen lainnya.
                                 </p>
                                 <p class="text-gray-700 leading-relaxed">
-                                    Dengan perkembangan teknologi dan digitalisasi, Disdukcapil Kabupaten Toba kini telah mengimplementasikan berbagai sistem online untuk memudahkan masyarakat dalam mengurus dokumen kependudukan tanpa harus datang langsung ke kantor.
+                                    Dengan perkembangan teknologi dan digitalisasi, Disdukcapil Kabupaten Toba kini
+                                    telah mengimplementasikan berbagai sistem online untuk memudahkan masyarakat dalam
+                                    mengurus dokumen kependudukan tanpa harus datang langsung ke kantor.
                                 </p>
                             </div>
                         </div>
@@ -577,17 +531,22 @@
                                 <h3 class="text-2xl font-bold text-gray-800">Penghargaan</h3>
                             </div>
                             <div class="grid md:grid-cols-2 gap-6">
-                                <div class="flex gap-4 p-4 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl border-l-4 border-yellow-500">
-                                    <div class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <div
+                                    class="flex gap-4 p-4 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl border-l-4 border-yellow-500">
+                                    <div
+                                        class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center flex-shrink-0">
                                         <i class="fas fa-award text-xl text-white"></i>
                                     </div>
                                     <div>
                                         <h4 class="font-bold text-gray-800">Pelayanan Terbaik 2024</h4>
-                                        <p class="text-gray-600 text-sm">Penghargaan tingkat Provinsi Sumatera Utara</p>
+                                        <p class="text-gray-600 text-sm">Penghargaan tingkat Provinsi Sumatera Utara
+                                        </p>
                                     </div>
                                 </div>
-                                <div class="flex gap-4 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border-l-4 border-blue-500">
-                                    <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <div
+                                    class="flex gap-4 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border-l-4 border-blue-500">
+                                    <div
+                                        class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
                                         <i class="fas fa-digital-tachograph text-xl text-white"></i>
                                     </div>
                                     <div>
@@ -595,8 +554,10 @@
                                         <p class="text-gray-600 text-sm">Inovasi pelayanan online terintegrasi</p>
                                     </div>
                                 </div>
-                                <div class="flex gap-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-l-4 border-green-500">
-                                    <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <div
+                                    class="flex gap-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-l-4 border-green-500">
+                                    <div
+                                        class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0">
                                         <i class="fas fa-users text-xl text-white"></i>
                                     </div>
                                     <div>
@@ -604,8 +565,10 @@
                                         <p class="text-gray-600 text-sm">Penghargaan pelayanan publik prima</p>
                                     </div>
                                 </div>
-                                <div class="flex gap-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-l-4 border-purple-500">
-                                    <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <div
+                                    class="flex gap-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-l-4 border-purple-500">
+                                    <div
+                                        class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center flex-shrink-0">
                                         <i class="fas fa-star text-xl text-white"></i>
                                     </div>
                                     <div>
@@ -626,31 +589,41 @@
                                 <h3 class="text-2xl font-bold text-gray-800">Dasar Hukum</h3>
                             </div>
                             <div class="space-y-4">
-                                <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition">
-                                    <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <div
+                                    class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition">
+                                    <div
+                                        class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
                                         <span class="text-white font-bold text-sm">1</span>
                                     </div>
                                     <div>
                                         <h4 class="font-semibold text-gray-800">Undang-Undang No. 24 Tahun 2013</h4>
-                                        <p class="text-gray-600 text-sm">Tentang Perubahan atas Undang-Undang No. 23 Tahun 2006 tentang Administrasi Kependudukan</p>
+                                        <p class="text-gray-600 text-sm">Tentang Perubahan atas Undang-Undang No. 23
+                                            Tahun 2006 tentang Administrasi Kependudukan</p>
                                     </div>
                                 </div>
-                                <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition">
-                                    <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <div
+                                    class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition">
+                                    <div
+                                        class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
                                         <span class="text-white font-bold text-sm">2</span>
                                     </div>
                                     <div>
-                                        <h4 class="font-semibold text-gray-800">Peraturan Pemerintah No. 40 Tahun 2010</h4>
-                                        <p class="text-gray-600 text-sm">Tentang Pelaksanaan Undang-Undang Nomor 23 Tahun 2006</p>
+                                        <h4 class="font-semibold text-gray-800">Peraturan Pemerintah No. 40 Tahun 2010
+                                        </h4>
+                                        <p class="text-gray-600 text-sm">Tentang Pelaksanaan Undang-Undang Nomor 23
+                                            Tahun 2006</p>
                                     </div>
                                 </div>
-                                <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition">
-                                    <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <div
+                                    class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition">
+                                    <div
+                                        class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
                                         <span class="text-white font-bold text-sm">3</span>
                                     </div>
                                     <div>
                                         <h4 class="font-semibold text-gray-800">Peraturan Daerah Kabupaten Toba</h4>
-                                        <p class="text-gray-600 text-sm">Tentang Penyelenggaraan Administrasi Kependudukan di Kabupaten Toba</p>
+                                        <p class="text-gray-600 text-sm">Tentang Penyelenggaraan Administrasi
+                                            Kependudukan di Kabupaten Toba</p>
                                     </div>
                                 </div>
                             </div>
@@ -672,7 +645,9 @@
                                         Tugas Pokok
                                     </h4>
                                     <p class="text-gray-700 leading-relaxed bg-blue-50 rounded-xl p-6">
-                                        Melaksanakan urusan pemerintahan daerah di bidang administrasi kependudukan dan pencatatan sipil yang menjadi kewenangan daerah dan tugas pembantuan yang ditugaskan kepada Daerah.
+                                        Melaksanakan urusan pemerintahan daerah di bidang administrasi kependudukan dan
+                                        pencatatan sipil yang menjadi kewenangan daerah dan tugas pembantuan yang
+                                        ditugaskan kepada Daerah.
                                     </p>
                                 </div>
                                 <div>
@@ -683,11 +658,13 @@
                                     <ul class="space-y-3">
                                         <li class="flex items-start gap-3">
                                             <i class="fas fa-chevron-right text-blue-500 mt-1"></i>
-                                            <span class="text-gray-700">Perumusan kebijakan teknis di bidang administrasi kependudukan</span>
+                                            <span class="text-gray-700">Perumusan kebijakan teknis di bidang
+                                                administrasi kependudukan</span>
                                         </li>
                                         <li class="flex items-start gap-3">
                                             <i class="fas fa-chevron-right text-blue-500 mt-1"></i>
-                                            <span class="text-gray-700">Penyelenggaraan pendaftaran penduduk dan pencatatan sipil</span>
+                                            <span class="text-gray-700">Penyelenggaraan pendaftaran penduduk dan
+                                                pencatatan sipil</span>
                                         </li>
                                         <li class="flex items-start gap-3">
                                             <i class="fas fa-chevron-right text-blue-500 mt-1"></i>
@@ -695,13 +672,119 @@
                                         </li>
                                         <li class="flex items-start gap-3">
                                             <i class="fas fa-chevron-right text-blue-500 mt-1"></i>
-                                            <span class="text-gray-700">Pengelolaan sistem informasi administrasi kependudukan</span>
+                                            <span class="text-gray-700">Pengelolaan sistem informasi administrasi
+                                                kependudukan</span>
                                         </li>
                                         <li class="flex items-start gap-3">
                                             <i class="fas fa-chevron-right text-blue-500 mt-1"></i>
-                                            <span class="text-gray-700">Pembinaan dan pengawasan di bidang administrasi kependudukan</span>
+                                            <span class="text-gray-700">Pembinaan dan pengawasan di bidang administrasi
+                                                kependudukan</span>
                                         </li>
                                     </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="struktur-organisasi" class="tab-panel hidden">
+                        <div class="bg-white rounded-2xl shadow-lg p-8 overflow-x-auto">
+                            <div class="flex items-center justify-center gap-3 mb-8">
+                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-sitemap text-2xl text-blue-600"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-gray-800">Struktur Organisasi Disdukcapil</h3>
+                            </div>
+
+                            <div class="flex flex-col items-center min-w-[800px]">
+                                <div class="relative">
+                                    <div
+                                        class="w-56 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-6 text-center text-white shadow-lg">
+                                        <div
+                                            class="w-16 h-16 bg-white/20 rounded-full mx-auto mb-3 flex items-center justify-center">
+                                            <i class="fas fa-user-tie text-3xl"></i>
+                                        </div>
+                                        <h3 class="font-bold text-lg leading-tight mb-1">
+                                            {{ isset($struktur['kadis']) && $struktur['kadis']->nama_pejabat ? $struktur['kadis']->nama_pejabat : 'Belum Diisi' }}
+                                        </h3>
+                                        <p class="text-blue-100 text-sm">
+                                            {{ isset($struktur['kadis']) ? $struktur['kadis']->nama_jabatan : 'Kepala Dinas' }}
+                                        </p>
+                                    </div>
+                                    <div
+                                        class="absolute left-1/2 transform -translate-x-1/2 bottom-0 translate-y-full w-0.5 h-12 bg-blue-600">
+                                    </div>
+                                </div>
+
+                                <div class="relative mt-12">
+                                    <div
+                                        class="w-56 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-center text-white shadow-lg">
+                                        <div
+                                            class="w-16 h-16 bg-white/20 rounded-full mx-auto mb-3 flex items-center justify-center">
+                                            <i class="fas fa-user text-3xl"></i>
+                                        </div>
+                                        <h3 class="font-bold leading-tight mb-1">
+                                            {{ isset($struktur['sekdin']) && $struktur['sekdin']->nama_pejabat ? $struktur['sekdin']->nama_pejabat : 'Belum Diisi' }}
+                                        </h3>
+                                        <p class="text-blue-100 text-sm">
+                                            {{ isset($struktur['sekdin']) ? $struktur['sekdin']->nama_jabatan : 'Sekretaris' }}
+                                        </p>
+                                    </div>
+                                    <div
+                                        class="absolute left-1/2 transform -translate-x-1/2 bottom-0 translate-y-full w-0.5 h-12 bg-blue-500">
+                                    </div>
+                                </div>
+
+                                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+                                    @php
+                                        $bidangUser = [
+                                            'kabid_piak' => [
+                                                'color' => 'blue',
+                                                'icon' => 'fa-id-card',
+                                                'desc' => 'Pengelolaan Informasi Administrasi',
+                                                'def' => 'Bidang PIAK',
+                                            ],
+                                            'kabid_dafduk' => [
+                                                'color' => 'emerald',
+                                                'icon' => 'fa-users',
+                                                'desc' => 'Pendaftaran Penduduk',
+                                                'def' => 'Bidang Dafduk',
+                                            ],
+                                            'kabid_pencatatan' => [
+                                                'color' => 'purple',
+                                                'icon' => 'fa-file-alt',
+                                                'desc' => 'Pencatatan Sipil',
+                                                'def' => 'Bidang Pencatatan',
+                                            ],
+                                            'kabid_psda' => [
+                                                'color' => 'orange',
+                                                'icon' => 'fa-cogs',
+                                                'desc' => 'Pengelolaan Sistem & Dokumen',
+                                                'def' => 'Bidang PSDA',
+                                            ],
+                                        ];
+                                    @endphp
+
+                                    @foreach ($bidangUser as $key => $data)
+                                        <div
+                                            class="bg-white border border-gray-100 rounded-xl p-4 text-center shadow-sm hover:shadow-md transition-shadow">
+                                            <div
+                                                class="w-14 h-14 bg-{{ $data['color'] }}-50 rounded-full mx-auto mb-3 flex items-center justify-center">
+                                                <i
+                                                    class="fas {{ $data['icon'] }} text-xl text-{{ $data['color'] }}-600"></i>
+                                            </div>
+                                            <h4 class="font-bold text-gray-800 text-sm mb-1">
+                                                {{ isset($struktur[$key]) ? $struktur[$key]->nama_jabatan : $data['def'] }}
+                                            </h4>
+                                            <p class="text-xs text-gray-500 mb-3">{{ $data['desc'] }}</p>
+
+                                            <div class="pt-3 border-t border-gray-100">
+                                                <p class="text-xs text-gray-400 mb-1">Kepala Bidang:</p>
+                                                <p class="text-sm text-{{ $data['color'] }}-600 font-bold">
+                                                    {{ isset($struktur[$key]) && $struktur[$key]->nama_pejabat ? $struktur[$key]->nama_pejabat : 'Belum Diisi' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -711,7 +794,6 @@
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-900 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid md:grid-cols-4 gap-8">
@@ -729,16 +811,20 @@
                         Melayani dengan sepenuh hati untuk administrasi kependudukan yang tertib dan modern
                     </p>
                     <div class="flex gap-4">
-                        <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition">
+                        <a href="#"
+                            class="w-10 h-10 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition">
+                        <a href="#"
+                            class="w-10 h-10 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition">
+                        <a href="#"
+                            class="w-10 h-10 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition">
                             <i class="fab fa-twitter"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition">
+                        <a href="#"
+                            class="w-10 h-10 bg-gray-800 hover:bg-blue-600 rounded-lg flex items-center justify-center transition">
                             <i class="fab fa-youtube"></i>
                         </a>
                     </div>
@@ -848,4 +934,5 @@
         });
     </script>
 </body>
+
 </html>

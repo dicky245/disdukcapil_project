@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Organisasi;
 
 class PageController extends Controller
 {
@@ -11,7 +12,10 @@ class PageController extends Controller
      */
     public function index()
     {
-        return view('pages.index');
+    //Organisasi
+    $struktur = Organisasi::orderBy('urutan')->get()->keyBy('kode_posisi');
+    return view('pages.index', compact('struktur'));
+
     }
 
     /**
@@ -24,6 +28,7 @@ class PageController extends Controller
             ->header('Permissions-Policy', 'camera=(self)')
             ->header('Feature-Policy', 'camera *');
     }
+
 
 public function unduhFormulir()
     {
@@ -96,4 +101,5 @@ public function unduhFormulir()
 
         return view('pages.statistik', compact('stats', 'districts'));
     }
+
 }

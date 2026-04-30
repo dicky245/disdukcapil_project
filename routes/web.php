@@ -144,6 +144,7 @@ Route::prefix('admin')->group(function () {
         // Manajemen Konten
         Route::get('/berita', [Admin_Controller::class, 'kelola_berita'])->name('admin.berita');
         Route::get('/organisasi', [Admin_Controller::class, 'organisasi'])->name('admin.organisasi');
+        Route::put('/organisasi/update/{id}', [Admin_Controller::class, 'update_organisasi'])->name('admin.organisasi.update');
         Route::get('/dasar-hukum', [Admin_Controller::class, 'dasar_hukum'])->name('admin.dasar-hukum');
         Route::get('/penghargaan', [Admin_Controller::class, 'penghargaan'])->name('admin.penghargaan');
 
