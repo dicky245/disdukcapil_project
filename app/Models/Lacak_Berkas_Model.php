@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Str;
 
 class Lacak_Berkas_Model extends Model
 {
@@ -32,7 +31,7 @@ class Lacak_Berkas_Model extends Model
     public $incrementing = true;
 
     /**
-     * The "type" of the auto-incrementing ID.
+     * The "type" of the auto-increment ID.
      *
      * @var string
      */
@@ -51,6 +50,14 @@ class Lacak_Berkas_Model extends Model
      * Relasi ke antrian online
      */
     public function antrian_online(): BelongsTo
+    {
+        return $this->belongsTo(Antrian_Online_Model::class, 'antrian_online_id', 'antrian_online_id');
+    }
+    
+    /**
+     * Alias relasi untuk backward compatibility
+     */
+    public function AntrianOnline(): BelongsTo
     {
         return $this->belongsTo(Antrian_Online_Model::class, 'antrian_online_id', 'antrian_online_id');
     }

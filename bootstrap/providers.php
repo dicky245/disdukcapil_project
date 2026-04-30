@@ -3,5 +3,5 @@
 return [
     App\Providers\AppServiceProvider::class,
     App\Providers\BladeServiceProvider::class,
-    App\Providers\BladeSecurityServiceProvider::class,
+    Spatie\Permission\PermissionServiceProvider::class,
 ];

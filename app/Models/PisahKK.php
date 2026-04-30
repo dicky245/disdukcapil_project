@@ -8,6 +8,9 @@ use Illuminate\Support\Str;
 class PisahKK extends Model
 {
     protected $table = 'pisah_kk';
+    protected $primaryKey = 'uuid';      
+    public $keyType = 'string';          
+    public $incrementing = false;
     protected $fillable =[
         'uuid',
         'layanan_id',

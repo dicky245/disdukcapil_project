@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\EncryptsSensitiveData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Str;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles;
+    use EncryptsSensitiveData, HasFactory, HasRoles, Notifiable;
 
     protected $fillable = [
         'id',
@@ -31,23 +32,17 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    /**
-     * Indicates if the IDs are auto-incrementing.
-     *
-     * @var bool
-     */
+    public function getSensitiveFields(): array
+    {
+        return [
+            'security_question_answer',
+        ];
+    }
+
     public $incrementing = false;
 
-    /**
-     * The "type" of the auto-incrementing ID.
-     *
-     * @var string
-     */
     protected $keyType = 'string';
 
-    /**
-     * Boot function from Laravel.
-     */
     protected static function boot()
     {
         parent::boot();
@@ -56,15 +51,17 @@ class User extends Authenticatable
                 $model->id = (string) Str::uuid();
             }
         });
+
+        static::bootEncryptsSensitiveData();
     }
 
     public function username(): string
     {
         return 'username';
     }
+
     public function detail_keagamaan()
     {
-        // User memiliki satu record di tabel keagamaan
         return $this->hasOne(Keagamaan_Model::class, 'user_id', 'id');
     }
 

@@ -9,15 +9,16 @@ use App\Models\KKHilangRusak;
 use App\Models\PisahKK;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class KartKeluargaController extends Controller
 {
     // Untuk User Mengurus KK Ganti Data 
     public function store_perubahan_data(Request $request)
     {
-        $request->validate([
-            'layanan_id' => 'required|integer',
-            'nomor_antrian' => 'required|string',
+        $validator = Validator::make($request->all(), [
+            'layanan_id' => 'required|string',
+            'nomor_antrian' => 'required|string|unique:ganti_data_kk,nomor_antrian',
             'nama_pemohon' => 'required|string',
             'nik_pemohon' => 'required|digits:16',
             'nomor_kk_pemohon' => 'required|integer',
@@ -29,7 +30,43 @@ class KartKeluargaController extends Controller
             'surat_keterangan_perubahan' => 'required|file|mimes:pdf|max:500',
             'pernyataan_pindah_kk' => 'nullable|file|mimes:pdf|max:500',
             'status' => 'nullable|string'
+        ],[
+            'layanan_id.required' => 'ID layanan tidak boleh kosong.',
+            'nomor_antrian.required' => 'Nomor antrian tidak boleh kosong.',
+            'nomor_antrian.unique' => 'Nomor antrian ini sudah terdaftar di sistem.',
+            'nama_pemohon.required' => 'Nama pemohon tidak boleh kosong.',
+            'nik_pemohon.required' => 'NIK pemohon tidak boleh kosong.',
+            'nik_pemohon.digits' => 'NIK pemohon harus terdiri dari 16 digit.',
+            'nomor_kk_pemohon.required' => 'Nomor KK pemohon tidak boleh kosong.',
+            'nomor_kk_pemohon.integer' => 'Nomor KK pemohon harus berupa angka.',
+            'alamat_pemohon.required' => 'Alamat pemohon tidak boleh kosong.',
+            'formulir_f102.required' => 'Formulir F102 tidak boleh kosong.',
+            'formulir_f102.file' => 'Formulir F102 harus berupa file.',
+            'formulir_f102.mimes' => 'Formulir F102 harus berformat PDF.',
+            'formulir_f102.max' => 'Ukuran Formulir F102 tidak boleh lebih dari 500 KB.',
+            'ktp_pemohon.required' => 'KTP pemohon tidak boleh kosong.',
+            'ktp_pemohon.file' => 'KTP pemohon harus berupa file.',
+            'ktp_pemohon.mimes' => 'KTP pemohon harus berformat PDF.',
+            'ktp_pemohon.max' => 'Ukuran KTP pemohon tidak boleh lebih dari 500 KB.',
+            'kk_pemohon.required' => 'KK pemohon tidak boleh kosong.',
+            'kk_pemohon.file' => 'KK pemohon harus berupa file.',
+            'kk_pemohon.mimes' => 'KK pemohon harus berformat PDF.',
+            'kk_pemohon.max' => 'Ukuran KK pemohon tidak boleh lebih dari 500 KB.',
+            'formulir_f106.required' => 'Formulir F106 tidak boleh kosong.',
+            'formulir_f106.file' => 'Formulir F106 harus berupa file.',
+            'formulir_f106.mimes' => 'Formulir F106 harus berformat PDF.',
+            'formulir_f106.max' => 'Ukuran Formulir F106 tidak boleh lebih dari 500 KB.',
+            'surat_keterangan_perubahan.required' => 'Surat keterangan perubahan tidak boleh kosong.',
+            'surat_keterangan_perubahan.file' => 'Surat keterangan perubahan harus berupa file.',
+            'surat_keterangan_perubahan.mimes' => 'Surat keterangan perubahan harus berformat PDF.',
+            'surat_keterangan_perubahan.max' => 'Ukuran surat keterangan perubahan tidak boleh lebih dari 500 KB.',
+            'pernyataan_pindah_kk.file' => 'Pernyataan pindah KK harus berupa file.',
+            'pernyataan_pindah_kk.mimes' => 'Pernyataan pindah KK harus berformat PDF.',
+            'pernyataan_pindah_kk.max' => 'Ukuran pernyataan pindah KK tidak boleh lebih dari 500 KB.',
         ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', $validator->errors()->first())->withInput();
+        }
         $data = $request->except([
             'formulir_f102', 'ktp_pemohon','kk_pemohon','formulir_f106','surat_keterangan_perubahan', 'pernyataan_pindah_kk','foto_wajah'
         ]);
@@ -61,8 +98,8 @@ class KartKeluargaController extends Controller
     // Untuk user yang berganti kepala keluarga
     public function store_ganti_kepala_kk(Request $request)
     {
-        $request->validate([
-            'layanan_id' => 'required|integer',
+        $validator = Validator::make($request->all(), [
+            'layanan_id' => 'required|string',
             'nomor_antrian' => 'required|string',
             'nama_pemohon' => 'required|string',
             'nik_pemohon' => 'required|digits:16',
@@ -74,7 +111,38 @@ class KartKeluargaController extends Controller
             'akta_kematian' => 'required|file|mimes:pdf|max:500',
             'surat_pernyataan_wali' => 'nullable|file|mimes:pdf|max:500',
             'status' => 'nullable|string'
+        ], [
+            'layanan_id.required' => 'ID layanan tidak boleh kosong.',
+            'nomor_antrian.required' => 'Nomor antrian tidak boleh kosong.',
+            'nama_pemohon.required' => 'Nama pemohon tidak boleh kosong.',
+            'nik_pemohon.required' => 'NIK pemohon tidak boleh kosong.',
+            'nik_pemohon.digits' => 'NIK pemohon harus terdiri dari 16 digit.',
+            'nomor_kk_pemohon.required' => 'Nomor KK pemohon tidak boleh kosong.',
+            'nomor_kk_pemohon.integer' => 'Nomor KK pemohon harus berupa angka.',
+            'alamat_pemohon.required' => 'Alamat pemohon tidak boleh kosong.',
+            'formulir_f102.required' => 'Formulir F102 tidak boleh kosong.',
+            'formulir_f102.file' => 'Formulir F102 harus berupa file.',
+            'formulir_f102.mimes' => 'Formulir F102 harus berformat PDF.',
+            'formulir_f102.max' => 'Ukuran Formulir F102 tidak boleh lebih dari 500 KB.',
+            'ktp_pemohon.required' => 'KTP pemohon tidak boleh kosong.',
+            'ktp_pemohon.file' => 'KTP pemohon harus berupa file.',
+            'ktp_pemohon.mimes' => 'KTP pemohon harus berformat PDF.',
+            'ktp_pemohon.max' => 'Ukuran KTP pemohon tidak boleh lebih dari 500 KB.',
+            'kk_pemohon.required' => 'KK pemohon tidak boleh kosong.',
+            'kk_pemohon.file' => 'KK pemohon harus berupa file.',
+            'kk_pemohon.mimes' => 'KK pemohon harus berformat PDF.',
+            'kk_pemohon.max' => 'Ukuran KK pemohon tidak boleh lebih dari 500 KB.',
+            'akta_kematian.required' => 'Akta kematian tidak boleh kosong.',
+            'akta_kematian.file' => 'Akta kematian harus berupa file.',
+            'akta_kematian.mimes' => 'Akta kematian harus berformat PDF.',
+            'akta_kematian.max' => 'Ukuran akta kematian tidak boleh lebih dari 500 KB.',
+            'surat_pernyataan_wali.file' => 'Surat pernyataan wali harus berupa file.',
+            'surat_pernyataan_wali.mimes' => 'Surat pernyataan wali harus berformat PDF.',
+            'surat_pernyataan_wali.max' => 'Ukuran surat pernyataan wali tidak boleh lebih dari 500 KB.',
         ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', $validator->errors()->first())->withInput();
+        }
         $data = $request->except([
             'formulir_f102', 'ktp_pemohon','kk_pemohon','akta_kematian','surat_pernyataan_wali','foto_wajah'
         ]);
@@ -106,9 +174,9 @@ class KartKeluargaController extends Controller
     // Untuk user yang berganti kepala keluarga
     public function store_kk_hilang_rusak(Request $request)
     {
-        $request->validate([
-            'layanan_id' => 'required|integer',
-            'nomor_antrian' => 'required|string',
+        $validator = Validator::make($request->all(), [
+            'layanan_id' => 'required|string',
+            'nomor_antrian' => 'required|string|unique:kk_hilang_rusak,nomor_antrian',
             'nama_pemohon' => 'required|string',
             'nik_pemohon' => 'required|digits:16',
             'nomor_kk_pemohon' => 'required|integer',
@@ -117,7 +185,32 @@ class KartKeluargaController extends Controller
             'ktp_pemohon' => 'required|file|mimes:pdf|max:500',
             'suket_hilang_rusak' => 'required|file|mimes:pdf|max:500',
             'status' => 'nullable|string'
+        ], [
+            'layanan_id.required' => 'ID layanan tidak boleh kosong.',
+            'nomor_antrian.required' => 'Nomor antrian tidak boleh kosong.',
+            'nomor_antrian.unique' => 'Nomor antrian ini sudah terdaftar di sistem kami.',
+            'nama_pemohon.required' => 'Nama pemohon tidak boleh kosong.',
+            'nik_pemohon.required' => 'NIK pemohon tidak boleh kosong.',
+            'nik_pemohon.digits' => 'NIK pemohon harus terdiri dari 16 digit.',
+            'nomor_kk_pemohon.required' => 'Nomor KK pemohon tidak boleh kosong.',
+            'nomor_kk_pemohon.integer' => 'Nomor KK pemohon harus berupa angka.',
+            'alamat_pemohon.required' => 'Alamat pemohon tidak boleh kosong.',
+            'formulir_f102.required' => 'Formulir F102 tidak boleh kosong.',
+            'formulir_f102.file' => 'Formulir F102 harus berupa file.',
+            'formulir_f102.mimes' => 'Formulir F102 harus berformat PDF.',
+            'formulir_f102.max' => 'Ukuran Formulir F102 tidak boleh lebih dari 500 KB.',
+            'ktp_pemohon.required' => 'KTP pemohon tidak boleh kosong.',
+            'ktp_pemohon.file' => 'KTP pemohon harus berupa file.',
+            'ktp_pemohon.mimes' => 'KTP pemohon harus berformat PDF.',
+            'ktp_pemohon.max' => 'Ukuran KTP pemohon tidak boleh lebih dari 500 KB.',
+            'suket_hilang_rusak.required' => 'Surat keterangan hilang/rusak tidak boleh kosong.',
+            'suket_hilang_rusak.file' => 'Surat keterangan hilang/rusak harus berupa file.',
+            'suket_hilang_rusak.mimes' => 'Surat keterangan hilang/rusak harus berformat PDF.',
+            'suket_hilang_rusak.max' => 'Ukuran surat keterangan hilang/rusak tidak boleh lebih dari 500 KB.',
         ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', $validator->errors()->first())->withInput();
+        }
         $data = $request->except([
             'formulir_f102','ktp_pemohon','suket_hilang_rusak','foto_wajah'
         ]);
@@ -145,11 +238,10 @@ class KartKeluargaController extends Controller
                         ->with('success', 'Data dan dokumen berhasil dikirim.');
     }
 
-    // Untuk user yang berganti kepala keluarga
     public function store_pisah_kk(Request $request)
     {
-        $request->validate([
-            'layanan_id' => 'required|integer',
+        $validator = Validator::make($request->all(), [
+            'layanan_id' => 'required|string',
             'nomor_antrian' => 'required|string',
             'nama_pemohon' => 'required|string',
             'nik_pemohon' => 'required|digits:16',
@@ -161,7 +253,38 @@ class KartKeluargaController extends Controller
             'fotokopi_buku_nikah' => 'nullable|file|mimes:pdf|max:500',
             'kk_lama' => 'required|file|mimes:pdf|max:500',
             'status' => 'nullable|string'
+        ], [
+            'layanan_id.required' => 'ID layanan tidak boleh kosong.',
+            'nomor_antrian.required' => 'Nomor antrian tidak boleh kosong.',
+            'nama_pemohon.required' => 'Nama pemohon tidak boleh kosong.',
+            'nik_pemohon.required' => 'NIK pemohon tidak boleh kosong.',
+            'nik_pemohon.digits' => 'NIK pemohon harus terdiri dari 16 digit.',
+            'nomor_kk_pemohon.required' => 'Nomor KK pemohon tidak boleh kosong.',
+            'nomor_kk_pemohon.integer' => 'Nomor KK pemohon harus berupa angka.',
+            'alamat_pemohon.required' => 'Alamat pemohon tidak boleh kosong.',
+            'formulir_f102.required' => 'Formulir F102 tidak boleh kosong.',
+            'formulir_f102.file' => 'Formulir F102 harus berupa file.',
+            'formulir_f102.mimes' => 'Formulir F102 harus berformat PDF.',
+            'formulir_f102.max' => 'Ukuran Formulir F102 tidak boleh lebih dari 500 KB.',
+            'ktp_pemohon.required' => 'KTP pemohon tidak boleh kosong.',
+            'ktp_pemohon.file' => 'KTP pemohon harus berupa file.',
+            'ktp_pemohon.mimes' => 'KTP pemohon harus berformat PDF.',
+            'ktp_pemohon.max' => 'Ukuran KTP pemohon tidak boleh lebih dari 500 KB.',
+            'kk_pemohon.required' => 'KK pemohon tidak boleh kosong.',
+            'kk_pemohon.file' => 'KK pemohon harus berupa file.',
+            'kk_pemohon.mimes' => 'KK pemohon harus berformat PDF.',
+            'kk_pemohon.max' => 'Ukuran KK pemohon tidak boleh lebih dari 500 KB.',
+            'fotokopi_buku_nikah.file' => 'Fotokopi buku nikah harus berupa file.',
+            'fotokopi_buku_nikah.mimes' => 'Fotokopi buku nikah harus berformat PDF.',
+            'fotokopi_buku_nikah.max' => 'Ukuran fotokopi buku nikah tidak boleh lebih dari 500 KB.',
+            'kk_lama.required' => 'KK lama tidak boleh kosong.',
+            'kk_lama.file' => 'KK lama harus berupa file.',
+            'kk_lama.mimes' => 'KK lama harus berformat PDF.',
+            'kk_lama.max' => 'Ukuran KK lama tidak boleh lebih dari 500 KB.',
         ]);
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', $validator->errors()->first())->withInput();
+        }
         $data = $request->except([
             'formulir_f102','ktp_pemohon','kk_pemohon','fotokopi_buku_nikah', 'kk_lama','foto_wajah'
         ]);

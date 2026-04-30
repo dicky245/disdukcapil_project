@@ -1,24 +1,34 @@
 @extends('layouts.user')
 
 @section('content')
-    @php
-        use Illuminate\Support\Str;
-    @endphp
+<main class="pt-0">
+    {{-- Page Loading with Animated Logo --}}
+    <div id="pageLoading" class="page-loading">
+        <div class="loading-logo bg-white rounded-2xl shadow-2xl overflow-hidden flex items-center justify-center">
+            <img src="{{ asset('images/logo_toba.jpeg') }}" alt="Logo Kabupaten Toba" class="w-full h-full object-contain p-3">
+        </div>
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Disdukcapil Kabupaten Toba</div>
+        <div class="loading-subtext">Memuat layanan...</div>
+        <div class="loading-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
 
-    <main class="pt-0">
-        {{-- Page Loading with Animated Logo --}}
-        <div id="pageLoading" class="page-loading">
-            <div class="loading-logo bg-white rounded-2xl shadow-2xl overflow-hidden flex items-center justify-center">
-                <img src="{{ asset('images/logo_toba.jpeg') }}" alt="Logo Kabupaten Toba"
-                    class="w-full h-full object-contain p-3">
-            </div>
-            <div class="loading-spinner"></div>
-            <div class="loading-text">Disdukcapil Kabupaten Toba</div>
-            <div class="loading-subtext">Memuat layanan...</div>
-            <div class="loading-dots">
-                <span></span>
-                <span></span>
-                <span></span>
+    {{-- Hero Section --}}
+    <section class="relative min-h-[600px] bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white overflow-hidden">
+        {{-- Background Figures --}}
+        <div class="hero-bg-left">
+            <div class="hero-figure">
+                <div class="hero-figure-image">
+                    <img src="{{ asset('images/Bupati_Toba_Effendi_Sintong_Panangian_Napitupulu.png') }}"
+                         alt="Bupati Toba"
+                         class="w-full h-full object-cover">
+                </div>
+                <div class="hero-figure-name">Bupati Toba</div>
+                <div class="hero-figure-title">Effendi Sintong Panangian Napitupulu</div>
             </div>
         </div>
 
@@ -37,47 +47,83 @@
                 </div>
             </div>
 
-            <div class="hero-bg-right">
-                <div class="hero-figure">
-                    <div class="hero-figure-image">
-                        <img src="{{ asset('images/Wakil_Bupati_Toba_Audi_Murphy_O._Sitorus.png') }}"
-                            alt="Wakil Bupati Toba" class="w-full h-full object-cover">
-                    </div>
-                    <div class="hero-figure-name">Wakil Bupati Toba</div>
-                    <div class="hero-figure-title">Audi Murphy O. Sitorus</div>
-                </div>
+        {{-- Hero Content --}}
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="text-center max-w-3xl mx-auto">
+                <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium mb-6 animate-fade-in-up">
+                    <i class="fas fa-rocket"></i>
+                    Platform Digital Terintegrasi
+                </span>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 animate-fade-in-up" style="animation-delay: 0.1s;">
+                    Urus Dokumen Kependudukan
+                    <span class="block text-blue-200">Kini Lebih Mudah & Cepat</span>
+                </h1>
+                <p class="text-lg md:text-xl text-blue-100 mb-8 animate-fade-in-up" style="animation-delay: 0.2s;">
+                    Layanan pendaftaran, pencatatan sipil, dan informasi kependudukan yang
+                    modern, transparan, dan dapat diakses kapan saja, di mana saja.
+                </p>
+            </div>
+        </div>
+
+        {{-- Wave Divider --}}
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#f9fafb"/>
+            </svg>
+        </div>
+    </section>
+
+    {{-- Welcome Section --}}
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-8 md:p-12 text-white text-center reveal">
+                <h2 class="text-2xl md:text-3xl font-bold mb-3">Selamat Datang di Portal Disdukcapil</h2>
+                <p class="text-blue-100 text-lg max-w-3xl mx-auto">
+                    Kabupaten Toba berkomitmen memberikan pelayanan administrasi kependudukan
+                    kelas dunia dengan memanfaatkan teknologi terkini untuk kenyamanan masyarakat.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    {{-- Profil Disdukcapil Section --}}
+    <section id="profil" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 reveal">
+                <span class="text-blue-600 font-semibold text-sm uppercase tracking-wider">Tentang Kami</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Profil Disdukcapil</h2>
+                <p class="text-gray-600 mt-3 max-w-2xl mx-auto">
+                    Mengenal lebih dekat visi, misi, dan dedikasi kami dalam melayani masyarakat
+                </p>
             </div>
 
-            {{-- Hero Content --}}
-            <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-                <div class="text-center max-w-3xl mx-auto">
-                    <span
-                        class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-sm font-medium mb-6 animate-fade-in-up">
-                        <i class="fas fa-rocket"></i>
-                        Platform Digital Terintegrasi
-                    </span>
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 animate-fade-in-up"
-                        style="animation-delay: 0.1s;">
-                        Urus Dokumen Kependudukan
-                        <span class="block text-blue-200">Kini Lebih Mudah & Cepat</span>
-                    </h1>
-                    <p class="text-lg md:text-xl text-blue-100 mb-8 animate-fade-in-up" style="animation-delay: 0.2s;">
-                        Layanan pendaftaran, pencatatan sipil, dan informasi kependudukan yang
-                        modern, transparan, dan dapat diakses kapan saja, di mana saja.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up"
-                        style="animation-delay: 0.3s;">
-                        <a href="{{ route('layanan-mandiri') }}"
-                            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-blue-700 rounded-xl font-semibold hover:bg-blue-50 transition-all hover:scale-105 shadow-lg">
-                            <i class="fas fa-rocket"></i>
-                            Layanan Mandiri
-                        </a>
-                        <a href="{{ route('statistik') }}"
-                            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-500/30 backdrop-blur-sm border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-blue-500/50 transition-all hover:scale-105">
-                            <i class="fas fa-chart-line"></i>
-                            Lihat Statistik
-                        </a>
-                    </div>
+            {{-- Horizontal Tabs Navigation --}}
+            <div class="bg-white rounded-2xl shadow-lg p-2 mb-8 overflow-x-auto reveal">
+                <div class="tabs flex gap-2 min-w-max justify-center">
+                    <button onclick="switchTab(event, 'visi')" class="tab-btn active flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all text-gray-600 hover:bg-gray-100">
+                        <i class="fas fa-bullseye"></i>
+                        Visi & Misi
+                    </button>
+                    <button onclick="switchTab(event, 'motto')" class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all text-gray-600 hover:bg-gray-100">
+                        <i class="fas fa-quote-left"></i>
+                        Motto & Nilai
+                    </button>
+                    <button onclick="switchTab(event, 'sejarah')" class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all text-gray-600 hover:bg-gray-100">
+                        <i class="fas fa-history"></i>
+                        Sejarah
+                    </button>
+                    <button onclick="switchTab(event, 'penghargaan')" class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all text-gray-600 hover:bg-gray-100">
+                        <i class="fas fa-trophy"></i>
+                        Penghargaan
+                    </button>
+                    <button onclick="switchTab(event, 'dasar-hukum')" class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all text-gray-600 hover:bg-gray-100">
+                        <i class="fas fa-balance-scale"></i>
+                        Dasar Hukum
+                    </button>
+                    <button onclick="switchTab(event, 'tugas-fungsi')" class="tab-btn flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold whitespace-nowrap transition-all text-gray-600 hover:bg-gray-100">
+                        <i class="fas fa-tasks"></i>
+                        Tugas & Fungsi
+                    </button>
                 </div>
             </div>
 
@@ -435,23 +481,96 @@
                                         <p class="text-gray-600 text-sm">Penghargaan pelayanan publik prima</p>
                                     </div>
                                 </div>
-                                <div
-                                    class="flex gap-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-l-4 border-purple-500">
-                                    <div
-                                        class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <i class="fas fa-star text-xl text-white"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-gray-800">Predikat WTP</h4>
-                                        <p class="text-gray-600 text-sm">Opini tertinggi atas laporan keuangan</p>
-                                    </div>
+                                <h5 class="font-bold text-gray-800 mb-2">Tepat</h5>
+                                <p class="text-gray-600 text-sm">Hasil layanan akurat dan sesuai ketentuan peraturan</p>
+                            </div>
+                            <div class="text-center p-6 bg-purple-50 rounded-xl">
+                                <div class="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-heart text-2xl text-white"></i>
                                 </div>
+                                <h5 class="font-bold text-gray-800 mb-2">Ramah</h5>
+                                <p class="text-gray-600 text-sm">Pelayanan dengan senyum dan sikap yang menyenangkan</p>
                             </div>
                         </div>
                     </div>
+                </div>
 
+                {{-- Sejarah --}}
+                <div id="sejarah" class="tab-panel">
+                    <div class="bg-white rounded-2xl shadow-lg p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-history text-2xl text-amber-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800">Sejarah Disdukcapil</h3>
+                        </div>
+                        <div class="space-y-6">
+                            <p class="text-gray-700 leading-relaxed">
+                                Dinas Kependudukan dan Pencatatan Sipil (Disdukcapil) Kabupaten Toba merupakan unsur pelaksana urusan pemerintahan di bidang administrasi kependudukan dan pencatatan sipil.
+                            </p>
+                            <p class="text-gray-700 leading-relaxed">
+                                Sejak berdirinya Kabupaten Toba, Disdukcapil terus berkomitmen untuk memberikan pelayanan terbaik bagi masyarakat dalam hal pengurusan dokumen kependudukan seperti KTP, Kartu Keluarga, Akta Kelahiran, dan dokumen lainnya.
+                            </p>
+                            <p class="text-gray-700 leading-relaxed">
+                                Dengan perkembangan teknologi dan digitalisasi, Disdukcapil Kabupaten Toba kini telah mengimplementasikan berbagai sistem online untuk memudahkan masyarakat dalam mengurus dokumen kependudukan tanpa harus datang langsung ke kantor.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Penghargaan --}}
+                <div id="penghargaan" class="tab-panel hidden">
+                        <div class="bg-white rounded-2xl shadow-lg p-8">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-trophy text-2xl text-yellow-600"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-gray-800">Penghargaan</h3>
+                            </div>
+                            @if(isset($penghargaan) && $penghargaan->count() > 0)
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    @foreach($penghargaan as $item)
+                                        @php
+                                            $colors = [
+                                                'Nasional'  => ['border' => 'border-yellow-500', 'bg' => 'from-yellow-50 to-amber-50',  'icon_bg' => 'bg-yellow-500',  'badge' => 'bg-red-100 text-red-700'],
+                                                'Provinsi'  => ['border' => 'border-blue-500',   'bg' => 'from-blue-50 to-cyan-50',     'icon_bg' => 'bg-blue-500',    'badge' => 'bg-blue-100 text-blue-700'],
+                                                'Kabupaten' => ['border' => 'border-green-500',  'bg' => 'from-green-50 to-emerald-50', 'icon_bg' => 'bg-green-500',   'badge' => 'bg-green-100 text-green-700'],
+                                            ];
+                                            $c = $colors[$item->tingkat] ?? ['border' => 'border-gray-300', 'bg' => 'from-gray-50 to-gray-100', 'icon_bg' => 'bg-gray-400', 'badge' => 'bg-gray-100 text-gray-600'];
+                                        @endphp
+                                        <div class="flex gap-4 p-4 bg-gradient-to-r {{ $c['bg'] }} rounded-xl border-l-4 {{ $c['border'] }}">
+                                            <div class="w-12 h-12 {{ $c['icon_bg'] }} rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-award text-xl text-white"></i>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-start justify-between gap-2">
+                                                    <h4 class="font-bold text-gray-800 text-sm leading-snug">{{ $item->nama }}</h4>
+                                                    <span class="px-2 py-0.5 {{ $c['badge'] }} rounded-full text-xs font-semibold flex-shrink-0">{{ $item->tingkat }}</span>
+                                                </div>
+                                                <p class="text-gray-600 text-xs mt-1">{{ $item->instansi }}</p>
+                                                @if($item->tahun || $item->lokasi)
+                                                    <div class="flex items-center gap-3 mt-1.5 text-xs text-gray-400">
+                                                        @if($item->tahun)<span><i class="fas fa-calendar mr-1"></i>{{ $item->tahun }}</span>@endif
+                                                        @if($item->lokasi)<span><i class="fas fa-map-marker-alt mr-1"></i>{{ $item->lokasi }}</span>@endif
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="text-center py-12">
+                                    <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                        <i class="fas fa-trophy text-gray-300 text-2xl"></i>
+                                    </div>
+                                    <p class="text-gray-500 text-sm">Belum ada data penghargaan.</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+ 
                     {{-- Dasar Hukum --}}
-                    <div id="dasar-hukum" class="tab-panel">
+                    <div id="dasar-hukum" class="tab-panel hidden">
                         <div class="bg-white rounded-2xl shadow-lg p-8">
                             <div class="flex items-center gap-3 mb-6">
                                 <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
@@ -459,41 +578,34 @@
                                 </div>
                                 <h3 class="text-2xl font-bold text-gray-800">Dasar Hukum</h3>
                             </div>
-                            <div class="space-y-4">
-                                <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition">
-                                    <div
-                                        class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                                        <span class="text-white font-bold text-sm">1</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-semibold text-gray-800">Undang-Undang No. 24 Tahun 2013</h4>
-                                        <p class="text-gray-600 text-sm">Tentang Perubahan atas Undang-Undang No. 23 Tahun
-                                            2006 tentang Administrasi Kependudukan</p>
-                                    </div>
+                            @if(isset($dasarHukum) && $dasarHukum->count() > 0)
+                                <div class="space-y-4">
+                                    @foreach($dasarHukum as $index => $item)
+                                        <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition group">
+                                            <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <span class="text-white font-bold text-sm">{{ $loop->iteration }}</span>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <h4 class="font-semibold text-gray-800">{{ $item->nama }}</h4>
+                                                <p class="text-gray-600 text-sm mt-1">{{ $item->deskripsi_singkat }}</p>
+                                            </div>
+                                            @if($item->file)
+                                                <a href="{{ asset('storage/' . $item->file) }}" target="_blank" rel="noopener"
+                                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded-lg hover:bg-blue-700 transition">
+                                                    <i class="fas fa-eye"></i> Lihat
+                                                </a>
+                                            @endif
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition">
-                                    <div
-                                        class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                                        <span class="text-white font-bold text-sm">2</span>
+                            @else
+                                <div class="text-center py-12">
+                                    <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                        <i class="fas fa-balance-scale text-gray-300 text-2xl"></i>
                                     </div>
-                                    <div>
-                                        <h4 class="font-semibold text-gray-800">Peraturan Pemerintah No. 40 Tahun 2010</h4>
-                                        <p class="text-gray-600 text-sm">Tentang Pelaksanaan Undang-Undang Nomor 23 Tahun
-                                            2006</p>
-                                    </div>
+                                    <p class="text-gray-500 text-sm">Belum ada data dasar hukum.</p>
                                 </div>
-                                <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition">
-                                    <div
-                                        class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                                        <span class="text-white font-bold text-sm">3</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-semibold text-gray-800">Peraturan Daerah Kabupaten Toba</h4>
-                                        <p class="text-gray-600 text-sm">Tentang Penyelenggaraan Administrasi Kependudukan
-                                            di Kabupaten Toba</p>
-                                    </div>
-                                </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
 
@@ -690,8 +802,73 @@
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
+
+    {{-- Berita & Pengumuman --}}
+    <section id="berita" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 reveal">
+                <span class="text-blue-600 font-semibold text-sm uppercase tracking-wider">Kabar Terkini</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Berita & Pengumuman</h2>
+                <p class="text-gray-600 mt-3 max-w-2xl mx-auto">
+                    Informasi terbaru seputar layanan dan kegiatan Disdukcapil Kabupaten Toba
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 reveal">
+                @forelse ($beritas as $item)
+                    <div class="news-card-large bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+                         role="button"
+                         tabindex="0"
+                         onclick="openNewsModal({{ $item->id }})"
+                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openNewsModal({{ $item->id }});}">
+                        <div class="p-6">
+                            <div class="flex items-start justify-between gap-3 mb-4">
+                                <span class="px-3 py-1 berita-badge rounded-full text-xs font-semibold whitespace-nowrap max-w-[65%] truncate">
+                                    {{ $item->judul }}
+                                </span>
+                                <span class="text-gray-500 text-sm whitespace-nowrap">
+                                    {{ ($item->published_at ?? $item->created_at)->locale('id')->translatedFormat('d M Y') }}
+                                </span>
+                            </div>
+
+                            <h3 class="text-xl font-bold text-gray-800 mb-2 line-clamp-2">{{ $item->judul }}</h3>
+                            <p class="text-gray-600 text-sm mb-5 line-clamp-4">
+                                {{ \Illuminate\Support\Str::limit(trim(strip_tags($item->konten)), 160) }}
+                            </p>
+
+                            <span class="inline-flex items-center gap-2 text-blue-600 font-semibold text-sm hover:gap-3 transition-all">
+                                Baca Selengkapnya <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </div>
+                    </div>
+                @empty
+                    <p class="md:col-span-3 text-center text-gray-500 py-12 text-lg">
+                        Belum ada berita yang dipublikasikan. Silakan cek kembali nanti.
+                    </p>
+                @endforelse
+            </div>
+        </div>
+    </section>
+</main>
+
+    {{-- Modal baca berita --}}
+    <div class="news-modal-overlay" id="newsModalOverlay" onclick="closeNewsModal()">
+        <div class="news-modal" onclick="event.stopPropagation()">
+            <div class="p-6 border-b border-gray-100 flex items-center justify-between gap-4">
+                <span class="px-4 py-2 berita-badge rounded-full text-sm font-semibold shrink-0 max-w-[60%] truncate" id="modalCategory">Kategori</span>
+                <button type="button" onclick="closeNewsModal()" class="w-10 h-10 hover:bg-gray-100 rounded-lg flex items-center justify-center transition shrink-0" aria-label="Tutup">
+                    <i class="fas fa-times text-gray-500"></i>
+                </button>
+            </div>
+            <div class="p-8">
+                <span class="text-gray-500 text-sm" id="modalDate">Tanggal</span>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mt-2 mb-6" id="modalTitle">Judul Berita</h2>
+                <div class="prose max-w-none text-gray-700" id="modalContent"></div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('styles')
@@ -759,39 +936,112 @@
             animation: figureFloat 6s ease-in-out infinite reverse;
         }
 
-        @keyframes figureFloat {
+    @keyframes figureFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
 
-            0%,
-            100% {
-                transform: translateY(0);
-            }
+    /* News modal (beranda) */
+    .news-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
+        z-index: 10000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
 
-            50% {
-                transform: translateY(-20px);
-            }
+    .news-modal-overlay.active {
+        display: flex;
+    }
+
+    .news-modal {
+        background: white;
+        border-radius: 24px;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
+        width: 100%;
+        animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes modalSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
         }
-
-        /* KUNCI PERBAIKAN: CSS UNTUK MENYEMBUNYIKAN DAN MENAMPILKAN TAB */
-        .tab-panel {
-            display: none;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
+    }
 
-        .tab-panel.active {
-            display: block;
-            animation: fadeInUp 0.5s ease-out;
-        }
-    </style>
+    .berita-badge {
+        background: #FEF7E0;
+        color: #B06000;
+    }
+</style>
 @endpush
 
 @push('scripts')
-    <script>
-        // Hide loading after page loads
-        window.addEventListener('load', function() {
-            const loading = document.getElementById('pageLoading');
-            if (loading) {
-                loading.classList.add('hidden');
-            }
+<script>
+    const newsData = @json($newsForModal);
+
+    // Hide loading after page loads
+    window.addEventListener('load', function() {
+        const loading = document.getElementById('pageLoading');
+        if (loading) {
+            loading.classList.add('hidden');
+        }
+    });
+
+    function openNewsModal(newsId) {
+        const overlay = document.getElementById('newsModalOverlay');
+        if (!overlay) return;
+        const news = newsData[String(newsId)] || newsData[newsId];
+        if (!news) return;
+
+        document.getElementById('modalCategory').textContent = news.category;
+        document.getElementById('modalDate').textContent = news.date;
+        document.getElementById('modalTitle').textContent = news.title;
+        document.getElementById('modalContent').innerHTML = news.content;
+
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeNewsModal() {
+        const overlay = document.getElementById('newsModalOverlay');
+        if (!overlay) return;
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeNewsModal();
+        }
+    });
+
+    // Tab Switching
+    function switchTab(event, tabId) {
+        // Remove active class from all buttons and panels
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active', 'bg-blue-600', 'text-white');
+            btn.classList.add('text-gray-600', 'hover:bg-gray-100');
         });
+        document.querySelectorAll('.tab-panel').forEach(panel => {
+            panel.classList.add('hidden');
+            panel.classList.remove('active');
+        });
+        document.getElementById(tabId).classList.remove('hidden');
+        document.getElementById(tabId).classList.add('active');
 
         // Tab Switching
         function switchTab(event, tabId) {

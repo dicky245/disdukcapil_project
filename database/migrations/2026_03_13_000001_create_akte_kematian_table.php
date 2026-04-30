@@ -16,11 +16,12 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             
             // Foreign keys
-            $table->foreignId('layanan_id')->constrained(
-                table: 'layanan',
-                column: 'layanan_id'
-            )->onDelete('cascade');
-            $table->uuid('antrian_online_id')->nullable();
+            $table->char('layanan_id', 36);
+            $table->foreign('layanan_id')
+                ->references('layanan_id')
+                ->on('layanan')
+                ->onDelete('cascade');
+            $table->char('antrian_online_id', 36)->nullable();
             
             // Form fields
             $table->string('nomor_antrian')->nullable();
@@ -32,6 +33,15 @@ return new class extends Migration
             $table->text('alamat_pemohon'); // Menggunakan text karena alamat bisa panjang
             $table->string('hubungan_pemohon');
             
+            // Data Jenazah (dari remote)
+            $table->string('nama_almarhum');
+            $table->text('nik_almarhum')->nullable();
+            $table->text('nik_pelapor')->nullable();
+            $table->date('tgl_meninggal');
+            $table->string('tempat_meninggal');
+            $table->text('sebab_meninggal')->nullable();
+            $table->string('nama_pelapor');
+            
             // File uploads (Semua data jenazah & saksi dialihkan ke unggahan dokumen F-2.01)
             $table->string('ktp_pemohon')->nullable();
             $table->string('kartu_keluarga_pemohon')->nullable();
@@ -40,7 +50,6 @@ return new class extends Migration
             $table->string('ktp_almarhum')->nullable();
             $table->string('ktp_saksi1')->nullable();
             $table->string('ktp_saksi2')->nullable();
-            $table->string('foto_wajah')->nullable();
             
             // Status dan metadata
             $table->enum('status', ['Dokumen Diterima', 'Verifikasi Data', 'Proses Cetak', 'Siap Pengambilan', 'Tolak'])

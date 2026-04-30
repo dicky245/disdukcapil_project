@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Berita_Model;
+use App\Models\DasarHukum;
+use App\Models\Penghargaan;
 use Illuminate\Http\Request;
 use App\Models\Organisasi;
 
@@ -12,10 +15,26 @@ class PageController extends Controller
      */
     public function index()
     {
-    //Organisasi
-    $struktur = Organisasi::orderBy('urutan')->get()->keyBy('kode_posisi');
-    return view('pages.index', compact('struktur'));
+        $beritas = Berita_Model::query()
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at')
+            ->limit(12)
+            ->get();
 
+        $dasarHukum = DasarHukum::orderBy('created_at', 'desc')->get();
+        $penghargaan = Penghargaan::orderBy('created_at', 'desc')->get();
+        $newsForModal = $beritas->keyBy->id->map(function ($b) {
+            $tanggal = ($b->published_at ?? $b->created_at)->locale('id')->translatedFormat('d F Y');
+
+            return [
+                'category' => $b->judul,
+                'date' => $tanggal,
+                'title' => $b->judul,
+                'content' => $b->konten,
+            ];
+        });
+
+        return view('pages.index', compact('beritas', 'newsForModal','dasarHukum','penghargaan'));
     }
 
     /**

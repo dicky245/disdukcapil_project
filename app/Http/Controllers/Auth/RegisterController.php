@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Exceptions\DatabaseException;
 use App\Http\Controllers\Controller;
 use App\Models\SecurityQuestion;
 use App\Models\User;
-use App\Exceptions\DatabaseException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -75,16 +74,13 @@ class RegisterController extends Controller
         try {
             DB::beginTransaction();
 
-            // Enkripsi jawaban pertanyaan keamanan
-            $encryptedAnswer = Crypt::encrypt($validated['security_answer']);
-
-            // Buat user admin baru
+            // Buat user admin baru (password di-hash otomatis oleh User model, security_question_answer di-encrypt oleh trait)
             $admin = User::create([
                 'name' => $validated['name'],
                 'username' => $validated['username'],
-                'password' => Hash::make($validated['password']),
+                'password' => $validated['password'],
                 'security_question_id' => $validated['security_question_id'],
-                'security_question_answer' => $encryptedAnswer,
+                'security_question_answer' => $validated['security_answer'],
             ]);
 
             // Assign role Admin ke user
@@ -98,7 +94,7 @@ class RegisterController extends Controller
             ]);
 
             return redirect()->route('admin.login')
-                ->with('success', 'Registrasi berhasil! Akun admin telah berhasil dibuat. Username: ' . $admin->username . '. Silakan login untuk melanjutkan.');
+                ->with('success', 'Registrasi berhasil! Akun admin telah berhasil dibuat. Username: '.$admin->username.'. Silakan login untuk melanjutkan.');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -129,59 +125,126 @@ class RegisterController extends Controller
      */
     public function verifySecurityQuestion(Request $request)
     {
-        // Validasi input
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'security_answer' => 'required|string',
+            'security_answer' => 'required|string|min:1',
+        ], [
+            'user_id.required' => 'ID user wajib diisi.',
+            'user_id.exists' => 'User tidak ditemukan.',
+            'security_answer.required' => 'Jawaban pertanyaan keamanan wajib diisi.',
+            'security_answer.min' => 'Jawaban tidak boleh kosong.',
         ]);
 
-        // Cari user berdasarkan ID
         $user = User::find($request->user_id);
 
-        if (!$user) {
+        Log::info('Security question verification attempt', [
+            'user_id' => $user->id,
+            'username' => $user->username,
+            'current_auth_user' => Auth::check() ? Auth::id() : 'not_logged_in',
+            'session_user_id' => $request->session()->get('security_question_user_id'),
+        ]);
+
+        if (! $user) {
+            Log::warning('Security question verification - user not found', [
+                'user_id' => $request->user_id,
+                'ip' => $request->ip(),
+            ]);
+
             return redirect()->route('admin.login')
-                ->withErrors(['login_error' => 'User tidak ditemukan.']);
+                ->withErrors(['login_error' => 'Sesi telah kedaluwarsa. Silakan login kembali.']);
+        }
+
+        $storedAnswer = $user->security_question_answer;
+        $userAnswer = trim($request->security_answer);
+
+        if ($storedAnswer === null || $storedAnswer === '') {
+            Log::error('Security question verification - no answer stored', [
+                'user_id' => $user->id,
+                'username' => $user->username,
+            ]);
+
+            return redirect()->route('admin.login')
+                ->withErrors(['login_error' => 'Data pertanyaan keamanan tidak lengkap. Silakan hubungi administrator.']);
+        }
+
+        $attempts = $request->session()->get('security_question_attempts', 0);
+        $maxAttempts = 5;
+
+        if ($attempts >= $maxAttempts) {
+            Log::warning('Security question verification - max attempts reached', [
+                'user_id' => $user->id,
+                'username' => $user->username,
+                'attempts' => $attempts,
+                'ip' => $request->ip(),
+            ]);
+
+            $request->session()->forget('security_question_attempts');
+            $request->session()->forget('security_question_user_id');
+
+            return redirect()->route('admin.login')
+                ->withErrors(['login_error' => 'Terlalu banyak percobaan gagal. Silakan tunggu 15 menit sebelum mencoba lagi.']);
         }
 
         try {
-            // Dekripsi jawaban yang tersimpan
-            $decryptedAnswer = Crypt::decrypt($user->security_question_answer);
+            if (strcasecmp($userAnswer, trim($storedAnswer)) === 0) {
+                $request->session()->forget('security_question_attempts');
+                $request->session()->forget('security_question_user_id');
 
-            // Bandingkan jawaban (case-insensitive)
-            if (strcasecmp(trim($request->security_answer), trim($decryptedAnswer)) === 0) {
-                // Jawaban benar - login user
-                Auth::login($user);
-                $request->session()->regenerate();
+                if (Auth::check()) {
+                    Log::info('User already logged in, logging out first', [
+                        'current_user_id' => Auth::id(),
+                        'new_user_id' => $user->id,
+                    ]);
+                    Auth::logout();
+                }
+
+                Auth::login($user, $remember = false);
+                $request->session()->regenerate(true);
 
                 Log::info('Admin login successful with security question', [
                     'username' => $user->username,
                     'id' => $user->id,
+                    'ip' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                    'session_id' => $request->session()->getId(),
                 ]);
 
                 return redirect()->route('admin.dashboard')
-                    ->with('success', 'Login berhasil! Selamat datang, ' . $user->name . '. Verifikasi pertanyaan keamanan telah berhasil.');
+                    ->with('success', 'Login berhasil! Selamat datang, '.$user->name.'. Verifikasi pertanyaan keamanan telah berhasil.');
             } else {
-                // Jawaban salah
+                $attempts++;
+                $remainingAttempts = $maxAttempts - $attempts;
+
+                $request->session()->put('security_question_attempts', $attempts);
+                $request->session()->put('security_question_user_id', $user->id);
+
                 Log::warning('Security question verification failed', [
                     'username' => $user->username,
                     'id' => $user->id,
+                    'attempts' => $attempts,
+                    'remaining_attempts' => $remainingAttempts,
+                    'ip' => $request->ip(),
                 ]);
 
                 return redirect()->back()
                     ->withInput()
+                    ->with('attempts', $remainingAttempts)
                     ->withErrors([
-                        'security_answer' => 'Jawaban pertanyaan keamanan salah. Silakan coba lagi.'
+                        'security_answer' => 'Jawaban pertanyaan keamanan salah. Silakan coba lagi.',
                     ]);
             }
         } catch (\Exception $e) {
             Log::error('Security question verification error', [
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
                 'user_id' => $user->id,
+                'username' => $user->username,
+                'ip' => $request->ip(),
             ]);
 
             return redirect()->back()
                 ->withInput()
-                ->withErrors(['error' => 'Terjadi kesalahan saat verifikasi. Silakan coba lagi.']);
+                ->withErrors(['error' => 'Terjadi kesalahan teknis. Silakan coba lagi atau hubungi administrator jika masalah berlanjut.']);
         }
     }
 }

@@ -5,6 +5,19 @@
     $page_title = 'Manajemen Antrian Digital';
 @endphp
 
+@push('styles')
+<style>
+    /* Fix untuk tombol di list antrian */
+    .btn-mulai-antrian {
+        pointer-events: auto !important;
+    }
+
+    .btn-show-detail {
+        pointer-events: auto !important;
+    }
+</style>
+@endpush
+
 <div class="container mx-auto px-4 py-8">
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -32,73 +45,28 @@
         @endforeach
     </div>
 
-    <!-- Tabbed Navigation untuk 4 Layanan -->
-    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm mb-6 overflow-hidden">
-        <!-- Tab Headers -->
-        <div class="border-b border-slate-200 bg-slate-50">
-            <nav class="flex -mb-px overflow-x-auto" id="layananTabs">
-                <button onclick="switchTab('kk')" class="layanan-tab active flex-1 min-w-0 py-4 px-4 text-center border-b-2 border-green-600 text-green-600 font-semibold text-sm hover:bg-green-50 transition-colors focus:outline-none" data-tab="kk">
-                    <i class="fas fa-address-card mr-2"></i>
-                    <span class="hidden sm:inline">Kartu Keluarga</span>
-                </button>
-                <button onclick="switchTab('akte-kelahiran')" class="layanan-tab flex-1 min-w-0 py-4 px-4 text-center border-b-2 border-transparent text-slate-600 font-semibold text-sm hover:bg-slate-100 hover:text-slate-900 transition-colors focus:outline-none" data-tab="akte-kelahiran">
-                    <i class="fas fa-baby mr-2"></i>
-                    <span class="hidden sm:inline">Akte Kelahiran</span>
-                </button>
-                <button onclick="switchTab('akte-kematian')" class="layanan-tab flex-1 min-w-0 py-4 px-4 text-center border-b-2 border-transparent text-slate-600 font-semibold text-sm hover:bg-slate-100 hover:text-slate-900 transition-colors focus:outline-none" data-tab="akte-kematian">
-                    <i class="fas fa-user-times mr-2"></i>
-                    <span class="hidden sm:inline">Akte Kematian</span>
-                </button>
-                <button onclick="switchTab('lahir-mati')" class="layanan-tab flex-1 min-w-0 py-4 px-4 text-center border-b-2 border-transparent text-slate-600 font-semibold text-sm hover:bg-slate-100 hover:text-slate-900 transition-colors focus:outline-none" data-tab="lahir-mati">
-                    <i class="fas fa-exclamation-triangle mr-2"></i>
-                    <span class="hidden sm:inline">Lahir Mati</span>
-                </button>
-            </nav>
-        </div>
-
-        <!-- Tab Content: Filter Status per Layanan -->
-        <div class="p-4 bg-white">
-            <div class="flex flex-col sm:flex-row gap-3 items-center">
-                <div class="flex-1">
-                    <label class="text-xs font-bold text-slate-500 mb-1.5 block px-1">FILTER STATUS</label>
-                    <select id="filterStatus" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all appearance-none font-medium text-slate-700">
-                        <option value="">Semua Status</option>
-                        <option value="Menunggu">Menunggu</option>
-                        <option value="Dokumen Diterima">Dokumen Diterima</option>
-                        <option value="Verifikasi Data">Verifikasi Data</option>
-                        <option value="Proses Cetak">Proses Cetak</option>
-                        <option value="Siap Pengambilan">Siap Pengambilan</option>
-                        <option value="Ditolak">Ditolak</option>
-                        <option value="Dibatalkan">Dibatalkan</option>
-                    </select>
-                </div>
-                <div class="flex items-end gap-2">
-                    <button onclick="applyFilter()" class="px-4 py-2.5 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition flex items-center justify-center gap-2 text-sm">
-                        <i class="fas fa-filter"></i> Filter
-                    </button>
-                    <button onclick="resetFilter()" class="px-4 py-2.5 bg-slate-100 text-slate-600 rounded-lg font-semibold hover:bg-slate-200 transition-colors">
-                        <i class="fas fa-redo"></i> Reset
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="bg-white rounded-3xl border border-slate-100 shadow-xl overflow-hidden">
         <div class="px-6 py-5 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
             <h2 class="font-bold text-slate-800 flex items-center gap-2">
-                <span id="currentTabIcon" class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
-                    <i class="fas fa-address-card text-blue-600"></i>
+                <span class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-list text-blue-600"></i>
                 </span>
-                <span id="currentTabTitle">Antrian Kartu Keluarga</span>
+                <span>Semua Antrian Online</span>
             </h2>
-            <span id="totalRecords" class="text-xs font-bold py-1 px-3 bg-white border border-slate-200 text-slate-500 rounded-full shadow-sm uppercase">Total: 0</span>
+            <div class="flex items-center gap-3">
+                <button onclick="refreshData()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold flex items-center gap-2" id="refreshBtn">
+                    <i class="fas fa-sync-alt"></i>
+                    <span>Refresh</span>
+                </button>
+                <span id="totalRecords" class="text-xs font-bold py-1 px-3 bg-white border border-slate-200 text-slate-500 rounded-full shadow-sm uppercase">Total: 0</span>
+            </div>
         </div>
 
         <div id="queueList" class="divide-y divide-slate-50">
-            <div class="p-20 text-center">
-                <div class="animate-spin inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mb-4"></div>
-                <p class="text-slate-400 font-medium italic">Menghubungkan ke server...</p>
+            <div class="p-20 text-center" id="initialLoading">
+                <div class="animate-spin inline-block w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mb-4"></div>
+                <p class="text-slate-600 font-bold">Memuat data antrian...</p>
+                <p class="text-slate-400 text-sm mt-2">Mohon tunggu sebentar</p>
             </div>
         </div>
     </div>
@@ -121,152 +89,272 @@
 @push('scripts')
 <script>
     let allQueueData = [];
-    let currentTab = 'kk'; // Track active tab
 
-    // Mapping layanan_id ke tab
-    const layananTabMap = {
-        '1': 'kk',              // Kartu Keluarga
-        '2': 'akte-kelahiran',   // Akte Kelahiran
-        '3': 'akte-kematian',   // Akte Kematian
-        '4': 'lahir-mati'        // Lahir Mati
+    // Base URL for API calls
+    const BASE_URL = '{{ url("/") }}';
+
+    // Route paths for antrian actions (UUID will be appended)
+    const ROUTES = {
+        terima: '/admin/antrian-online/terima/',
+        verifikasi: '/admin/antrian-online/verifikasi/',
+        cetak: '/admin/antrian-online/cetak/',
+        selesai: '/admin/antrian-online/selesai/',
+        riwayat: '{{ route("admin.antrian-online.riwayat", ":id") }}'.replace(':id', '')
     };
 
-    // Mapping tab ke layanan_id
-    const tabLayananMap = {
-        'kk': '1',
-        'akte-kelahiran': '2',
-        'akte-kematian': '3',
-        'lahir-mati': '4'
-    };
-
-    // Tab info untuk UI
-    const tabInfo = {
-        'kk': { icon: 'fa-address-card', title: 'Antrian Kartu Keluarga', color: 'blue' },
-        'akte-kelahiran': { icon: 'fa-baby', title: 'Antrian Akte Kelahiran', color: 'cyan' },
-        'akte-kematian': { icon: 'fa-user-times', title: 'Antrian Akte Kematian', color: 'rose' },
-        'lahir-mati': { icon: 'fa-exclamation-triangle', title: 'Antrian Lahir Mati', color: 'amber' }
-    };
+    // CSRF Token
+    const CSRF_TOKEN = '{{ csrf_token() }}';
 
     document.addEventListener('DOMContentLoaded', () => {
+        console.log('DOM Content Loaded - Starting setup...');
         refreshData();
-        loadLayanan();
         setupEventListeners();
-        initializeTabs();
     });
 
     function setupEventListeners() {
-        document.getElementById('filterStatus').addEventListener('change', applyFilter);
-
         // Modal Backdrop click
         document.getElementById('detailModal').addEventListener('click', (e) => {
             if (e.target.id === 'detailModal') closeDetailModal();
         });
-    }
 
-    // Initialize tabs
-    function initializeTabs() {
-        // Set initial active tab styling
-        updateTabUI(currentTab);
-    }
+        // Event delegation untuk tombol "Dimulai" dan "Detail" yang dibuat secara dinamis
+        document.getElementById('queueList').addEventListener('click', function(e) {
+            const target = e.target.closest('button');
 
-    // Switch tab function
-    function switchTab(tabName) {
-        currentTab = tabName;
-        updateTabUI(tabName);
-        applyFilter(); // Reload data for new tab
-    }
+            if (!target) return;
 
-    // Update tab UI (active state, icons, titles)
-    function updateTabUI(tabName) {
-        // Update tab buttons
-        document.querySelectorAll('.layanan-tab').forEach(tab => {
-            if (tab.dataset.tab === tabName) {
-                tab.classList.add('border-green-600', 'text-green-600');
-                tab.classList.remove('border-transparent', 'text-slate-600');
-                tab.classList.add('bg-green-50');
-            } else {
-                tab.classList.remove('border-green-600', 'text-green-600', 'bg-green-50');
-                tab.classList.add('border-transparent', 'text-slate-600');
+            // Mencegah event bubbling
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Cek apakah tombol "Dimulai"
+            if (target.dataset.action === 'mulai-antrian') {
+                const id = target.dataset.id;
+                if (id) {
+                    console.log('Mulai antrian clicked for ID:', id);
+                    mulaiAntrian(id);
+                }
             }
-        });
 
-        // Update header info
-        const info = tabInfo[tabName];
-        const iconContainer = document.getElementById('currentTabIcon');
-        const titleElement = document.getElementById('currentTabTitle');
-
-        if (iconContainer && titleElement) {
-            iconContainer.className = `w-8 h-8 rounded-lg flex items-center justify-center bg-${info.color}-50`;
-            iconContainer.innerHTML = `<i class="fas ${info.icon} text-${info.color}-600"></i>`;
-            titleElement.textContent = info.title;
-        }
-    }
-
-    // Auto-switch to appropriate tab when confirming action
-    function switchToTabByLayananId(layananId) {
-        const targetTab = layananTabMap[layananId];
-        if (targetTab && targetTab !== currentTab) {
-            switchTab(targetTab);
-        }
+            // Cek apakah tombol "Detail"
+            if (target.dataset.action === 'show-detail') {
+                const id = target.dataset.id;
+                if (id) {
+                    console.log('Show detail clicked for ID:', id);
+                    showDetail(id);
+                }
+            }
+        }, { passive: false });
     }
 
     async function refreshData() {
-        await Promise.all([loadStatistics(), loadAntrian()]);
-    }
+        console.log('=== REFRESH DATA STARTED ===');
+        const startTime = performance.now();
 
-    async function loadStatistics() {
         try {
-            const res = await fetch('{{ route('antrian.statistik') }}');
-            const { data } = await res.json();
-            document.getElementById('waitingCount').innerText = data.antrian_menunggu;
-            document.getElementById('processingCount').innerText = data.antrian_diproses;
-            document.getElementById('completedCount').innerText = data.antrian_selesai;
-            document.getElementById('totalCount').innerText = data.total_antrian;
-        } catch (e) {
-            console.error("Stats Error:", e);
+            await Promise.all([loadStatistics(), loadAntrian()]);
+
+            const endTime = performance.now();
+            const duration = (endTime - startTime).toFixed(2);
+            console.log(`=== REFRESH DATA COMPLETED in ${duration}ms ===`);
+        } catch (error) {
+            const endTime = performance.now();
+            const duration = (endTime - startTime).toFixed(2);
+            console.error(`=== REFRESH DATA FAILED after ${duration}ms ===`, error);
         }
     }
 
-    async function loadLayanan() {
+    async function loadStatistics() {
+        const startTime = performance.now();
+
         try {
-            const res = await fetch('{{ route('api.layanan') }}');
-            const { data } = await res.json();
-            const select = document.getElementById('filterLayanan');
-            data.forEach(l => {
-                const opt = new Option(l.nama_layanan, l.layanan_id);
-                select.add(opt);
+            console.log('loadStatistics: Starting request...');
+
+            // Panggil endpoint statistics yang mengambil SEMUA data
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 detik timeout
+
+            const res = await fetch('{{ route('admin.antrian-online.statistics') }}', {
+                signal: controller.signal,
+                cache: 'no-store'
             });
-        } catch (e) { console.error(e); }
+            clearTimeout(timeoutId);
+
+            const fetchTime = performance.now();
+            console.log(`loadStatistics: Fetch completed in ${(fetchTime - startTime).toFixed(2)}ms`);
+
+            if (!res.ok) {
+                // Coba parse error response
+                let errorMessage = `HTTP error! status: ${res.status}`;
+                try {
+                    const errorData = await res.json();
+                    if (errorData.message) {
+                        errorMessage = errorData.message;
+                    }
+                    if (errorData.debug) {
+                        errorMessage += ` (Debug: ${errorData.debug})`;
+                    }
+                } catch (e) {
+                    // Ignore parse error
+                }
+                throw new Error(errorMessage);
+            }
+
+            const stats = await res.json();
+
+            const parseTime = performance.now();
+            console.log(`loadStatistics: Parse completed in ${(parseTime - fetchTime).toFixed(2)}ms`);
+
+            console.log('=== LOAD STATISTIK ===');
+            console.log('Statistics:', stats);
+
+            // Gunakan data statistik dari endpoint
+            const menungguCount = stats.menunggu || 0;
+            const processingCount = stats.processing || 0;
+            const completedCount = stats.completed || 0;
+            const totalCount = stats.total || 0;
+
+            console.log('Menunggu:', menungguCount);
+            console.log('Diproses:', processingCount);
+            console.log('Selesai:', completedCount);
+            console.log('Total:', totalCount);
+
+            document.getElementById('waitingCount').innerText = menungguCount;
+            document.getElementById('processingCount').innerText = processingCount;
+            document.getElementById('completedCount').innerText = completedCount;
+            document.getElementById('totalCount').innerText = totalCount;
+
+            const endTime = performance.now();
+            console.log(`loadStatistics: Total time: ${(endTime - startTime).toFixed(2)}ms`);
+        } catch (e) {
+            console.error("Stats Error:", e);
+
+            if (e.name === 'AbortError') {
+                console.error('Request timeout - loading statistics took too long');
+            }
+
+            // Set default values on error
+            document.getElementById('waitingCount').innerText = '0';
+            document.getElementById('processingCount').innerText = '0';
+            document.getElementById('completedCount').innerText = '0';
+            document.getElementById('totalCount').innerText = '0';
+        }
     }
 
     async function loadAntrian() {
+        const container = document.getElementById('queueList');
+        const startTime = performance.now();
+
         try {
-            const res = await fetch('{{ route('admin.antrian-online.data') }}');
-            const { data } = await res.json();
+            console.log('loadAntrian: Starting request...');
+
+            // Muat SEMUA data tanpa filter layanan dengan timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => {
+                console.error('loadAntrian: Request timeout after 30 seconds');
+                controller.abort();
+            }, 30000); // 30 detik timeout
+
+            const res = await fetch('{{ route('admin.antrian-online.data') }}', {
+                signal: controller.signal,
+                cache: 'no-store'
+            });
+            clearTimeout(timeoutId);
+
+            const fetchTime = performance.now();
+            console.log(`loadAntrian: Fetch completed in ${(fetchTime - startTime).toFixed(2)}ms`);
+
+            if (!res.ok) {
+                // Coba parse error response
+                let errorMessage = `HTTP error! status: ${res.status}`;
+                try {
+                    const errorData = await res.json();
+                    if (errorData.message) {
+                        errorMessage = errorData.message;
+                    }
+                    if (errorData.debug) {
+                        errorMessage += ` (Debug: ${errorData.debug})`;
+                    }
+                } catch (e) {
+                    // Ignore parse error
+                }
+                throw new Error(errorMessage);
+            }
+
+            const response = await res.json();
+
+            const parseTime = performance.now();
+            console.log(`loadAntrian: Parse completed in ${(parseTime - fetchTime).toFixed(2)}ms`);
+
+            console.log('=== DEBUG LOAD ANTRIAN ===');
+            console.log('API Response:', response);
+            console.log('API Response success:', response.success);
+
+            const data = response.data || [];
+
+            console.log('Total data loaded:', data.length);
+
+            if (data.length > 0) {
+                console.log('Sample data pertama:', data[0]);
+                console.log('Sample layanan_id:', data[0].layanan_id);
+                console.log('Sample layanan nama:', data[0].layanan?.nama_layanan);
+            }
+
+            // Sort data ASCENDING berdasarkan waktu request (created_at)
+            // Antrian yang request lebih awal akan muncul pertama
+            const sortStart = performance.now();
+            data.sort((a, b) => {
+                const dateA = new Date(a.created_at);
+                const dateB = new Date(b.created_at);
+                return dateA - dateB;
+            });
+            const sortEnd = performance.now();
+            console.log(`loadAntrian: Sort completed in ${(sortEnd - sortStart).toFixed(2)}ms`);
+
             allQueueData = data;
-            renderQueueList(data);
-        } catch (e) { renderQueueList([]); }
-    }
+            console.log('All Queue Data saved:', allQueueData.length);
 
-    function applyFilter() {
-        const status = document.getElementById('filterStatus').value;
-        const currentLayananId = tabLayananMap[currentTab];
+            // DOUBLE SAFETY: Filter HANYA status "Menunggu" untuk ditampilkan
+            // Meskipun controller sudah filter, ini untuk keamanan tambahan
+            const onlyMenunggu = allQueueData.filter(q => q.status_antrian === 'Menunggu');
+            console.log('Filtered Menunggu:', onlyMenunggu.length);
 
-        const filtered = allQueueData.filter(q => {
-            // Filter by current tab's layanan
-            const matchLayanan = q.layanan_id == currentLayananId;
-            // Filter by status (if selected)
-            const matchStatus = !status || q.status_antrian === status;
+            renderQueueList(onlyMenunggu);
 
-            return matchLayanan && matchStatus;
-        });
+            const endTime = performance.now();
+            console.log(`loadAntrian: Total time: ${(endTime - startTime).toFixed(2)}ms`);
+        } catch (e) {
+            console.error("Error loading antrian:", e);
 
-        renderQueueList(filtered);
-    }
-
-    function resetFilter() {
-        document.getElementById('filterStatus').value = '';
-        applyFilter(); // Will re-filter current tab
+            if (e.name === 'AbortError') {
+                console.error('Request timeout - loading antrian took too long');
+                container.innerHTML = `
+                    <div class="py-20 text-center">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-exclamation-triangle text-3xl text-red-500"></i>
+                        </div>
+                        <p class="text-red-500 font-bold">Timeout - Server terlalu lama merespons</p>
+                        <p class="text-slate-400 text-sm mt-2">Silakan refresh halaman atau coba lagi nanti</p>
+                        <button onclick="location.reload()" class="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                            <i class="fas fa-sync-alt mr-2"></i>Refresh Halaman
+                        </button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="py-20 text-center">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-rose-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-exclamation-circle text-3xl text-rose-500"></i>
+                        </div>
+                        <p class="text-rose-500 font-bold">Gagal memuat data</p>
+                        <p class="text-slate-400 text-sm mt-2">${e.message}</p>
+                        <button onclick="location.reload()" class="mt-4 px-6 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors">
+                            <i class="fas fa-sync-alt mr-2"></i>Refresh Halaman
+                        </button>
+                    </div>
+                `;
+            }
+        }
     }
 
     function getStatusConfig(status) {
@@ -284,25 +372,31 @@
 
     function renderQueueList(data) {
         const container = document.getElementById('queueList');
-        document.getElementById('totalRecords').innerText = `Total: ${data.length}`;
 
-        if (data.length === 0) {
+        // TRIPLE SAFETY: Filter HANYA status "Menunggu"
+        // Ini untuk memastikan bahwa benar-benar hanya yang menunggu yang ditampilkan
+        const filteredData = data.filter(q => q.status_antrian === 'Menunggu');
+
+        document.getElementById('totalRecords').innerText = `Total: ${filteredData.length}`;
+
+        if (filteredData.length === 0) {
             container.innerHTML = `
                 <div class="py-20 text-center">
                     <div class="w-20 h-20 mx-auto mb-4 bg-slate-100 rounded-full flex items-center justify-center">
                         <i class="fas fa-inbox text-3xl text-slate-300"></i>
                     </div>
-                    <p class="text-slate-400 font-bold">Tidak ada data ditemukan</p>
+                    <p class="text-slate-400 font-bold">Tidak ada antrian yang menunggu</p>
+                    <p class="text-slate-300 text-sm mt-2">Semua antrian telah diproses</p>
                 </div>`;
             return;
         }
 
-        container.innerHTML = data.map(q => {
+        container.innerHTML = filteredData.map(q => {
             const cfg = getStatusConfig(q.status_antrian);
             const initial = q.nama_lengkap.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
 
             return `
-            <div class="group p-5 sm:p-6 hover:bg-slate-50 transition-all">
+            <div class="antrian-item group p-5 sm:p-6 hover:bg-slate-50 transition-all" data-antrian-id="${q.antrian_online_id}">
                 <div class="flex items-center gap-6">
                     <!-- Avatar -->
                     <div class="relative flex-shrink-0">
@@ -337,7 +431,7 @@
                     <!-- Actions -->
                     <div class="flex flex-wrap gap-2 items-center flex-shrink-0">
                         ${renderActions(q)}
-                        <button onclick="showDetail('${q.antrian_online_id}')" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm font-semibold text-sm flex items-center gap-2 h-[44px]">
+                        <button data-action="show-detail" data-id="${q.antrian_online_id}" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm font-semibold text-sm flex items-center gap-2 h-[44px] btn-show-detail">
                             <i class="fas fa-expand-alt text-xs"></i>
                             <span>Detail</span>
                         </button>
@@ -348,89 +442,202 @@
     }
 
     function renderActions(q) {
+        const safeId = q.antrian_online_id.replace(/'/g, "\\'");
+        let buttons = '';
+
+        // Hanya tampilkan tombol "Dimulai" untuk status Menunggu
         if (q.status_antrian === 'Menunggu') {
-            const safeId = q.antrian_online_id.replace(/'/g, "\\'");
-            return `
-                <button onclick="updateStatus('${safeId}')" class="inline-flex items-center px-5 py-2 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 shadow-md shadow-green-100 transition-all h-[44px]">
+            buttons = `
+                <button data-action="mulai-antrian" data-id="${safeId}" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-xl text-sm font-bold hover:bg-green-700 shadow-md shadow-green-100 transition-all h-[44px] btn-mulai-antrian">
                     <i class="fas fa-play mr-1"></i> Dimulai
                 </button>
             `;
         }
-        return '';
+
+        return buttons;
     }
 
-    async function updateStatus(id) {
-        console.log('updateStatus called with id:', id); // Debug log
-
-        const config = {
-            route: '{{ route("admin.antrian-online.terima", ":id") }}',
-            title: 'Mulai Antrian',
-            message: 'Apakah Anda yakin ingin memulai antrian ini?',
-            subMessage: 'Status akan diubah menjadi "Dokumen Diterima" dan antrian akan masuk ke proses verifikasi.'
-        };
-
-        // Check if SwalHelper exists
-        if (typeof SwalHelper === 'undefined' || !SwalHelper.confirmStart) {
-            console.error('SwalHelper.confirmStart is not available!');
-            alert('Error: SwalHelper tidak tersedia. Silakan refresh halaman.');
-            return;
+    /**
+     * Hapus antrian dari daftar dengan animasi smooth
+     * @param {string} antrianId - ID antrian yang akan dihapus
+     */
+    function removeAntrianFromList(antrianId) {
+        // 1. Hapus dari array allQueueData
+        const index = allQueueData.findIndex(q => q.antrian_online_id === antrianId);
+        if (index !== -1) {
+            allQueueData.splice(index, 1);
         }
 
-        try {
-            SwalHelper.confirmStart(
-                config.title,
-                config.message,
-                config.subMessage,
-                async () => {
-                    try {
-                        console.log('Fetching:', config.route.replace(':id', id)); // Debug log
+        // 2. Cari elemen DOM yang sesuai dan hapus dengan animasi
+        const item = document.querySelector(`[data-antrian-id="${antrianId}"]`);
 
-                        const res = await fetch(config.route.replace(':id', id), {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Content-Type': 'application/json'
-                            }
-                        });
+        if (item) {
+            // Tambahkan animasi fade out
+            item.style.transition = 'all 0.5s ease';
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-100%)';
+            item.style.maxHeight = '0';
+            item.style.padding = '0';
+            item.style.margin = '0';
+            item.style.overflow = 'hidden';
 
-                        console.log('Response status:', res.status); // Debug log
+            // Hapus elemen setelah animasi selesai
+            setTimeout(() => {
+                item.remove();
 
-                        const data = await res.json();
-                        console.log('Response data:', data); // Debug log
+                // Update total records
+                const newTotal = allQueueData.length;
+                document.getElementById('totalRecords').innerText = `Total: ${newTotal}`;
 
-                        if (data.success) {
-                            SwalHelper.notifySuccess(
-                                'Berhasil',
-                                data.message || 'Status antrian berhasil diperbarui!',
-                                'Antrian telah masuk ke proses verifikasi dokumen.',
-                                () => {
-                                    const queueItem = allQueueData.find(q => q.antrian_online_id === id);
-                                    if (queueItem && queueItem.layanan_id) {
-                                        switchToTabByLayananId(queueItem.layanan_id);
-                                    }
-                                    refreshData();
-                                }
-                            );
-                        } else {
-                            SwalHelper.notifyError(
-                                'Gagal',
-                                data.message || 'Terjadi kesalahan saat memperbarui status.',
-                                'Silakan coba lagi atau hubungi administrator jika masalah berlanjut.'
-                            );
-                        }
-                    } catch (e) {
-                        console.error('Error during fetch:', e); // Debug log
-                        SwalHelper.notifyError(
-                            'Error Sistem',
-                            'Terjadi kesalahan sistem saat memproses permintaan.',
-                            'Mohon coba kembali atau hubungi administrator jika masalah berlanjut.'
-                        );
-                    }
+                // Update statistik
+                updateStatistics();
+
+                // Tampilkan pesan jika tidak ada antrian tersisa
+                if (newTotal === 0) {
+                    const container = document.getElementById('queueList');
+                    container.innerHTML = `
+                        <div class="py-20 text-center">
+                            <div class="w-20 h-20 mx-auto mb-4 bg-slate-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-inbox text-3xl text-slate-300"></i>
+                            </div>
+                            <p class="text-slate-400 font-bold">Tidak ada data ditemukan</p>
+                        </div>
+                    `;
                 }
-            );
-        } catch (e) {
-            console.error('Error showing confirm dialog:', e); // Debug log
-            alert('Terjadi kesalahan: ' + e.message);
+            }, 500);
+        }
+    }
+
+    /**
+     * Update statistik setelah antrian dihapus
+     * Memanggil ulang loadStatistics() untuk mendapatkan data terbaru
+     */
+    function updateStatistics() {
+        // Panggil ulang loadStatistics untuk mendapatkan statistik terbaru dari server
+        loadStatistics();
+    }
+
+    async function mulaiAntrian(id) {
+        console.log('Mulai antrian clicked for ID:', id);
+        const route = BASE_URL + ROUTES.terima + id;
+
+        if (typeof Swal !== 'undefined') {
+            // Konfirmasi SEDERHANA seperti logout popup
+            const result = await Swal.fire({
+                title: 'Mulai Antrian',
+                text: 'Apakah Anda yakin ingin memulai proses antrian ini? Status akan diubah menjadi "Dokumen Diterima" dan antrian akan masuk ke halaman layanan sesuai.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#16a34a',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, Mulai',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            });
+
+            if (!result.isConfirmed) {
+                return;
+            }
+
+            // Loading SEDERHANA
+            Swal.fire({
+                title: 'Memproses...',
+                text: 'Mohon tunggu sebentar',
+                icon: 'info',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            });
+
+            try {
+                console.log('Fetching:', route);
+
+                const res = await fetch(route, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': CSRF_TOKEN,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                console.log('Response status:', res.status);
+
+                const data = await res.json();
+                console.log('Response data:', data);
+
+                // Close loading first
+                Swal.close();
+
+                if (data.success) {
+                    // Cari data antrian untuk redirect ke halaman layanan yang sesuai
+                    const queueItem = allQueueData.find(q => q.antrian_online_id === id);
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: data.message || 'Antrian berhasil dimulai! Antrian akan pindah ke halaman layanan yang sesuai.',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#16a34a',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    }).then(() => {
+                        // HAPUS antrian dari daftar sebelum redirect
+                        removeAntrianFromList(id);
+
+                        // Redirect ke halaman layanan yang sesuai
+                        if (queueItem && queueItem.layanan_id) {
+                            const layananRoutes = {
+                                '1': '/admin/penerbitan-kk',           // Kartu Keluarga
+                                '2': '/admin/penerbitan-akte-lahir',   // Akte Kelahiran
+                                '3': '/admin/penerbitan-akte-kematian', // Akte Kematian
+                                '4': '/admin/penerbitan-lahir-mati'    // Lahir Mati
+                            };
+
+                            const targetRoute = layananRoutes[queueItem.layanan_id];
+                            if (targetRoute) {
+                                // Tampilkan loading sebentar sebelum redirect
+                                setTimeout(() => {
+                                    window.location.href = targetRoute;
+                                }, 500);
+                            } else {
+                                refreshData();
+                            }
+                        } else {
+                            refreshData();
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: data.message || 'Terjadi kesalahan saat memulai antrian. Silakan coba lagi atau hubungi administrator.',
+                        confirmButtonText: 'Tutup',
+                        confirmButtonColor: '#dc2626',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    });
+                }
+            } catch (e) {
+                console.error('Error during fetch:', e);
+                Swal.close();
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Sistem!',
+                    text: 'Terjadi kesalahan sistem. Mohon coba kembali atau hubungi administrator.',
+                    confirmButtonText: 'Tutup',
+                    confirmButtonColor: '#dc2626',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                });
+            }
+        } else {
+            // Fallback if SweetAlert is not available
+            console.error('SweetAlert not available!');
+            alert('Error: SweetAlert tidak tersedia. Silakan refresh halaman.');
         }
     }
 
@@ -530,9 +737,11 @@
                 const loadingEl = document.getElementById('riwayatLoading');
                 if (loadingEl) loadingEl.style.display = 'none';
 
-                if (resp.success && resp.data.riwayat) {
+                console.log('Riwayat response:', resp);
+
+                if (resp.success && resp.data && resp.data.riwayat) {
                     const riwayatContainer = document.getElementById('riwayatContainer');
-                    riwayatContainer.innerHTML = resp.data.riwayat.map((r, index) => {
+                    riwayatContainer.innerHTML = resp.data.riwayat.map(function(r, index) {
                         // Tentukan warna berdasarkan status
                         let dotColor = 'bg-blue-500';
                         if (r.status === 'Ditolak') dotColor = 'bg-red-500';
@@ -552,7 +761,8 @@
                                 ${r.alasan_penolakan ? `<p class="text-xs text-red-600 mt-1 font-semibold"><i class="fas fa-exclamation-circle mr-1"></i>Alasan: ${r.alasan_penolakan}</p>` : ''}
                             </div>
                         </div>
-                    `}).join('');
+                    `;
+                    }).join('');
                 } else {
                     document.getElementById('riwayatContainer').innerHTML = `
                         <div class="p-4 bg-slate-50 rounded-xl text-center">
@@ -606,9 +816,20 @@
         animation: slideUp 0.4s ease forwards;
     }
 
+    /* Animation for removing cards */
+    @keyframes slideOut {
+        from { opacity: 1; transform: translateX(0); }
+        to { opacity: 0; transform: translateX(-100%); }
+    }
+
     /* Modal transition */
     #modalContainer {
         transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    /* Antrian item transition for smooth removal */
+    .antrian-item {
+        transition: all 0.5s ease;
     }
 </style>
 

@@ -37,18 +37,6 @@ class Admin_Controller extends Controller
     }
 
     /**
-     * Tampilkan halaman kelola berita
-     */
-    public function kelola_berita()
-    {
-        if (!Auth::user()->hasRole('Admin')) {
-            abort(403, 'Anda tidak memiliki akses.');
-        }
-
-        return view('admin.kelola_berita');
-    }
-
-    /**
      * Tampilkan halaman organisasi
      */
     public function organisasi()
@@ -86,8 +74,8 @@ class Admin_Controller extends Controller
     }
     
     /**
-     * Tampilkan halaman penghargaan
-     */
+    * Tampilkan halaman penghargaan
+    */
     public function penghargaan()
     {
         if (!Auth::user()->hasRole('Admin')) {
@@ -293,6 +281,7 @@ class Admin_Controller extends Controller
 
     /**
      * Get data antrian online untuk admin
+     * HANYA mengambil antrian dengan status "Menunggu"
      */
     public function Get_Data_Antrian(Request $request)
     {
@@ -300,29 +289,93 @@ class Admin_Controller extends Controller
             abort(403, 'Anda tidak memiliki akses.');
         }
 
-        $query = Antrian_Online_Model::with(['layanan', 'lacak_berkas']);
+        try {
+            // HANYA ambil antrian dengan status "Menunggu"
+            // Antrian yang sudah diproses akan hilang dari daftar ini
+            $data_antrian = Antrian_Online_Model::where('status_antrian', 'Menunggu')
+                ->orderBy('created_at', 'asc')
+                ->get();
 
-        // Filter berdasarkan status
-        if ($request->has('status_antrian') && $request->status_antrian != '') {
-            $query->where('status_antrian', $request->status_antrian);
+            // Load layanan data secara manual untuk setiap item
+            foreach ($data_antrian as $antrian) {
+                try {
+                    $layanan = \App\Models\Layanan_Model::find($antrian->layanan_id);
+                    $antrian->layanan = $layanan;
+                } catch (\Exception $e) {
+                    \Log::warning('Gagal load layanan untuk antrian ' . $antrian->antrian_online_id . ': ' . $e->getMessage());
+                    $antrian->layanan = null;
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $data_antrian,
+            ])->header('Cache-Control', 'no-cache, no-store, must-revalidate');
+
+        } catch (\Exception $e) {
+            // Log error untuk debugging
+            \Log::error('Get_Data_Antrian Error: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memuat data',
+                'debug' => app()->environment('local') ? $e->getMessage() : null
+            ], 500);
+        }
+    }
+
+    /**
+     * Get statistik antrian online untuk admin
+     * Mengambil SEMUA data untuk menghitung statistik lengkap
+     */
+    public function Get_Data_Antrian_Statistics(Request $request)
+    {
+        if (!Auth::user()->hasRole('Admin')) {
+            abort(403, 'Anda tidak memiliki akses.');
         }
 
-        // Filter berdasarkan layanan
-        if ($request->has('layanan_id') && $request->layanan_id != '') {
-            $query->where('layanan_id', $request->layanan_id);
+        try {
+            // Ambil SEMUA antrian untuk statistik lengkap
+            $all_antrian = Antrian_Online_Model::orderBy('created_at', 'desc')->get();
+
+            // Hitung statistik
+            $menungguCount = 0;
+            $processingCount = 0;
+            $completedCount = 0;
+
+            foreach ($all_antrian as $antrian) {
+                $status = $antrian->status_antrian;
+
+                if ($status === 'Menunggu') {
+                    $menungguCount++;
+                } elseif (in_array($status, ['Dokumen Diterima', 'Verifikasi Data', 'Proses Cetak'])) {
+                    $processingCount++;
+                } elseif ($status === 'Siap Pengambilan') {
+                    $completedCount++;
+                }
+            }
+
+            $totalCount = $all_antrian->count();
+
+            return response()->json([
+                'success' => true,
+                'menunggu' => $menungguCount,
+                'processing' => $processingCount,
+                'completed' => $completedCount,
+                'total' => $totalCount,
+            ])->header('Cache-Control', 'no-cache, no-store, must-revalidate');
+
+        } catch (\Exception $e) {
+            \Log::error('Get_Data_Antrian_Statistics Error: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memuat statistik',
+                'debug' => app()->environment('local') ? $e->getMessage() : null
+            ], 500);
         }
-
-        // Filter berdasarkan tanggal
-        if ($request->has('tanggal') && $request->tanggal != '') {
-            $query->where('tanggal', $request->tanggal);
-        }
-
-        $data_antrian = $query->orderBy('created_at', 'desc')->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $data_antrian,
-        ]);
     }
 
     /**

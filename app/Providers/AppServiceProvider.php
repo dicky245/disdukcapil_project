@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Berita_Model;
 use App\View\Composers\AdminExistsComposer;
-use Illuminate\Support\ServiceProvider;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Carbon::setLocale('id');
+
+        Route::model('berita', Berita_Model::class);
+
         // Register AdminExistsComposer untuk semua views
         View::composer('*', AdminExistsComposer::class);
     }

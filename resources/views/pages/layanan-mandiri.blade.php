@@ -3,7 +3,7 @@
 @section('content')
 @php
 $serviceConfig = [
-    1 => [
+    'kk_perubahan' => [
         'icon'         => 'fa-address-card',
         'color'        => 'blue',
         'id'           => 'kk',
@@ -23,7 +23,7 @@ $serviceConfig = [
             'Dinas menerbitkan KK Baru',
         ],
         'fields'       => [
-            ['name' => 'layanan_id', 'value' => '1',  'type' => 'hidden'],
+            ['name' => 'layanan_id', 'value' => 'kk_perubahan',  'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pendaftaran'],
             ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Nomor Antrian', 'type' => 'text'],
             ['type' => 'heading', 'label' => 'Data Pemohon'],
@@ -41,7 +41,7 @@ $serviceConfig = [
             ['name' => 'pernyataan_pindah_kk', 'label' => 'Surat Pernyataan Pengasuhan/Wali (Diwajibkan Jika Pindah KK)', 'required' => false],
         ],
     ],
-    6 => [
+    'kk_ganti_kepala' => [
         'icon'         => 'fa-user-edit',
         'color'        => 'blue',
         'id'           => 'ganti_kepala_kk',
@@ -61,7 +61,7 @@ $serviceConfig = [
             'Dinas menerbitkan KK Baru.',
         ],
         'fields'       => [
-            ['name' => 'layanan_id', 'value' => '6', 'type' => 'hidden'],
+            ['name' => 'layanan_id', 'value' => 'kk_ganti_kepala', 'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pendaftaran'],
             ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Nomor Antrian', 'type' => 'text'],
             ['type' => 'heading', 'label' => 'Data Pemohon'],
@@ -78,7 +78,7 @@ $serviceConfig = [
             ['name' => 'surat_pernyataan_wali', 'label' => 'Surat Pernyataan Wali (Jika semua anggota dibawah 17 tahun)', 'required' => false],
         ],
     ],
-    7 => [
+    'kk_hilang' => [
         'icon'         => 'fa-file-medical-alt',
         'color'        => 'blue',
         'id'           => 'kk_hilang_rusak',
@@ -93,7 +93,7 @@ $serviceConfig = [
             'Penduduk menyerahkan dokumen KK yang rusak/surat keterangan kehilangan dari kepolisian',
         ],
         'fields'       => [
-            ['name' => 'layanan_id', 'value' => '7', 'type' => 'hidden'],
+            ['name' => 'layanan_id', 'value' => 'kk_hilang', 'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pengajuan'],
             ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Nomor Antrian', 'type' => 'text'],
             ['type' => 'heading', 'label' => 'Data Pemohon'],
@@ -108,7 +108,7 @@ $serviceConfig = [
             ['name' => 'suket_hilang_rusak', 'label' => 'Surat Kehilangan Kepolisian / Foto KK Rusak'],
         ],
     ],
-    8 => [
+    'kk_pisah' => [
         'icon'         => 'fa-people-arrows',
         'color'        => 'blue',
         'id'           => 'pisah_kk',
@@ -124,7 +124,7 @@ $serviceConfig = [
             'Penduduk melampirkan KK lama',
         ],
         'fields'       => [
-            ['name' => 'layanan_id', 'value' => '8', 'type' => 'hidden'],
+            ['name' => 'layanan_id', 'value' => 'kk_pisah', 'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pengajuan'],
             ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Nomor Antrian', 'type' => 'text'],
             ['type' => 'heading', 'label' => 'Data Pemohon'],
@@ -141,7 +141,7 @@ $serviceConfig = [
             ['name' => 'kk_lama', 'label' => 'Scan/Foto Asli KK Lama'],
         ],
     ],
-    2 => [
+    'akte_kelahiran' => [
         'icon'         => 'fa-baby',
         'color'        => 'green',
         'id'           => 'akte_kelahiran',
@@ -157,7 +157,7 @@ $serviceConfig = [
             'Untuk pelayanan online/daring, persyaratan yang discan/difoto untuk diunggah harus aslinya',
         ],
         'fields'       => [
-            ['name' => 'layanan_id', 'value' => '2', 'type' => 'hidden'],
+            ['name' => 'layanan_id', 'value' => 'akte_kelahiran', 'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pengajuan'],
             ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Nomor Antrian', 'type' => 'text'],
             ['type' => 'heading', 'label' => 'Akte Kelahiran'],
@@ -179,7 +179,7 @@ $serviceConfig = [
             ['name' => 'file_berita_acara_polisi', 'label' => 'Berita Acara Kepolisian - Untuk anak tidak diketahui asal usulnya', 'required' => false],
         ],
     ],
-    3 => [
+    'akte_kematian' => [
         'icon'  => 'fa-user-times',
         'color' => 'orange',
         'id'    => 'akte_kematian',
@@ -198,7 +198,7 @@ $serviceConfig = [
             'Seluruh informasi terkait jenazah dan saksi dilampirkan melalui isian Formulir F-2.01.',
         ],
         'fields' => [
-            ['name' => 'layanan_id', 'value' => '3', 'type' => 'hidden'],
+            ['name' => 'layanan_id', 'value' => 'akte_kematian', 'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pengajuan'],
             ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Masukkan Nomor Antrian', 'type' => 'text',],
             ['type' => 'heading', 'label' => 'Data Pemohon'],
@@ -218,7 +218,7 @@ $serviceConfig = [
             ['name' => 'ktp_saksi2', 'label' => 'Scan/Foto Asli KTP Saksi 2 '],
         ],
     ],
-    4 => [
+    'lahir_mati' => [
         'icon'  => 'fa-exclamation-triangle',
         'color' => 'orange',
         'id'    => 'lahir_mati',
@@ -235,7 +235,7 @@ $serviceConfig = [
             'Seluruh informasi terkait jenazah (bayi) dan orang tua dilampirkan melalui isian Formulir F-2.01.',
         ],
         'fields' => [
-            ['name' => 'layanan_id', 'value' => '4', 'type' => 'hidden'],
+            ['name' => 'layanan_id', 'value' => 'lahir_mati', 'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pengajuan'],
             ['name' => 'nomor_antrian', 'label' => 'Nomor Antrian', 'placeholder' => 'Masukkan Nomor Antrian', 'type' => 'text'],
             ['type' => 'heading', 'label' => 'Data Pemohon'],
@@ -254,7 +254,7 @@ $serviceConfig = [
             ['name' => 'ktp_saksi2', 'label' => 'Scan/Foto Asli KTP Saksi 2 '],
         ],
     ],
-    5 => [
+    'perkawinan' => [
         'icon'  => 'fa-ring',
         'color' => 'purple',
         'id'    => 'layanan-pernikahan',
@@ -271,7 +271,7 @@ $serviceConfig = [
             'Dinas menerbitkan Kutipan Akta Perkawinan',
         ],
         'fields' => [
-            ['name' => 'layanan_id', 'value' => '5', 'type' => 'hidden'],
+            ['name' => 'layanan_id', 'value' => 'perkawinan', 'type' => 'hidden'],
             ['type' => 'heading', 'label' => 'Informasi Pendaftaran'],
             ['name' => 'nomor_antrian', 'label' => 'Kode Antrian', 'type' => 'text', 'placeholder' => 'Masukkan kode antrian'],
             ['name' => 'tanggal_perkawinan', 'label' => 'Tanggal Perkawinan', 'type' => 'date'],
@@ -293,25 +293,25 @@ $kategoriLayanan = [
         'icon'    => 'fa-id-card',
         'emoji'   => '👨‍👩‍👧',
         'color'   => 'blue',
-        'layanan' => [1, 6, 7, 8],
+        'layanan' => ['kk_perubahan', 'kk_ganti_kepala', 'kk_hilang', 'kk_pisah'],
     ],
     'Akte Kelahiran' => [
         'icon'    => 'fa-baby',
         'emoji'   => '👶',
         'color'   => 'green',
-        'layanan' => [2],
+        'layanan' => ['akte_kelahiran'],
     ],
     'Akte Kematian' => [
         'icon'    => 'fa-file-medical',
         'emoji'   => '🕯️',
         'color'   => 'orange',
-        'layanan' => [3, 4],
+        'layanan' => ['akte_kematian', 'lahir_mati'],
     ],
     'Akte Perkawinan' => [
         'icon'    => 'fa-ring',
         'emoji'   => '💍',
         'color'   => 'purple',
-        'layanan' => [5],
+        'layanan' => ['perkawinan'],
     ],
 ];
 
@@ -358,11 +358,9 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
         </div>
     </section>
 
-    {{-- ===================== KATEGORI GRID 2x2 ===================== --}}
     <section class="py-12 bg-gray-50 -mt-6 relative z-10">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            {{-- Panduan --}}
             <div class="mb-8 bg-blue-50 border border-blue-200 rounded-2xl p-5 reveal shadow-sm">
                 <div class="flex items-start gap-4">
                     <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-200">
@@ -378,7 +376,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                 </div>
             </div>
 
-            {{-- Grid 2x2 Kategori --}}
             <div class="grid grid-cols-2 gap-4 reveal">
                 @foreach($kategoriLayanan as $namaKategori => $kategoriConfig)
                     @php
@@ -429,7 +426,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
         </div>
     </section>
 
-    {{-- Keuntungan --}}
     <section class="py-12 bg-white">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-10 reveal">
@@ -462,7 +458,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
     </section>
 </main>
 
-{{-- ===================== MODAL 1: PILIH LAYANAN DALAM KATEGORI ===================== --}}
 <div id="kategoriModal" class="fixed inset-0 z-40 hidden overflow-y-auto">
     <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" onclick="closeKategoriModal()"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
@@ -491,7 +486,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
     </div>
 </div>
 
-{{-- ===================== MODAL 2: FORM SERVICE (5 STEP) ===================== --}}
 <div id="serviceModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
     <div class="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
     <div class="flex items-center justify-center min-h-screen p-4">
@@ -541,7 +535,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                 @csrf
                 <input type="hidden" name="foto_wajah" id="foto_wajah">
 
-                {{-- Step 1: Informasi --}}
                 <div id="step1" class="step-content p-5 space-y-5">
                     <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4">
                         <div class="flex items-center gap-2 mb-2">
@@ -574,7 +567,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                     </button>
                 </div>
 
-                {{-- Step 2: Data --}}
                 <div id="step2" class="step-content p-5 space-y-4 hidden">
                     <p class="text-sm text-gray-500 mb-1">Lengkapi data Anda dengan benar sesuai dokumen resmi.</p>
                     <div id="formFields" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
@@ -590,7 +582,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                     </div>
                 </div>
 
-                {{-- Step 3: Berkas --}}
                 <div id="step3" class="step-content p-5 space-y-4 hidden">
                     <p class="text-sm text-gray-500 mb-1">Upload berkas persyaratan dalam format <strong>PDF</strong>. Pastikan dokumen terbaca dengan jelas.</p>
                     <div id="fileFields" class="space-y-4"></div>
@@ -606,7 +597,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                     </div>
                 </div>
 
-                {{-- Step 4: Verifikasi Wajah --}}
                 <div id="step4" class="step-content p-5 space-y-4 hidden">
                     <h3 class="font-bold text-lg text-gray-800">Verifikasi Wajah</h3>
                     <p class="text-sm text-gray-500">Kedipkan mata <strong>2 kali</strong> di depan kamera untuk membuktikan Anda bukan robot.</p>
@@ -641,7 +631,6 @@ $layananById = \App\Models\Layanan_Model::whereIn('layanan_id', collect($kategor
                     </div>
                 </div>
 
-                {{-- Step 5: Konfirmasi --}}
                 <div id="step5" class="step-content p-5 space-y-4 hidden">
                     <div class="bg-green-50 border border-green-200 rounded-2xl p-4 text-center">
                         <div class="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">

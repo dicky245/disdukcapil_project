@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\ServiceProvider;
 
 /**
  * Service Provider untuk custom Blade directives
@@ -27,16 +27,6 @@ class BladeServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Directive untuk masking NIK
-        Blade::directive('maskNik', function ($expression) {
-            return "<?php echo \App\Helpers\NikHelper::mask($expression); ?>";
-        });
-
-        // Directive untuk format NIK
-        Blade::directive('formatNik', function ($expression) {
-            return "<?php echo \App\Helpers\NikHelper::format($expression); ?>";
-        });
-
         // Share isAdmin variable ke semua views (cached)
         view()->composer('*', function ($view) {
             $isAdmin = false;
@@ -44,11 +34,6 @@ class BladeServiceProvider extends ServiceProvider
                 $isAdmin = auth()->user()->hasRole('Admin');
             }
             $view->with('isAdmin', $isAdmin);
-        });
-
-        // Directive untuk masking NIK tapi full untuk admin (optimized)
-        Blade::directive('maskNikAdmin', function ($expression) {
-            return "<?php echo \App\Helpers\NikHelper::mask($expression, $isAdmin ?? false); ?>";
         });
     }
 }

@@ -7,7 +7,7 @@
         'field' => $field
     ]) }}"
     target="_blank"
-    class="block w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg text-sm">
+    class="block w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white py-2 rounded-lg text-sm transition">
         Lihat Berkas
     </a>
 </div>

@@ -13,28 +13,23 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Middleware untuk web requests
-        $middleware->web(append: [
-            \App\Http\Middleware\CheckUserActivity::class,
-            \App\Http\Middleware\SecurityHeadersMiddleware::class,
-            \App\Http\Middleware\AuditLogMiddleware::class,
-        ]);
-
-        // Middleware untuk API requests
+        // Middleware untuk API requests - XSS Protection
         $middleware->api(append: [
             \App\Http\Middleware\XSSProtectionMiddleware::class,
-            \App\Http\Middleware\RateLimitingMiddleware::class . ':api',
         ]);
 
-        // Rate limiting untuk sensitive routes
+        // XSS Protection middleware alias
         $middleware->alias([
-            'security.headers' => \App\Http\Middleware\SecurityHeadersMiddleware::class,
             'xss.protection' => \App\Http\Middleware\XSSProtectionMiddleware::class,
             'rate.limit' => \App\Http\Middleware\RateLimitingMiddleware::class,
             'ip.whitelist' => \App\Http\Middleware\IPWhitelistMiddleware::class,
             'secure.upload' => \App\Http\Middleware\SecureFileUploadMiddleware::class,
             'audit.log' => \App\Http\Middleware\AuditLogMiddleware::class,
             'camera.policy' => \App\Http\Middleware\CameraPermissionPolicy::class,
+            // Spatie Permission Middleware
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

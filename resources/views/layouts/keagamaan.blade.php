@@ -23,8 +23,29 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- SweetAlert Helper -->
+    <script src="{{ asset('js/sweetalert-helper.js') }}"></script>
+
+    <!-- SweetAlert2 Disdukcapil Notification System -->
+    <script src="{{ asset('js/sweetalert-disdukcapil.js') }}"></script>
+
+    <!-- Notifikasi Disdukcapil Helper -->
+    <script src="{{ asset('js/notifikasi-disdukcapil.js') }}"></script>
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
         * {

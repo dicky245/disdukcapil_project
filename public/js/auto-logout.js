@@ -41,25 +41,9 @@
             countdownTimer = null;
         }
 
-        // MODIFIED: Only close SweetAlert if it's NOT a logout confirmation
-        if (window.Swal && Swal.isVisible()) {
-            const popup = document.querySelector('.swal2-popup');
-            // Check if it's a logout confirmation dialog
-            if (popup) {
-                const popupText = popup.textContent || '';
-                const isLogoutConfirmation = popupText.includes('Konfirmasi Logout') ||
-                                           popupText.includes('keluar dari sistem') ||
-                                           popup.classList.contains('logout-confirmation-active');
-
-                // Only close if it's NOT the logout confirmation
-                if (!isLogoutConfirmation) {
-                    Swal.close();
-                }
-            } else {
-                // No popup found, close any SweetAlert
-                Swal.close();
-            }
-        }
+        // JANGAN tutup SweetAlert popup - biarkan user berinteraksi dengan popup
+        // Hanya update last activity time
+        // SweetAlert akan menutup sendiri jika user berinteraksi
 
         // Update last activity in localStorage
         localStorage.setItem('lastActivity', Date.now().toString());
@@ -263,29 +247,29 @@
             return; // Don't initialize if not logged in
         }
 
-        // Initialize last activity
+        // Initialize last activity - ALWAYS reset on page load for fresh start
+        // This prevents immediate logout after login due to stale localStorage data
+        localStorage.setItem('lastActivity', Date.now().toString());
+        localStorage.setItem('sessionStartTime', Date.now().toString());
+
+        // Get last activity (now freshly set above)
         const lastActivity = localStorage.getItem('lastActivity');
-        if (!lastActivity) {
-            localStorage.setItem('lastActivity', Date.now().toString());
-        }
 
-        // Check existing inactivity on page load
-        if (lastActivity) {
-            const inactiveMinutes = (Date.now() - parseInt(lastActivity)) / 1000 / 60;
-            if (inactiveMinutes >= INACTIVITY_LIMIT) {
-                performAutoLogout();
-                return;
-            }
-        }
+        // Get session start time to avoid logging out immediately after login
+        const sessionStartTime = localStorage.getItem('sessionStartTime');
+        const minutesSinceLogin = (Date.now() - parseInt(sessionStartTime)) / 1000 / 60;
 
-        // Monitor user activity
+        // Don't check for past inactivity on page load - this is a fresh login or page refresh
+        // Only start monitoring from now
+
+        // Monitor user activity - HAPUS mousemove karena terlalu sering trigger dan mengganggu SweetAlert
         const activityEvents = [
-            'mousedown',
-            'mousemove',
-            'keypress',
-            'scroll',
-            'touchstart',
-            'click'
+            'mousedown',  // Mouse click
+            'keypress',   // Keyboard press
+            'scroll',     // Scroll
+            'touchstart', // Touch screen
+            'click'       // Click
+            // 'mousemove' DIHAPUS - menyebabkan popup hilang saat cursor bergerak!
         ];
 
         activityEvents.forEach(event => {
